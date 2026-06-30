@@ -2,9 +2,9 @@
 
 <div align="center">
   <a href="../../README.md">Home</a> &bull;
-  <a href="../../product-strategy/README.md">Product Strategy</a> &bull;
-  <a href="../../tech-design/README.md">Tech Design</a> &bull;
-  <a href="../../tech-build/README.md">Tech Build</a> &bull;
+  <a href="../../product-planning/README.md">Product Planning</a> &bull;
+  <a href="../../architecture-design/README.md">Architecture Design</a> &bull;
+  <a href="../../feature-delivery/README.md">Feature Delivery</a> &bull;
   <a href="../../visualization/README.md">Visualization</a> &bull;
   <a href="../README.md">Knowledge Management</a> &bull;
   <a href="../../team-collaboration/README.md">Collaboration</a> &bull;
