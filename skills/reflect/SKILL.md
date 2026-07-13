@@ -1,75 +1,66 @@
 ---
 name: reflect
-description: Look back on cases and models to calibrate, surface gaps, and decide what's next. Use when the user finishes a project, after several practice sessions, when models feel off, or says "/reflect <topic>". Replaces the old frame-calibrate + project-retro + manual-check pipeline.
+description: Close the learning loop - decide what should change next. Use after several practice sessions, when models feel off, at the end of a project, or when the user says "/reflect <topic>". Compresses recurring errors into next micro-goals, checks drift against the survey mainline, and gates playbook synthesis behind an adversarial defense.
 ---
 
-# Reflect
+# Reflect — Continuous Feedback
 
-Periodic recalibration. Look at what's been practiced, check if the models hold, surface what's missing, and decide what to work on next. This is the meta-learning loop — it keeps the knowledge base alive rather than a frozen snapshot.
+The loop-closer: **what should change next.** Reflect consumes `/evaluate`'s snapshot rather than duplicating it — evaluate measures state; reflect changes trajectory (model edits, next micro-goals, playbook). It keeps the knowledge base alive rather than a frozen snapshot.
 
-## Philosophy
+## Rules
 
-- **Models decay if not challenged.** Every model file should be re-read with fresh eyes against recent cases.
-- **Gaps are more important than confirmations.** Knowing what you *haven't* practiced is more actionable than what you have.
-- **Short session, sharp questions.** A reflect session should take 10-15 minutes, not an hour.
-- **Don't rewrite everything.** Touch only what's wrong, stale, or missing.
+- **Short session, sharp questions.** 10–15 minutes, not an hour.
+- **Don't rewrite everything.** Touch only what's wrong, stale, or missing; minimal model edits.
+- **Archive, don't delete.** Dead models move to an `**Archived:** <reason>` section in `_models.md` — the history of wrong models is valuable.
+- **Never write mastery levels.** That's `/evaluate`'s job; recommend running it first if the snapshot is stale or missing.
+- **Don't reflect on 0 cases.** It's navel-gazing.
 
 ## Flow
 
 ### 1. Gather state
 
-Read all files in `topics/<slug>/memory/`:
-- `_models.md` (index of all models)
-- All `model-*.md` files
-- All `case-*.md` files
-
-Count cases, check dates, note which models have been used and which haven't.
+Read `topics/<slug>/memory/`: `_models.md` (including the latest Mastery Snapshot — if absent or stale, recommend `/evaluate <slug>` first), all `model-*.md`, all `case-*.md`, and `survey.md`.
 
 ### 2. Three questions
 
-Ask these in order:
+**a) "Since last session, what's the most surprising thing you learned?"** — surprise means a model was wrong or incomplete; probe it. Nothing surprising → "What was harder than expected?"
 
-**a) "Since our last session, what's the most surprising thing you learned?"**
-- Surprise means a model was wrong or incomplete. Probe it.
-- If nothing was surprising, ask: "What was harder than you expected?"
+**b) "Which model feels weakest right now?"** — weak = never used in practice, can't be applied confidently, or vague boundary conditions. Cross-check against the mastery snapshot.
 
-**b) "Look at our models. Which one feels the weakest right now?"**
-- Weak = you couldn't confidently apply it to a new case.
-- Weak = you've never actually used it in practice.
-- Weak = the boundary conditions are vague.
+**c) "What kind of problem are you avoiding?"** — surfaces practice gaps.
 
-**c) "What kind of problem are you avoiding?"**
-- This surfaces practice gaps. If all cases are classification and none are time series, that's a gap.
+### 3. Error compression
 
-### 3. Update models
+Scan all `case-*.md` **Errors made** fields. Surface patterns: "a variant of this error appears in 3 of 5 cases." Recurring errors become the **next `/practice` micro-goals** — state them explicitly ("next session's micro-goal: <X>, targeting the <error> pattern"). This closes the deliberate-practice loop.
 
-For any model that needs adjustment:
-- Read the current `model-*.md` file
-- Ask the user: "What's changed? Sharper boundary? New example? The model doesn't hold at all?"
-- Edit the file minimally — don't rewrite working content
-- Add a `**Revised:** <date> — <what changed>` line at the bottom
+### 4. Mainline drift check
 
-If a model is dead (proven wrong by cases), don't delete it. Move it to an `**Archived:** <reason>` section at the bottom of `_models.md` — the history of wrong models is valuable.
+Compare time actually spent (which subtopics the cases and models cluster on) against `survey.md`'s learning mainline. Flag drift: "your mainline says DEEP on X but all 5 cases are on skim-tier Y — recalibrate the mainline or the habit?" Either answer is fine; unexamined drift is not. Mainline edits go through `/survey`, not here.
 
-### 4. Surface gaps
+### 5. Update models
 
-Summarize:
-- "You've practiced <X> 3 times but never <Y>."
-- "Your models cover <A, B, C> but there's nothing for <D>."
-- "All your cases are from <domain>. Want to try a <different domain> case?"
+For any model that needs adjustment: ask what changed (sharper boundary? new example? doesn't hold?), edit the file minimally, append `**Revised:** <date> — <what changed>`. Dead models → archive (see Rules).
 
-Then ask: "What's the next thing you want to practice?" and suggest 2-3 concrete scenarios.
+### 6. Playbook — behind the defense gate
 
-### 5. Update README
+At **5+ cases**, offer playbook synthesis. But first, the **adversarial defense gate (ICAP-I)**:
 
-Update `**Last session:** <date>` in `topics/<slug>/README.md`.
+- Steelman 2–3 objections to the user's key positions — the strongest version an informed critic would make, not strawmen.
+- The user defends or revises. A position enters the playbook **only** if it survives or is revised — this keeps positions defensible from both sides and guards against self-congratulation.
+- You MUST refuse to write the playbook for positions that were neither defended nor revised.
 
-## When to suggest synthesizing
+Then write/update `topics/<slug>/memory/playbook.md` (`layer: framework`): the user's repeatable method and defended positions, each noting the objection it survived.
 
-After 5+ cases and 2+ reflect sessions, mention: "You've built enough to start forming your own position. Want to write a personal playbook for this domain?" If yes, guide the user through writing `topics/<slug>/memory/position.md` (their stance on key controversies) and `topics/<slug>/memory/playbook.md` (their repeatable method). This replaces the old `/playbook` and `/framework-compare` — one conversation, not two commands.
+### 7. Close
 
-## Warnings
+Set next micro-goals (from step 3), update `topics/<slug>/README.md` last-session date.
 
-- Don't do a reflect session with 0 cases. It's just navel-gazing.
-- Don't rewrite models for minor wording. Only touch what's substantively wrong.
-- Don't suggest synthesizing too early. Less than 5 cases = not enough data.
+## Contract test
+
+Recurring error surfaced across ≥2 cases; drift vs mainline reported; playbook refused until positions survive the steelman.
+
+## Boundaries
+
+- vs `/evaluate`: evaluate measures (mastery snapshot); reflect changes trajectory. Reflect never writes `mastery:` frontmatter.
+- vs `/practice`: practice records per-case errors; reflect compresses across cases and hands micro-goals back.
+- vs `/survey`: reflect flags mainline drift but the mainline itself is `/survey`'s to change.

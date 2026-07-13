@@ -1,119 +1,104 @@
 ---
 name: survey
-description: Survey a domain before learning. Use when the user wants to explore a new field, figure out what's worth learning, or says "/survey <topic>". Replaces the old scout command with a structured research flow.
+description: Investment gate before learning a field. Use when the user wants to explore a new domain, decide what's worth learning, allocate learning time, or says "/survey <field>". Outputs a learning mainline (DEEP/SKIM/SKIP triage), curated sources (read / don't read), and a prior-knowledge diagnosis — the inputs /curriculum and /learn build on.
 ---
 
-# Survey
+# Survey — Investment Gate
 
-Landscape scan before model-building. The goal is to have a structured overview of a domain — history, key people, current state, controversies, business impact — so the user can decide what's worth diving into. This feeds directly into `/learn`.
+Runs before any information enters the learning pipeline. The deliverable is an **investment decision, not a textbook**: where does the user's time go, and which sources deserve ingestion. This is cognitive-load management applied at the source-selection level — extraneous load is eliminated before it is ever consumed.
 
-## Philosophy
+## Rules
 
-- **Two entry points, one output.** User has notes/context → organize and structure. User knows little → web research driven by 5 standardized questions.
-- **Breadth, not depth.** A survey is a map, not a textbook. It should take 20-30 minutes to consume.
-- **People matter.** Names, contributions, why they matter, what they argue about. A field is shaped by its key figures.
-- **Hand off cleanly.** The survey ends with a recommendation: what to `/learn` first.
+- **~30-minute cap.** A survey is a map and a budget, not a dissertation.
+- **The triage MUST be argued.** Every mainline row has a why. A mainline that cuts nothing is a reading list, not a gate — you MUST name at least one SKIP.
+- **Two entry paths, one output.** User has context → organize and fill gaps. User knows little → full web research.
+- **You MUST NOT build models or teach here.** That is `/learn`'s job. Map the terrain, allocate the time, hand off.
+- **Never write to `wiki/`.** The wiki is owned by the llm-wiki suite; the handoff is an offer, not an action.
 
 ## Flow
 
 ### 1. Auto-init
 
-If `topics/<slug>/` doesn't exist, create it with `memory/` subdirectory and a minimal README. Don't ask permission.
+If `topics/<slug>/` doesn't exist, create it with a `memory/` subdirectory and a minimal `README.md` (slug, started date). Don't ask permission.
 
 ### 2. Determine entry path
 
-Ask: "How much do you already know about <topic>? Have you read anything, done any projects, or have notes you want me to organize?"
+Ask: "How much do you already know about <field>? Any notes, projects, or reading you want me to build on?"
 
-- **Path A — User has context:** They describe what they know, paste notes, or point to resources. Your job is to organize, structure, and identify gaps. Skip the web research for what they already have covered, fill in only what's missing.
-- **Path B — User knows little:** Full web research driven by the 5 questions below. Run searches in parallel where possible.
+- **Path A — user has context:** organize what they have, research only the gaps.
+- **Path B — user knows little:** full web research, searches in parallel where possible.
 
-### 3. The 5 questions
+### 3. Research the landscape
 
-Answer these in order. For Path A, ask the user first — only research what they can't answer. For Path B, research all 5.
+Cover, in either path:
+- **History & key people** — who built the field, what they contributed, what problems they were solving. Narrative, not timeline.
+- **Current state** — SOTA, key people/groups now, open problems.
+- **Controversies** — what practitioners argue about, schools of thought. (These are `/research` candidates — note them.)
+- **Trajectory** — what changed in the last ~5 years, where money and attention are going.
 
-**Q1: Recent 5-year development**
-- What's changed in this field since ~2021?
-- What breakthroughs, papers, or tools shifted the landscape?
-- What's the trajectory — accelerating, plateauing, or pivoting?
+If sources conflict, note the conflict — don't pick a winner silently.
 
-**Q2: History and key people**
-- Who built this field? What did they contribute, how, and why?
-- What problems were they trying to solve at the time?
-- Give a story-telling overview — not just a timeline, but the narrative arc.
+### 4. Triage into the learning mainline
 
-**Q3: Status quo and controversies**
-- What's the current SOTA? Who are the key people/groups right now?
-- What are the open problems nobody has solved?
-- What do practitioners argue about? (Schools of thought, competing approaches)
-
-**Q4: Business and future impact**
-- What's the business impact in the next 5 years?
-- Which industries are betting on this? Where's the money going?
-- What's the longer-term trajectory beyond 5 years?
-
-**Q5: Overall framework**
-- Synthesize everything above into a Mermaid diagram showing the structure of the field
-- Include: historical roots → key branches → current schools → open problems → future directions
-- This is the "map" the user will refer back to
-
-### 4. Write survey
-
-Write `topics/<slug>/memory/survey.md`:
+Classify every major subtopic by investment level. This is the core deliverable.
 
 ```markdown
-# <Topic> — Landscape Survey
-
-**Date:** <today>
-**Sources:** <list of key sources consulted>
-
-## Recent 5-Year Development (2021–)
-<3-5 paragraphs>
-
-## History & Key People
-<4-6 paragraphs, story-telling style. Names, contributions, motivations.>
-
-## Current State & Controversies
-**SOTA:** <2-3 lines>
-**Key people/groups now:** <list>
-**Open problems:**
-- <problem 1>
-- <problem 2>
-**Controversies:**
-- <controversy 1 — who argues what>
-- <controversy 2>
-
-## Business & Future Impact
-<2-3 paragraphs covering near-term (5yr) and longer-term>
-
-## Domain Map
-
-'''mermaid
-<Mermaid diagram of the field's structure>
-'''
+## Learning Mainline
+| Subtopic | Investment | Why |
+| :--- | :--- | :--- |
+| <subtopic> | DEEP — 60% | foundational; everything else composes from it |
+| <subtopic> | SKIM — 10% | need vocabulary only; low transfer value |
+| <subtopic> | SKIP | overhyped relative to impact / not on the critical path |
 ```
 
-### 5. Recommend next
+Constraints:
+- Percentages on DEEP/SKIM rows MUST roughly sum to 100.
+- At least one SKIP row, argued.
+- The why-column is mandatory on every row.
 
-End with 2-3 concrete suggestions:
-- "Based on this survey, I'd recommend `/learn <slug>` starting with <subtopic> — it's the most foundational."
-- "The biggest controversy right now is <X>. Worth forming your own position on it."
-- "<Subtopic Y> seems overhyped relative to its actual impact. Maybe skip it for now."
+### 5. Curate sources
 
-### 6. Update README
+Rank what to read — and say what each is *for* — and name what to skip:
 
-Update `topics/<slug>/README.md`:
 ```markdown
-# <Topic>
-- Slug: `<slug>`
-- Started: <date>
-- Surveyed: <date>
-- Last session: <date>
+## Sources
+### Read (ranked, with what each is FOR)
+- <source> — best single explanation of <X>; read for the mental model, skip the appendix
+### Don't read (with why)
+- <source> — popular but derivative of <other>
+- <source> — outdated since <development>
 ```
 
-## Warnings
+### 6. Diagnose prior knowledge
 
-- Don't spend more than 30 minutes on a survey. It's a map, not a dissertation.
-- Don't research everything if the user already knows parts. Fill gaps, don't re-litigate what they have.
-- Don't force the Mermaid diagram to be perfect. A rough map is better than no map.
-- If web research yields conflicting information, note the conflict — don't pick a winner silently.
-- This is NOT the learn step. Don't build models here. Just map the terrain.
+Per DEEP/SKIM subtopic, assess the user's level **with evidence** (from Path A conversation, or 2–3 quick probe questions):
+
+```markdown
+## Prior-Knowledge Diagnosis
+| Subtopic | Level | Evidence |
+| :--- | :--- | :--- |
+| <subtopic> | novice | couldn't define <core term> |
+| <subtopic> | practitioner | has shipped <X>; shaky on <Y> |
+```
+
+Levels: `novice` / `practitioner` / `expert`. Downstream, `/curriculum` uses this to set stage depth and `/learn` uses it to set scaffolding — a wrong level here mis-tutors every later session.
+
+### 7. Write survey.md
+
+Write `topics/<slug>/memory/survey.md`: date + sources consulted, a short narrative section (history & people, current state & controversies, trajectory), then the three tables above, then a rough domain map (Mermaid — rough is fine).
+
+### 8. Exit handoffs
+
+- **Soft wiki handoff:** "Want me to feed the Read list into `llm-wiki` ingest so these sources become wiki pages?" — offer, never force. The Learning OS works without a wiki.
+- **Recommend next:** `/curriculum <slug>` to turn the mainline into a syllabus.
+
+Update `topics/<slug>/README.md` (surveyed date, last session).
+
+## Contract test
+
+`survey.md` contains: an argued DEEP/SKIM/SKIP table with ≥1 SKIP; Read/Don't-read lists with reasons; a diagnosis table with evidence; wiki ingest offered, not forced.
+
+## Boundaries
+
+- vs `/curriculum`: survey is *strategic* triage (what gets time, which sources); curriculum is *tactical* sequencing (what order, what load budget). Survey decides **what**; curriculum decides **how**.
+- vs `/research`: survey triages a field and *surfaces* controversies; research *resolves* one into judgment. "Should I learn X?" → survey. "Who's right about X?" → research.
