@@ -89,7 +89,7 @@ Write `topics/<slug>/memory/survey.md`: date + sources consulted, a short narrat
 
 ### 8. Exit handoffs
 
-- **Soft wiki handoff:** "Want me to feed the Read list into `llm-wiki` ingest so these sources become wiki pages?" — offer, never force. The Learning OS works without a wiki.
+- **Soft wiki handoff:** "Want me to feed the Read list into `llm-wiki-ingest` so these sources become wiki pages?" — offer, never force. The Learning OS works without a wiki.
 - **Recommend next:** `/curriculum <slug>` to turn the mainline into a syllabus.
 
 Update `topics/<slug>/README.md` (surveyed date, last session).

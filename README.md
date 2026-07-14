@@ -1,6 +1,6 @@
 # Learn & Wiki Platform
 
-Last updated: 2026-07-13
+Last updated: 2026-07-14
 
 <div align="center">
   <a href="../../README.md">Home</a> &bull;
@@ -47,10 +47,10 @@ Every box is one atomic component, implemented by exactly one skill (or, for the
                     ┌─ /survey ─┐              investment gate: what deserves time
                          │
                          ▼
-              Knowledge Distillation           llm-wiki (two-pass ingest)
+              Knowledge Distillation           llm-wiki-ingest (two-pass ingest)
                          │
                          ▼
-                 Knowledge Graph               llm-wiki-init · llm-wiki · llm-wiki-lint → wiki/
+                 Knowledge Graph               llm-wiki-init · llm-wiki-ingest · llm-wiki-lint → wiki/
                          │
          ┌───────────────┼────────────────┐
          ▼               ▼                ▼
@@ -79,8 +79,8 @@ The design principle that makes this testable: **every skill is a function over 
 | Component | Skill | Reads | Writes |
 | :--- | :--- | :--- | :--- |
 | Investment Gate | `/survey` | web + user context | `memory/survey.md` |
-| Knowledge Distillation | `llm-wiki` (ingest) | curated sources | `wiki/raw/`, `wiki/entities/`, `concepts/`, … |
-| Knowledge Graph | `llm-wiki-init` / `llm-wiki` / `llm-wiki-lint` | `wiki/` | `wiki/index.md`, `log.md`, audit reports |
+| Knowledge Distillation | `llm-wiki-ingest` | curated sources | `raw/`, `wiki/entities/`, `concepts/`, … |
+| Knowledge Graph | `llm-wiki-init` / `llm-wiki-ingest` / `llm-wiki-lint` | `wiki/` | `wiki/index.md`, `log.md`, audit reports |
 | Curriculum Designer | `/curriculum` | `survey.md`, `wiki/` | `memory/syllabus.md` |
 | AI Tutor | `/learn` | `syllabus.md`, `survey.md`, `wiki/` | `model-*.md`, `schema-*.md`, `terms.md`, `_models.md` |
 | Research Companion | `/research` | `wiki/`, `memory/`, fresh sources | `research-*.md` |
@@ -89,7 +89,7 @@ The design principle that makes this testable: **every skill is a function over 
 | Continuous Feedback | `/reflect` | cases, `survey.md`, models | model edits, next micro-goals, `playbook.md` |
 | Learning Memory | convention (not a skill) | — | `topics/<slug>/memory/` |
 
-**The wiki/memory wall:** `wiki/` stores what the sources say (external, source-faithful); `memory/` stores what the learner has earned (constructed in dialogue). Learning OS skills never write to `wiki/`; llm-wiki never writes to `topics/`. Handoffs are soft — `/survey` offers to feed its curated source list into llm-wiki ingest, and downstream skills use `wiki/` pages as material *when present*. The Learning OS works without a wiki, but compounds with one.
+**The wiki/memory wall:** `wiki/` stores what the sources say (external, source-faithful); `memory/` stores what the learner has earned (constructed in dialogue). Learning OS skills never write to `wiki/`; the llm-wiki suite never writes to `topics/`. Handoffs are soft — `/survey` offers to feed its curated source list into `llm-wiki-ingest`, and downstream skills use `wiki/` pages as material *when present*. The Learning OS works without a wiki, but compounds with one.
 
 Distillation into the learner's own four-layer structures happens **through tutoring**, not batch extraction — a model the learner didn't construct isn't theirs ("don't write a model the user didn't earn").
 
@@ -128,13 +128,13 @@ The triage MUST be argued (why-column mandatory), and MUST name at least one SKI
 
 **c) Prior-knowledge diagnosis** — per-subtopic table (novice / practitioner / expert with evidence), read downstream by `/curriculum` and `/learn` to set scaffolding level.
 
-**Exit handoffs:** offer to feed the Read-list into llm-wiki ingest (soft — skippable); recommend `/curriculum` next.
+**Exit handoffs:** offer to feed the Read-list into `llm-wiki-ingest` (soft — skippable); recommend `/curriculum` next.
 
 > **Contract test:** `survey.md` contains an argued DEEP/SKIM/SKIP table with ≥1 SKIP; Read/Don't-read lists with reasons; diagnosis table present; wiki ingest offered, not forced.
 
 ### 1.2 Knowledge Distillation + Knowledge Graph — the llm-wiki suite
 
-The distillation and graph components are owned entirely by the existing [LLM Wiki Suite](#2-karpathys-llm-wiki-suite-compounding-second-brain): `llm-wiki` performs two-pass extraction of curated sources into layer-tagged pages (distillation), and the vault itself — `entities/`, `concepts/`, `comparisons/`, `queries/`, interlinked and indexed — is the knowledge graph. There is **no separate `/distill` skill**; the Learning OS consumes the graph, it doesn't build it.
+The distillation and graph components are owned entirely by the existing [LLM Wiki Suite](#2-karpathys-llm-wiki-suite-compounding-second-brain): `llm-wiki-ingest` performs two-pass extraction of curated sources into layer-tagged pages (distillation), and the vault itself — `entities/`, `concepts/`, `comparisons/`, `queries/`, interlinked and indexed — is the knowledge graph. There is **no separate `/distill` skill**; the Learning OS consumes the graph, it doesn't build it.
 
 ### 1.3 `/curriculum <topic>` — Curriculum Designer
 
@@ -267,13 +267,18 @@ The loop-closer: **what should change next**, consuming `/evaluate`'s snapshot r
 
 ## 2. Karpathy's LLM Wiki Suite (Compounding Second Brain)
 
-An elegant, low-overhead suite modeled on [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). By consolidating complex pipelines into a cohesive triad, this suite enables agents to build a compounding, self-indexing knowledge base of interlinked markdown pages while preserving taxonomic tag consistency, absolute source immutability, and human-in-the-loop takeaways. Within the Learning OS it implements the **Knowledge Distillation** and **Knowledge Graph** components.
+An elegant, low-overhead suite modeled on [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). By consolidating complex pipelines into a cohesive suite, it enables agents to build a compounding, self-indexing knowledge base of interlinked markdown pages while preserving taxonomic tag consistency, absolute source immutability, and human-in-the-loop takeaways. Within the Learning OS it implements the **Knowledge Distillation** and **Knowledge Graph** components.
 
 | Skill | Trigger Commands / Keywords | Purpose & Description | Output / Target |
 | :--- | :--- | :--- | :--- |
 | **[llm-wiki-init](skills/llm-wiki-init/)** | `llm-wiki-init`, `create a wiki`, `start a knowledge base` | Scaffold directory structures, configure `SCHEMA.md` conventions, define taxonomic tag taxonomy, and initialize `index.md` and git tracking. | `wiki/SCHEMA.md`, `index.md`, `log.md` |
-| **[llm-wiki](skills/llm-wiki/)** | `llm-wiki`, `ingest source`, `query wiki`, `wiki-query` | Captures raw sources (`raw/`), performs two-pass parallel extraction & page generation, automatically manages indexing, handles updates/contradictions, and files valuable query results. | `raw/`, `entities/`, `concepts/`, `comparisons/`, `queries/`, `index.md` |
+| **[llm-wiki-ingest](skills/llm-wiki-ingest/)** | `llm-wiki-ingest`, `ingest this`, `add to my wiki`, `distill this article` | **Knowledge Distillation.** File-based two-pass ingest of one source: capture to `raw/` with body SHA-256 (differential skip on re-ingest), Pass 1 extract (parallel subagents for long files), Socratic takeaway discussion, Pass 2 write entity/concept/comparison pages with contested-claim handling. No desktop app required. | `raw/`, `entities/`, `concepts/`, `comparisons/`, `index.md`, `log.md` |
+| **[llm-wiki](https://github.com/nashsu/llm_wiki_skill)** ↗ | `llm-wiki`, `my wiki`, `query wiki`, `知识库` | **Query client** for the LLM Wiki desktop app's local HTTP API (`127.0.0.1:19828`): page search, file listing, content read, knowledge-graph navigation, source rescan. Read-only except rescan. *Third-party skill — tracked via its git upstream, not vendored in this repo.* | Answers from the running LLM Wiki app |
 | **[llm-wiki-lint](skills/llm-wiki-lint/)** | `llm-wiki-lint`, `wiki lint`, `audit wiki`, `health-check` | Runs a comprehensive 12-point health audit covering broken links, orphan nodes, frontmatter compliance, raw source SHA-256 drift, contested claims, and stale pages. | `log.md`, `log-YYYY.md` (rotation), detailed reports |
+| **[llm-wiki-book](skills/llm-wiki-book/)** | `llm-wiki-book`, `book plan`, `turn the wiki into a book` | Generates a book **plan** — thesis, narrative arc, chapter TOC, chapter↔page relation map, and a gap list — from an existing wiki. Plan only; never drafts chapter prose. | Book plan document |
+
+> [!NOTE]
+> **Ingest vs. query — two different `llm-wiki*` skills.** `llm-wiki-ingest` (vendored here) is the Karpathy-style **ingest engine**: purely file-based, it performs the Knowledge Distillation described in this section. `llm-wiki` (third-party, git upstream) is a **query client** for the LLM Wiki desktop app's HTTP API — useful only when that app is running, and entirely optional. The suite works end-to-end without the desktop app.
 
 ---
 
@@ -325,9 +330,9 @@ wiki/
 ### Cross-Cutting Rules
 
 - **Tutor, not a homework-answer machine** — identical one-sentence rule in `/learn`, `/practice`, and `/research` (the one deliberate redundancy; it guards the suite's core value).
-- **Handoff chain:** survey mainline/sources → llm-wiki ingest (soft) + `/curriculum`; survey diagnosis → tutor scaffolding level; case errors → reflect compression → next practice micro-goal; evaluate snapshot → reflect trajectory changes; defended positions → playbook; controversies surfaced anywhere (survey, tutoring, contested wiki pages) → `/research` candidates; research judgments that contradict earned models → `/reflect`.
+- **Handoff chain:** survey mainline/sources → `llm-wiki-ingest` (soft) + `/curriculum`; survey diagnosis → tutor scaffolding level; case errors → reflect compression → next practice micro-goal; evaluate snapshot → reflect trajectory changes; defended positions → playbook; controversies surfaced anywhere (survey, tutoring, contested wiki pages) → `/research` candidates; research judgments that contradict earned models → `/reflect`.
 - **Evidence before claims:** mastery levels, generative claims, and playbook positions all require pointers to evidence files. No self-reported competence.
-- **wiki/memory wall:** Learning OS skills never write `wiki/`; llm-wiki never writes `topics/`.
+- **wiki/memory wall:** Learning OS skills never write `wiki/`; the llm-wiki suite never writes `topics/`.
 - **Files are the only interface:** no skill depends on another skill's session state — only on its written outputs. This is what keeps every component independently testable and replaceable.
 
 ---
@@ -343,8 +348,8 @@ While the core philosophy remains aligned—offloading the tedious bookkeeping o
 | Architectural Component | Karpathy's Concept (`llm-wiki.md`) | Our Implementation (`llm-wiki-*` Suite) |
 | :--- | :--- | :--- |
 | **Wiki Organization** | Generic directory of markdown files. | Formalized two-layer schema: Layer 1 (`raw/` sources) and Layer 2 (`entities/`, `concepts/`, `comparisons/`, `queries/`). |
-| **Ingestion Protocol** | Single-pass ingestion. | **Two-Pass Parallel Ingest** for long files (Pass 1: Extract, Pass 2: Write) + Socratic discussion of takeaways before filing. |
-| **Incremental Ingest** | Full re-processing of inputs. | **Differential Ingest** with skip logic using body-only SHA-256 signatures and chronological logs. |
+| **Ingestion Protocol** | Single-pass ingestion. | **Two-Pass Parallel Ingest** (`llm-wiki-ingest`) for long files (Pass 1: Extract, Pass 2: Write) + Socratic discussion of takeaways before filing. |
+| **Incremental Ingest** | Full re-processing of inputs. | **Differential Ingest** (`llm-wiki-ingest`) with skip logic using body-only SHA-256 signatures and chronological logs. |
 | **Linter & Cleanup** | General advice to audit files. | Automated **12-point health linter (`llm-wiki-lint`)** grouped by severity (Critical to Info) with safe auto-fixes and human-review flags. |
 | **Index & Navigation** | Continuous index rewriting. | Fast, programmatic index updates (`index.md`) using strict structural thresholds to split/map topics as the vault scales. |
 | **Contradiction Management** | Manual resolution. | Active **Contradiction Handling**: frontmatter marking (`contested: true`, `contradictions: [...]`) with dedicated auditing in the linter report. |
@@ -369,7 +374,7 @@ Steps 1–3 first: the survey → curriculum → tutor handoff (`survey.md` → 
 
 ## Out of Scope / Explicit Non-Goals
 
-- **No `/distill` skill** — distillation belongs to llm-wiki ingest (soft handoff only).
+- **No `/distill` skill** — distillation belongs to `llm-wiki-ingest` (soft handoff only).
 - **No numeric mastery scores** — rubric levels with evidence only.
 - **No graph database / MCP memory store** — the markdown vault is the graph.
 - **No hard llm-wiki dependency** — the loop must work wiki-less for casual topics.

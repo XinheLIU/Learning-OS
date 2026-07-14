@@ -73,7 +73,7 @@ layer: framework
 
 - The report is `can-generate` evidence for `/evaluate` — the system's highest mastery tier.
 - If the judgment contradicts an earned `memory/` model, flag it for `/reflect` — don't edit the model here.
-- Offer (soft, never force) to file the report into the wiki via llm-wiki ingest; never write `wiki/` directly.
+- Offer (soft, never force) to file the report into the wiki via `llm-wiki-ingest`; never write `wiki/` directly.
 
 ## Contract test
 
