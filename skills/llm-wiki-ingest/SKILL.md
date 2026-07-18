@@ -1,6 +1,6 @@
 ---
 name: llm-wiki-ingest
-description: "Karpathy's LLM Wiki: ingest (distill) a source — article, paper, transcript, URL, pasted note — into the wiki. Captures the source to raw/ with a body sha256, runs a two-pass extract→write flow with a Socratic takeaway discussion before filing, then writes entity/concept/comparison pages and updates index.md and log.md. Use when the user says 'ingest this', 'add this to my wiki', 'distill this article/paper into the wiki', 'process this source', or hands over a source for the knowledge base. Purely file-based — no desktop app, no HTTP API (querying the LLM Wiki desktop app is the separate `llm-wiki` skill). Never writes Learning OS `topics/`."
+description: "Karpathy's LLM Wiki: ingest (distill) a source — article, paper, transcript, URL, pasted note — into the wiki. Captures the source to raw/ with a body sha256, runs a two-pass extract→write flow with a Socratic takeaway discussion before filing, then writes entity/concept/comparison pages and updates index.md and log.md. Use when the user says 'ingest this', 'add this to my wiki', 'distill this article/paper into the wiki', 'process this source', or hands over a source for the knowledge base. Purely file-based — no desktop app, no HTTP API (querying the LLM Wiki desktop app is the separate `llm-wiki` skill). Never writes Learning OS `learning/`."
 license: MIT
 metadata:
   hermes:
@@ -21,7 +21,7 @@ See `llm-wiki-init` for first-time setup, `llm-wiki-lint` for health checks.
 - "Ingest this", "distill this into my wiki", "process these papers"
 
 **Not this skill:** querying the LLM Wiki desktop app's HTTP API (`llm-wiki`),
-scaffolding a new wiki (`llm-wiki-init`), Learning OS distillation (never write `topics/`).
+scaffolding a new wiki (`llm-wiki-init`), Learning OS distillation (never write `learning/`).
 
 ## Steps
 
@@ -123,7 +123,7 @@ Tell the user:
 ## Hard Rules
 
 - **You MUST NOT** edit a raw file's body after capture.
-- **You MUST NOT** write to Learning OS `topics/` — the wiki/memory wall.
+- **You MUST NOT** write to Learning OS `learning/` — the wiki/learning wall.
 - **You MUST NOT** use a tag that isn't in the SCHEMA taxonomy.
 - **You MUST NOT** create or update a page without updating `index.md` and `log.md` in the same pass.
 - **You MUST NOT** write wiki pages before the takeaway discussion, unless the user waived the gate for a batch.

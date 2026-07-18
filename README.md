@@ -1,6 +1,6 @@
 # Learn & Wiki Platform
 
-Last updated: 2026-07-14
+Last updated: 2026-07-16
 
 <div align="center">
   <a href="../../README.md">Home</a> &bull;
@@ -16,7 +16,7 @@ Last updated: 2026-07-14
 
 A capability domain for personal knowledge, built as a **Learning OS**: a set of atomic components — knowledge distillation, knowledge graph, tutoring, deliberate practice, evaluation, and research — wired together through a shared file-based memory. Per this repo's maturity model, the Learning OS is a **Power** — multiple skills composed into a self-coordinating domain capability.
 
-> **Status:** First version of all seven Learning OS skills is **implemented** under [skills/](skills/) — `survey`, `curriculum`, `learn` (+ `references/learning-theory.md`), `practice`, `evaluate`, `reflect`, `research` — each per its inline contract test (see [Implementation Order](#implementation-order)). The LLM Wiki Suite (Knowledge Distillation + Knowledge Graph) is live.
+> **Status:** First version of all seven Learning OS skills is **implemented** under [skills/](skills/) — `survey`, `curriculum` (+ `references/syllabus-format.md`, `lesson-format.md`), `learn` (+ `references/learning-theory.md`, `notes-format.md`), `practice`, `evaluate`, `reflect`, `research` — each per its inline contract test (see [Implementation Order](#implementation-order)). The LLM Wiki Suite (Knowledge Distillation + Knowledge Graph) is live.
 
 
 
@@ -29,7 +29,7 @@ Five learning theories answer orthogonal questions of a single learning engine:
 | Theory | Answers | Component(s) |
 | :--- | :--- | :--- |
 | Four Layers of Learning | What should be learned? | Knowledge Distillation, Knowledge Graph |
-| Cognitive Load | How should knowledge be presented? | Curriculum Designer, AI Tutor |
+| Cognitive Load | How should knowledge be presented? | Course Designer, AI Tutor |
 | ICAP | How should the learner engage? | AI Tutor, Continuous Feedback |
 | Deliberate Practice | How should skill improve? | Practice Coach, Learning Evaluator |
 | Synthesis Research | How is new knowledge created? | Research Companion |
@@ -54,8 +54,8 @@ Every box is one atomic component, implemented by exactly one skill (or, for the
                          │
          ┌───────────────┼────────────────┐
          ▼               ▼                ▼
-    Curriculum        AI Tutor      Research Companion
-    Designer          /learn           /research
+      Course          AI Tutor      Research Companion
+     Designer          /learn           /research
     /curriculum
          │               │                │
          └───────────────┼────────────────┘
@@ -66,7 +66,7 @@ Every box is one atomic component, implemented by exactly one skill (or, for the
                 Learning Evaluator             /evaluate
                          │
                          ▼
-                 Learning Memory               topics/<slug>/memory/  (convention, not a skill)
+                 Learning Memory               learning/<slug>/       (convention, not a skill)
                          ▲
                          │
                 Continuous Feedback            /reflect
@@ -78,18 +78,20 @@ The design principle that makes this testable: **every skill is a function over 
 
 | Component | Skill | Reads | Writes |
 | :--- | :--- | :--- | :--- |
-| Investment Gate | `/survey` | web + user context | `memory/survey.md` |
+| Investment Gate | `/survey` | web + user context | `survey.md` |
 | Knowledge Distillation | `llm-wiki-ingest` | curated sources | `raw/`, `wiki/entities/`, `concepts/`, … |
 | Knowledge Graph | `llm-wiki-init` / `llm-wiki-ingest` / `llm-wiki-lint` | `wiki/` | `wiki/index.md`, `log.md`, audit reports |
-| Curriculum Designer | `/curriculum` | `survey.md`, `wiki/` | `memory/syllabus.md` |
-| AI Tutor | `/learn` | `syllabus.md`, `survey.md`, `wiki/` | `model-*.md`, `schema-*.md`, `terms.md`, `_models.md` |
-| Research Companion | `/research` | `wiki/`, `memory/`, fresh sources | `research-*.md` |
-| Practice Coach | `/practice` | `_models.md`, `drills-*.md` | `drills-*.md`, `case-*.md` |
-| Learning Evaluator | `/evaluate` | models + cases | `mastery:` frontmatter, `_models.md` summary |
-| Continuous Feedback | `/reflect` | cases, `survey.md`, models | model edits, next micro-goals, `playbook.md` |
-| Learning Memory | convention (not a skill) | — | `topics/<slug>/memory/` |
+| Course Designer | `/curriculum` | `survey.md`, `notes.md`, `wiki/`, working-dir material | `syllabus.md`, `index.html`, `lessons/*.html`, `reference/*.html` |
+| AI Tutor | `/learn` | `syllabus.md`, `survey.md`, `notes.md`, `wiki/` | lesson revisions, `reference/` updates, `notes.md` |
+| Research Companion | `/research` | `wiki/`, `learning/`, fresh sources | `research-*.md` |
+| Practice Coach | `/practice` | `notes.md`, `drills-*.md` | `drills-*.md`, `case-*.md` |
+| Learning Evaluator | `/evaluate` | notes + cases | Mastery Snapshot in `notes.md` |
+| Continuous Feedback | `/reflect` | cases, `survey.md`, notes | record edits, next micro-goals, `playbook.md` |
+| Learning Memory | convention (not a skill) | — | `learning/<slug>/` |
 
-**The wiki/memory wall:** `wiki/` stores what the sources say (external, source-faithful); `memory/` stores what the learner has earned (constructed in dialogue). Learning OS skills never write to `wiki/`; the llm-wiki suite never writes to `topics/`. Handoffs are soft — `/survey` offers to feed its curated source list into `llm-wiki-ingest`, and downstream skills use `wiki/` pages as material *when present*. The Learning OS works without a wiki, but compounds with one.
+All learner-side paths are relative to `learning/<slug>/` (see [Learning Memory](#learning-memory-a-convention-not-a-skill)).
+
+**The wiki/learning wall:** `wiki/` stores what the sources say (external, source-faithful); `learning/` stores what the learner has earned (constructed in dialogue). Learning OS skills never write to `wiki/`; the llm-wiki suite never writes to `learning/`. Handoffs are soft — `/survey` offers to feed its curated source list into `llm-wiki-ingest`, and downstream skills use `wiki/` pages as material *when present*. The Learning OS works without a wiki, but compounds with one.
 
 Distillation into the learner's own four-layer structures happens **through tutoring**, not batch extraction — a model the learner didn't construct isn't theirs ("don't write a model the user didn't earn").
 
@@ -99,9 +101,9 @@ Distillation into the learner's own four-layer structures happens **through tuto
 
 ### 1.1 `/survey <field>` — Investment Gate
 
-Runs before any information enters the pipeline. The deliverable is an investment decision, not a textbook: where does time go, and which sources deserve ingestion. This is cognitive-load management applied at the source-selection level — extraneous load is eliminated before it is ever consumed. Auto-inits `topics/<slug>/`; supports Path A/B entry (user has context vs full web research); covers history, key people, current state and controversies; ~30-minute cap.
+Runs before any information enters the pipeline. The deliverable is an investment decision, not a textbook: where does time go, and which sources deserve ingestion. This is cognitive-load management applied at the source-selection level — extraneous load is eliminated before it is ever consumed. Auto-inits `learning/<slug>/`; supports Path A/B entry (user has context vs full web research); covers history, key people, current state and controversies; ~30-minute cap.
 
-Primary outputs, written to `topics/<slug>/memory/survey.md`:
+Primary outputs, written to `learning/<slug>/survey.md`:
 
 **a) Learning mainline — time-allocation triage.** Every major subtopic classified:
 
@@ -136,34 +138,41 @@ The triage MUST be argued (why-column mandatory), and MUST name at least one SKI
 
 The distillation and graph components are owned entirely by the existing [LLM Wiki Suite](#2-karpathys-llm-wiki-suite-compounding-second-brain): `llm-wiki-ingest` performs two-pass extraction of curated sources into layer-tagged pages (distillation), and the vault itself — `entities/`, `concepts/`, `comparisons/`, `queries/`, interlinked and indexed — is the knowledge graph. There is **no separate `/distill` skill**; the Learning OS consumes the graph, it doesn't build it.
 
-### 1.3 `/curriculum <topic>` — Curriculum Designer
+### 1.3 `/curriculum <topic>` — Course Designer & Builder
 
-A standalone planner (cognitive load + ICAP as design inputs). Reads `survey.md` (mainline + diagnosis; runs a 3-question mini-diagnosis if absent) and any ingested `wiki/` pages. Generates `topics/<slug>/memory/syllabus.md` covering the DEEP subtopics only:
+A standalone course designer **and builder** (cognitive load + ICAP as design inputs). Captures the **mission first** — the real-world reason the user is learning this; interviews if it's unclear (a course without a mission is abstract coverage). **Materials-first entry:** it starts from whatever is already in the working directory — a `wiki/` vault or obvious learning material → just begin, grounded in it; ambiguous material → ask; nothing → discuss mission and sources with the user (3-question mini-diagnosis + self-researched high-trust sources). `/survey` is an option for broad fields, never a precondition. When `survey.md` exists it is used fully (mainline → scope, diagnosis → depth, Read list → primary sources).
+
+Produces the **whole course** under `learning/<slug>/`, in two steps — plan, confirm with the user, then build:
+
+1. **`syllabus.md`** — the plan and progress tracker, covering the DEEP subtopics only:
 
 ```markdown
----
-layer: framework
----
-# Syllabus: <topic>
+# Course: <topic>
+## Mission            (why · success looks like · constraints · out of scope)
+## Sources            (what each is FOR; which lessons use it)
 ## Stage 1 — Prerequisite schemas   (warm-up, automate parts)
 ## Stage 2 — Small chunks            (one new concept per lesson)
 ## Stage 3 — Combine schemas         (integration only after parts are fluent)
 ## Stage 4 — Real task               (whole-task, reduced support)
-## Stage 5 — Transfer                (new domain, no support)
+## Stage 5 — Transfer & wisdom       (new domain, no support, real world)
 
-Each lesson: Objectives · Prerequisites · Warm-up · Examples · Exercise ·
-Reflection prompt · ICAP target (P/A → C → I) · Load note (what is deliberately deferred)
+Each lesson: [K|S|W] type · Objective · Prerequisites · Lesson spec (what the
+HTML contains) · Primary source · ICAP target · Load note
 ```
 
-The syllabus is resumable — `/learn` sessions pick up at the first unchecked lesson.
+**Depth ladder — Knowledge → Skill → Wisdom.** Every lesson is typed: **K** builds understanding from high-trust sources (difficulty is the enemy — worked examples, minimal load; produces `reference/` docs); **S** builds durable retrieval (difficulty is the tool — interactive exercises, retrieval/spacing/interleaving); **W** builds judgment in the real world (an assignment or community, tied to the mission). K before S before W per subtopic; every course ends at ≥1 W milestone.
+
+The syllabus is resumable — `/learn` sessions pick up at the first unchecked lesson. Full template and field rules: `skills/curriculum/references/syllabus-format.md`.
+
+2. **The HTML course** — built after the user confirms the plan: `index.html` (course shell: mission, stages, lesson list with progress; establishes the shared style), one self-contained lesson file per spec in `lessons/` (warm-up first, one chunk, cited claims, K/S/W-typed interactivity), and the `reference/` docs K-lessons link (cheat sheets, glossary seed). Built lessons are a plan, not a prophecy — `/learn` recalibrates each against `notes.md` before tutoring it. Format rules: `skills/curriculum/references/lesson-format.md`.
 
 **Boundary vs `/survey`:** the mainline is *strategic* triage — which subtopics get deep time, skim, skip, and which sources. The syllabus is *tactical* sequencing — in what order, with what load budget, lesson by lesson. Survey decides **what**; curriculum decides **how**.
 
-> **Contract test:** given a fixture `survey.md`, the syllabus covers DEEP rows only; every lesson carries ICAP target and load note; stage order respects prerequisites-before-integration.
+> **Contract test:** given a fixture `survey.md`, the syllabus opens with a populated Mission; covers DEEP rows only; every lesson carries a K/S/W type, ICAP target, and load note; K precedes S precedes W; ≥1 W milestone; stage order respects prerequisites-before-integration; after approval, `index.html` + one HTML file per lesson exist and every K-lesson links a `reference/` doc.
 
 ### 1.4 `/learn <topic>` — AI Tutor
 
-Pure tutoring — no planning. Requires `syllabus.md` (offers to run `/curriculum` if missing). The loop per lesson: `estimate current schemas → identify missing schema → pose optimal next challenge → feedback`. Wiki pages, when present, serve as teaching material (worked examples, source quotes) — never as answers to hand over.
+Pure tutoring — no course design. Requires the built course (offers to run `/curriculum` if missing). Each session: **pick the next lesson from the syllabus → revise its HTML against what `notes.md` shows the learner actually knows now (recalibrate the warm-up, swap known examples, adjust difficulty — or rewrite outright when a recorded misconception invalidates it) → tutor it in dialogue → record what was earned.** Pre-built lessons can't predict the learner; revision-before-tutoring is what keeps them in the zone of proximal development. K-lessons extend and correct their `reference/` docs as knowledge is earned (lessons are rarely revisited; references are). Wiki pages, when present, serve as teaching material — never as answers to hand over.
 
 Calibration rules (teach to the learner, from the survey diagnosis):
 - **Novice on this subtopic:** direct instruction — worked examples first, closed questions, small steps. You MUST NOT use discovery-style open prompts on a novice.
@@ -175,34 +184,32 @@ Load-management rules (hard constraints):
 - Verify prerequisites by asking, not telling, before each new chunk.
 - Components before integration; local structure before the whole — let the learner stand firm on one step before showing the next.
 - No extraneous load: no tangents, no stacked analogies.
+- Storage strength over fluency: warm-ups retrieve prior lessons (spacing); S-lessons interleave related schemas.
 
 ICAP escalation (hard constraints):
 - Never end a segment at P/A. Each chunk closes with learner construction: self-explanation or the learner's *own* example (the tutor's example doesn't count).
 - Periodically escalate to I: tutor attacks the construction; learner defends or revises.
 - **Prime directive: tutor, not a homework-answer machine.** Never hand over an answer the learner should construct — decompose and hint. Direct answers only for representations, never for schemas or models.
 
-Output: `model-*.md` / `schema-*.md` in the learner's own words, layer-tagged, indexed in `_models.md`; representations accumulate in `terms.md`.
+Output: revised lessons, extended `reference/` docs, updated progress in `syllabus.md` + `index.html`, and earned insights in `notes.md` (records / terms / preferences), in the learner's own words. Format specs: `curriculum/references/lesson-format.md` (lessons, shell, reference docs, revision rights) and `learn/references/notes-format.md` (ADR-style records, glossary rules).
 
-> **Contract test:** a novice run uses worked examples and one-chunk pacing; every segment ends with learner-generated construction; direct-answer requests get decomposed instead.
+> **Contract test:** given a `notes.md` recording a misconception the next lesson assumes away, the session revises the lesson before tutoring it; a novice run uses worked examples and one-chunk pacing; every segment ends with learner-generated construction; direct-answer requests get decomposed instead.
 
 ### 1.5 `/research <question>` — Research Companion
 
-The one component that **creates** knowledge instead of consuming it. Everything upstream feeds it: `wiki/` holds what the sources say, `memory/` holds what the learner has earned — research overlays them and produces the judgment that exists in neither. The deliverable is always **written** — writing is where the thinking completes, not packaging.
+The one component that **creates** knowledge instead of consuming it. Everything upstream feeds it: `wiki/` holds what the sources say, `learning/` holds what the learner has earned — research overlays them and produces the judgment that exists in neither. The deliverable is always **written** — writing is where the thinking completes, not packaging.
 
-**Entry gate — no tension, no research.** Research starts from a live tension: two credible sources that disagree, a source contradicting an earned `memory/` model, a `contested: true` wiki page, or a question no single source answers. Anything else is routed away: quick factual question → direct answer or wiki query; field overview → `/survey`; "understand X properly" → `/curriculum` + `/learn`. Scoped by **question**, never by time budget — one question per report.
+**Entry gate — no tension, no research.** Research starts from a live tension: two credible sources that disagree, a source contradicting an earned `learning/` record, a `contested: true` wiki page, or a question no single source answers. Anything else is routed away: quick factual question → direct answer or wiki query; field overview → `/survey`; "understand X properly" → `/curriculum` + `/learn`. Scoped by **question**, never by time budget — one question per report.
 
 The workflow, always the full arc:
-- **Assemble heterogeneous material** — fresh sources, `wiki/` pages, earned `memory/` models and cases. The highest-value connections cross the wiki/memory wall: an external claim placed against a model the user built (the John Snow move — the map plus the death records, neither sufficient alone).
+- **Assemble heterogeneous material** — fresh sources, `wiki/` pages, earned `learning/` records and cases. The highest-value connections cross the wiki/learning wall: an external claim placed against a model the user built (the John Snow move — the map plus the death records, neither sufficient alone).
 - **Map the tension.** Organize by *issue*, never by author. **Steelman gate:** state each position in terms its holders would endorse — can't? keep reading. **Name the crux:** where the disagreement bottoms out — assumption, evidence, or values.
 - **Hunt connections.** Standing question set: What's missing? Which assumptions conflict? Can two fields combine? What does the user's own model predict? **Combination rule:** every insight cites ≥2 independent sources whose *combination* — not either alone — supports it.
 - **Draw the judgment with the user** (HITL — never ghost-written), then answer **"so what?"** — the decision that changes, plus a prediction or falsifier.
 
-**Report format** — `memory/research-<question-slug>.md`:
+**Report format** — `learning/<slug>/research-<question-slug>.md`:
 
 ```markdown
----
-layer: framework
----
 # Research: <question>
 ## The Question (one sentence, confirmed with the user)
 ## The Tension — positions steelmanned; the crux named (assumption / evidence / values)
@@ -220,9 +227,9 @@ layer: framework
 
 ### 1.6 `/practice <skill-or-scenario>` — Deliberate Practice Coach
 
-Real cases only; model-mapping against `_models.md`; "no model fits" is signal, not failure; 60-second case files. The deliberate-practice pipeline:
+Real cases only; model-mapping against the earned records in `notes.md`; "no model fits" is signal, not failure; 60-second case files. The deliberate-practice pipeline:
 
-- **Micro-skill decomposition** (first time a skill is practiced). Decompose the target skill into trainable micro-skills, each with failure modes, success criteria, and a difficulty curve. Persisted as `memory/drills-<skill-slug>.md`; sessions then target one micro-skill at a time. (E.g. presentation → story / slide design / voice / timing.)
+- **Micro-skill decomposition** (first time a skill is practiced). Decompose the target skill into trainable micro-skills, each with failure modes, success criteria, and a difficulty curve. Persisted as `learning/<slug>/drills-<skill-slug>.md`; sessions then target one micro-skill at a time. (E.g. presentation → story / slide design / voice / timing.)
 - **Micro-goal opening.** Every session sets one high-resolution goal tied to a micro-skill ("identify the bottleneck within 3 questions", not "get better at profiling").
 - **Learning-zone calibration, announced.** Cruising → harder variant; panic → shrink scope. The coach states the adjustment out loud so calibration is visible.
 - **Immediate feedback.** Errors corrected the moment they occur, named precisely.
@@ -247,7 +254,7 @@ A standalone, read-mostly assessor: a snapshot of **how deep mastery actually is
 | can-teach | learner explanation that survived tutor challenge (ICAP-I) |
 | can-generate | a `/research` report (judgment + so-what) or novel model |
 
-Written into each node's frontmatter (`mastery: can-apply`) and summarized in `_models.md`. Layer distribution (how much is representation vs framework) reported as a depth gauge. **No numeric scores, ever** — "Schemas 92%" is LLM confabulation.
+Written as a Mastery Snapshot section in `notes.md`. Depth distribution (how much is terms vs models vs frameworks) reported as a depth gauge. **No numeric scores, ever** — "Schemas 92%" is LLM confabulation.
 
 > **Contract test:** given fixture models + cases, every claimed mastery level cites an evidence file; nodes without evidence stay at the lowest supportable level; output contains no percentages.
 
@@ -286,25 +293,23 @@ An elegant, low-overhead suite modeled on [Andrej Karpathy's LLM Wiki pattern](h
 
 ### Learning Memory (a convention, not a skill)
 
-`topics/<slug>/memory/` is the Learning OS's **earned-knowledge** graph (`wiki/` holds external knowledge and is owned by the llm-wiki suite):
+`learning/<slug>/` is the Learning OS's **earned-knowledge** home (`wiki/` holds external knowledge and is owned by the llm-wiki suite). One folder per topic, deliberately flat — the course files plus two HTML folders; extra files appear only when their skill runs:
 
 ```text
-topics/<slug>/
-├── README.md            # slug, dates, model count, mastery summary line
-└── memory/
-    ├── survey.md        # gate output: learning mainline + curated sources + diagnosis + map
-    ├── terms.md         # representations (one-liners)
-    ├── schema-*.md      # layer: schema
-    ├── model-*.md       # layer: mental-model
-    ├── _models.md       # index grouped by layer, with mastery levels
-    ├── syllabus.md      # /curriculum output, resumable by /learn
-    ├── drills-*.md      # /practice micro-skill decompositions
-    ├── case-*.md        # practice cases with micro-goals + errors
-    ├── research-*.md    # /research reports (tension → connections → judgment)
-    └── playbook.md      # defended framework (after /reflect gate)
+learning/<slug>/
+├── syllabus.md      # /curriculum: mission + sources + K/S/W plan; progress source of truth
+├── index.html       # /curriculum: course shell (mission, stages, lesson links, progress)
+├── notes.md         # /learn: learning records, terms, preferences; /evaluate: mastery snapshot
+├── survey.md        # /survey: learning mainline + curated sources + diagnosis
+├── lessons/         # /curriculum builds 0001-*.html; /learn revises before each session
+├── reference/       # /curriculum seeds cheat sheets + glossary; /learn extends as earned
+├── drills-*.md      # /practice: micro-skill decompositions
+├── case-*.md        # /practice: cases with micro-goals + errors
+├── research-*.md    # /research: reports (tension → connections → judgment)
+└── playbook.md      # /reflect: defended framework (after the steelman gate)
 ```
 
-Frontmatter carries the graph: `layer:`, `mastery:`, `[[links]]`. Every skill reads memory before acting and writes evidence after — every future lesson starts from there, with zero new infrastructure.
+`notes.md` is the single working file — records (ADR-style: what was earned and why it changes future teaching), terms (the topic's canonical language), and preferences. Every skill reads the folder before acting and writes evidence after — every future lesson starts from there, with zero new infrastructure.
 
 ### Wiki Storage Hierarchy (LLM Wiki Vault)
 
@@ -332,12 +337,14 @@ wiki/
 - **Tutor, not a homework-answer machine** — identical one-sentence rule in `/learn`, `/practice`, and `/research` (the one deliberate redundancy; it guards the suite's core value).
 - **Handoff chain:** survey mainline/sources → `llm-wiki-ingest` (soft) + `/curriculum`; survey diagnosis → tutor scaffolding level; case errors → reflect compression → next practice micro-goal; evaluate snapshot → reflect trajectory changes; defended positions → playbook; controversies surfaced anywhere (survey, tutoring, contested wiki pages) → `/research` candidates; research judgments that contradict earned models → `/reflect`.
 - **Evidence before claims:** mastery levels, generative claims, and playbook positions all require pointers to evidence files. No self-reported competence.
-- **wiki/memory wall:** Learning OS skills never write `wiki/`; the llm-wiki suite never writes `topics/`.
+- **wiki/learning wall:** Learning OS skills never write `wiki/`; the llm-wiki suite never writes `learning/`.
 - **Files are the only interface:** no skill depends on another skill's session state — only on its written outputs. This is what keeps every component independently testable and replaceable.
 
 ---
 
 ## Inspiration & Comparative Analysis
+
+The **Course Designer + AI Tutor pair** (`/curriculum` + `/learn`) borrows heavily from [Matt Pocock's `teach` skill](https://github.com/mattpocock/skills/tree/main) (vendored for study at [teach/](teach/)). From it we adapted: the **mission-first** rule (no course without a concrete real-world why), the **Knowledge → Skills → Wisdom** depth ladder, self-contained **interactive HTML lessons** with durable `reference/` docs, ADR-style **learning records**, the earned-**glossary** discipline, and the fluency-vs-storage-strength distinction. Our implementation departs from teach's single monolithic skill: designing and tutoring are split (`/curriculum` designs and builds the full HTML course; `/learn` tutors over it and revises lessons to the learner's actual state), K/S/W is integrated with the five-theory engine (ICAP targets, load notes, staged sequencing), and teach's seven workspace files are compressed into `syllabus.md` + `notes.md`.
 
 The **LLM Wiki Suite** is directly inspired by [Andrej Karpathy's `llm-wiki` design pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). We have taken Karpathy's high-level concept of a persistent, compounding, LLM-maintained second brain and instantiated it into a suite of production-grade agent skills.
 

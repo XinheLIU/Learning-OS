@@ -19,7 +19,7 @@ Runs before any information enters the learning pipeline. The deliverable is an 
 
 ### 1. Auto-init
 
-If `topics/<slug>/` doesn't exist, create it with a `memory/` subdirectory and a minimal `README.md` (slug, started date). Don't ask permission.
+If `learning/<slug>/` doesn't exist, create it. Don't ask permission.
 
 ### 2. Determine entry path
 
@@ -85,14 +85,12 @@ Levels: `novice` / `practitioner` / `expert`. Downstream, `/curriculum` uses thi
 
 ### 7. Write survey.md
 
-Write `topics/<slug>/memory/survey.md`: date + sources consulted, a short narrative section (history & people, current state & controversies, trajectory), then the three tables above, then a rough domain map (Mermaid — rough is fine).
+Write `learning/<slug>/survey.md`: date + sources consulted, a short narrative section (history & people, current state & controversies, trajectory), then the three tables above, then a rough domain map (Mermaid — rough is fine).
 
 ### 8. Exit handoffs
 
 - **Soft wiki handoff:** "Want me to feed the Read list into `llm-wiki-ingest` so these sources become wiki pages?" — offer, never force. The Learning OS works without a wiki.
-- **Recommend next:** `/curriculum <slug>` to turn the mainline into a syllabus.
-
-Update `topics/<slug>/README.md` (surveyed date, last session).
+- **Recommend next:** `/curriculum <slug>` to turn the mainline into a course.
 
 ## Contract test
 

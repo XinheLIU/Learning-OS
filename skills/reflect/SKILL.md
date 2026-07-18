@@ -11,7 +11,7 @@ The loop-closer: **what should change next.** Reflect consumes `/evaluate`'s sna
 
 - **Short session, sharp questions.** 10–15 minutes, not an hour.
 - **Don't rewrite everything.** Touch only what's wrong, stale, or missing; minimal model edits.
-- **Archive, don't delete.** Dead models move to an `**Archived:** <reason>` section in `_models.md` — the history of wrong models is valuable.
+- **Archive, don't delete.** Dead records get marked `(archived: <reason>)` in `notes.md` — the history of wrong models is valuable.
 - **Never write mastery levels.** That's `/evaluate`'s job; recommend running it first if the snapshot is stale or missing.
 - **Don't reflect on 0 cases.** It's navel-gazing.
 
@@ -19,7 +19,7 @@ The loop-closer: **what should change next.** Reflect consumes `/evaluate`'s sna
 
 ### 1. Gather state
 
-Read `topics/<slug>/memory/`: `_models.md` (including the latest Mastery Snapshot — if absent or stale, recommend `/evaluate <slug>` first), all `model-*.md`, all `case-*.md`, and `survey.md`.
+Read `learning/<slug>/`: `notes.md` (records + terms, including the latest Mastery Snapshot — if absent or stale, recommend `/evaluate <slug>` first), all `case-*.md`, and `survey.md`.
 
 ### 2. Three questions
 
@@ -39,7 +39,7 @@ Compare time actually spent (which subtopics the cases and models cluster on) ag
 
 ### 5. Update models
 
-For any model that needs adjustment: ask what changed (sharper boundary? new example? doesn't hold?), edit the file minimally, append `**Revised:** <date> — <what changed>`. Dead models → archive (see Rules).
+For any record that needs adjustment: ask what changed (sharper boundary? new example? doesn't hold?), edit it minimally in `notes.md`, append `(revised <date> — <what changed>)`. Dead records → archive (see Rules).
 
 ### 6. Playbook — behind the defense gate
 
@@ -49,11 +49,11 @@ At **5+ cases**, offer playbook synthesis. But first, the **adversarial defense 
 - The user defends or revises. A position enters the playbook **only** if it survives or is revised — this keeps positions defensible from both sides and guards against self-congratulation.
 - You MUST refuse to write the playbook for positions that were neither defended nor revised.
 
-Then write/update `topics/<slug>/memory/playbook.md` (`layer: framework`): the user's repeatable method and defended positions, each noting the objection it survived.
+Then write/update `learning/<slug>/playbook.md`: the user's repeatable method and defended positions, each noting the objection it survived.
 
 ### 7. Close
 
-Set next micro-goals (from step 3), update `topics/<slug>/README.md` last-session date.
+Set next micro-goals (from step 3).
 
 ## Contract test
 
@@ -61,6 +61,6 @@ Recurring error surfaced across ≥2 cases; drift vs mainline reported; playbook
 
 ## Boundaries
 
-- vs `/evaluate`: evaluate measures (mastery snapshot); reflect changes trajectory. Reflect never writes `mastery:` frontmatter.
+- vs `/evaluate`: evaluate measures (mastery snapshot); reflect changes trajectory. Reflect never writes mastery levels.
 - vs `/practice`: practice records per-case errors; reflect compresses across cases and hands micro-goals back.
 - vs `/survey`: reflect flags mainline drift but the mainline itself is `/survey`'s to change.

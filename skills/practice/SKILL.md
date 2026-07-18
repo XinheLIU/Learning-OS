@@ -18,16 +18,13 @@ Apply known models to real cases, deliberately. Experience alone plateaus; impro
 
 ### 1. Load context
 
-Read `topics/<slug>/memory/_models.md` and any `drills-*.md`. If no models exist: "No models yet for <slug>. `/learn` first, or work through this and extract as we go?"
+Read `learning/<slug>/notes.md` (records + terms — what the learner has earned) and any `drills-*.md`. If nothing is earned yet: "No earned models yet for <slug>. `/learn` first, or work through this and extract as we go?"
 
 ### 2. Decompose (first time a skill is practiced)
 
 If no `drills-<skill-slug>.md` exists for this skill, build it with the user before practicing:
 
 ```markdown
----
-layer: framework
----
 # Drills: <skill>
 
 ## Micro-skill: <name>
@@ -36,7 +33,7 @@ layer: framework
 - Difficulty curve: <easy variant → hard variant>
 ```
 
-(E.g. presentation → story / slide design / voice / timing.) Write it to `topics/<slug>/memory/drills-<skill-slug>.md`. Sessions then target **one micro-skill at a time**.
+(E.g. presentation → story / slide design / voice / timing.) Write it to `learning/<slug>/drills-<skill-slug>.md`. Sessions then target **one micro-skill at a time**.
 
 ### 3. Open with a micro-goal
 
@@ -58,7 +55,7 @@ The announcement is mandatory: calibration stated is calibration the learner can
 
 ### 5. Capture the case
 
-Write `topics/<slug>/memory/case-<short-slug>.md`:
+Write `learning/<slug>/case-<short-slug>.md`:
 
 ```markdown
 # Case: <Title>
@@ -66,7 +63,7 @@ Write `topics/<slug>/memory/case-<short-slug>.md`:
 **Date:** <today>
 **Micro-goal:** <this session's target>
 **Scenario:** <2-3 lines — what happened, what was at stake>
-**Models applied:** [[model-1]], [[model-2]]   <!-- or: none fit — candidate model: <name> -->
+**Models applied:** <record/term from notes.md>   <!-- or: none fit — candidate model: <name> -->
 **What worked:** <1-2 lines>
 **Errors made:** <error> — <recurring? link prior case>
 **Takeaway:** <1 line — what changes next time>
@@ -76,9 +73,7 @@ The **Micro-goal** and **Errors made** fields are mandatory — they are `/refle
 
 ### 6. Check models
 
-"Did <Model X> hold up, or did this case crack it?" If a model needs updating, edit its file minimally and note the revision. If a case reveals a model is wrong or a pattern is recurring, suggest `/reflect <slug>`.
-
-Update `topics/<slug>/README.md` last-session date.
+"Did <Model X> hold up, or did this case crack it?" If a record in `notes.md` needs updating, edit it minimally and note the revision. If a case reveals a model is wrong or a pattern is recurring, suggest `/reflect <slug>`.
 
 ## Contract test
 
@@ -88,4 +83,4 @@ Drills file created on first use; every case file has micro-goal + errors fields
 
 - vs `/learn`: learn builds schemas/models; practice applies and stress-tests them. If practice keeps hitting a missing schema, hand back to `/learn`.
 - vs `/reflect`: practice records errors per case; reflect compresses them across cases into the next micro-goals. Practice never does the cross-case analysis itself.
-- vs `/evaluate`: practice produces the evidence (`case-*.md`); evaluate reads it to claim mastery levels. Practice never writes `mastery:`.
+- vs `/evaluate`: practice produces the evidence (`case-*.md`); evaluate reads it to claim mastery levels. Practice never writes mastery levels.

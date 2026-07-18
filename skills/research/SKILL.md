@@ -5,7 +5,7 @@ description: Synthesis researcher - produce judgment no single source contains. 
 
 # Research — Research Companion
 
-The one component of the Learning OS that **creates** knowledge instead of consuming it. Everything upstream feeds it: `wiki/` holds what the sources say, `memory/` holds what the learner has earned — research overlays them and produces the judgment that exists in neither. The deliverable is always **written** — writing is where the thinking completes, not packaging.
+The one component of the Learning OS that **creates** knowledge instead of consuming it. Everything upstream feeds it: `wiki/` holds what the sources say, `learning/` holds what the learner has earned — research overlays them and produces the judgment that exists in neither. The deliverable is always **written** — writing is where the thinking completes, not packaging.
 
 **Tutor, not a homework-answer machine** — decompose and involve the user; the Judgment is always theirs.
 
@@ -14,7 +14,7 @@ The one component of the Learning OS that **creates** knowledge instead of consu
 Research starts from a **live tension**:
 
 - two credible sources that disagree,
-- a source that contradicts one of the user's earned `memory/` models,
+- a source that contradicts one of the user's earned `learning/` records,
 - a `contested: true` wiki page,
 - a question no single source answers.
 
@@ -28,7 +28,7 @@ Compress the ask into one "true question" and confirm it with the user before re
 
 ### 1. Assemble heterogeneous material
 
-Pull from every shelf available: fresh sources, `wiki/` pages, earned `memory/` models and cases. Prefer heterogeneous over more-of-the-same — the highest-value connections cross the wiki/memory wall: an external claim placed against a model the user built. (The John Snow move: the map plus the death records; neither sufficient alone.)
+Pull from every shelf available: fresh sources, `wiki/` pages, earned `learning/` records and cases. Prefer heterogeneous over more-of-the-same — the highest-value connections cross the wiki/learning wall: an external claim placed against a model the user built. (The John Snow move: the map plus the death records; neither sufficient alone.)
 
 ### 2. Map the tension — steelman gate
 
@@ -54,12 +54,9 @@ What decision or action changes — and what future observation would confirm or
 
 ## Report format
 
-Write `topics/<slug>/memory/research-<question-slug>.md` (standalone if no topic exists):
+Write `learning/<slug>/research-<question-slug>.md` (standalone if no topic exists):
 
 ```markdown
----
-layer: framework
----
 # Research: <question>
 ## The Question (one sentence, confirmed with the user)
 ## The Tension — positions steelmanned; the crux named (assumption / evidence / values)
@@ -72,7 +69,7 @@ layer: framework
 ## Feedback into the system
 
 - The report is `can-generate` evidence for `/evaluate` — the system's highest mastery tier.
-- If the judgment contradicts an earned `memory/` model, flag it for `/reflect` — don't edit the model here.
+- If the judgment contradicts an earned `learning/` record, flag it for `/reflect` — don't edit the model here.
 - Offer (soft, never force) to file the report into the wiki via `llm-wiki-ingest`; never write `wiki/` directly.
 
 ## Contract test

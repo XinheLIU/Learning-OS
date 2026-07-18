@@ -7,7 +7,7 @@ Five theories answer orthogonal questions of one learning engine:
 | Theory | Answers | Component(s) |
 | :--- | :--- | :--- |
 | Four Layers of Learning | What should be learned? | Knowledge Distillation, Knowledge Graph |
-| Cognitive Load | How should knowledge be presented? | Curriculum Designer, AI Tutor |
+| Cognitive Load | How should knowledge be presented? | Course Designer, AI Tutor |
 | ICAP | How should the learner engage? | AI Tutor, Continuous Feedback |
 | Deliberate Practice | How should skill improve? | Practice Coach, Learning Evaluator |
 | Synthesis Research | How is new knowledge created? | Research Companion |
@@ -18,15 +18,17 @@ Five theories answer orthogonal questions of one learning engine:
 
 Knowledge is not flat. It stratifies into four layers, each built from the one below:
 
-1. **Representation** — names, terms, notation. Knowing what something is called. Cheap to acquire, near-zero transfer value on its own. Lives in `terms.md`.
-2. **Schema** — a small, reusable structure: a procedure, a pattern, a canonical example. The unit of fluency. Lives in `schema-*.md`.
-3. **Mental model** — a causal account: what drives what, under which conditions, and where it breaks. The unit of judgment. Lives in `model-*.md`.
-4. **Framework** — an organization of models: when to reach for which, how they trade off. The unit of expertise. Lives in `syllabus.md`, `playbook.md`, `research-*.md` (`layer: framework`).
+1. **Representation** — names, terms, notation. Knowing what something is called. Cheap to acquire, near-zero transfer value on its own. Lives in `notes.md` under `## Terms`.
+2. **Schema** — a small, reusable structure: a procedure, a pattern, a canonical example. The unit of fluency. Lives in `notes.md` records.
+3. **Mental model** — a causal account: what drives what, under which conditions, and where it breaks. The unit of judgment. Lives in `notes.md` records.
+4. **Framework** — an organization of models: when to reach for which, how they trade off. The unit of expertise. Lives in `syllabus.md`, `playbook.md`, `research-*.md`.
+
+**Relation to Knowledge/Skill/Wisdom (the user-facing depth model):** K/S/W types *what kind of capability a lesson builds* — understanding from sources (K), durable retrieval under difficulty (S), judgment tested in the real world (W). The four layers grade *how deep a piece of knowledge sits*. They are orthogonal: a K-lesson may produce representations and schemas; an S-lesson drives schemas toward models; W and `/research` produce frameworks. The syllabus and lessons speak K/S/W; the layers stay internal — a lens for `/evaluate`'s depth gauge and for these design rules, not per-lesson bookkeeping.
 
 **Operational consequences:**
-- Every memory file is layer-tagged (`layer:` frontmatter); `_models.md` groups by layer. The layer distribution is a depth gauge — a vault that is mostly representations is vocabulary, not understanding (`/evaluate` reports this).
+- The depth distribution is a gauge — notes that are mostly terms are vocabulary, not understanding (`/evaluate` reports this).
 - Layers are climbed, not skipped: no model without its schemas, no framework without its models. `/learn` never introduces a causal model before its component schemas are fluent.
-- **A model the learner didn't construct isn't theirs.** Distillation into the learner's own layers happens through tutoring dialogue, not batch extraction — "don't write a model the user didn't earn." (External, source-faithful distillation belongs to the llm-wiki suite; that's the wiki/memory wall.)
+- **A model the learner didn't construct isn't theirs.** Distillation into the learner's own layers happens through tutoring dialogue, not batch extraction — "don't write a model the user didn't earn." (External, source-faithful distillation belongs to the llm-wiki suite; that's the wiki/learning wall.)
 - Direct answers are permitted for representations only — a term's name may be handed over; a schema or model must be constructed.
 
 ## 2. Cognitive Load Theory — how knowledge should be presented
