@@ -5,12 +5,12 @@ Last updated: 2026-07-18
 <div align="center">
 
 [![Version](https://img.shields.io/badge/version-0.1.0-blue)](.claude-plugin/plugin.json)
-[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757)](https://docs.anthropic.com/en/docs/claude-code)
+[![Agent Skills](https://img.shields.io/badge/format-Agent%20Skills-d97757)](https://agentskills.io)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 **Use AI to learn — not to have it learn for you.**
 
-AI makes consuming knowledge nearly free, but consuming is not learning. Learning OS is a file-based system that turns Claude into a tutor, coach, and evaluator: AI accelerates mapping, explanation, practice, and feedback, while the learner supplies the predictions, attempts, explanations, decisions, and judgment that make capability durable — until the assistance is no longer needed.
+AI makes consuming knowledge nearly free, but consuming is not learning. Learning OS is a file-based system that turns an AI agent into a tutor, coach, and evaluator: AI accelerates mapping, explanation, practice, and feedback, while the learner supplies the predictions, attempts, explanations, decisions, and judgment that make capability durable — until the assistance is no longer needed.
 
 </div>
 
@@ -35,7 +35,9 @@ AI makes consuming knowledge nearly free, but consuming is not learning. Learnin
 
 ## What Is This?
 
-Reading an AI-generated explanation feels like learning, but it produces familiarity, not capability. Learning OS exists to close that gap: it packages seven learning skills and four knowledge-base skills as a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin that turns Claude from an answer machine into a tutor, coach, and evaluator — one that requires you to predict, attempt, explain, and retry before anything counts as learned.
+Reading an AI-generated explanation feels like learning, but it produces familiarity, not capability. Learning OS exists to close that gap: it packages seven learning skills and four knowledge-base skills that turn an AI agent from an answer machine into a tutor, coach, and evaluator — one that requires you to predict, attempt, explain, and retry before anything counts as learned.
+
+Each skill is a plain-Markdown `SKILL.md` in the open [Agent Skills](https://agentskills.io) format, so the suite is not tied to one tool: install it as a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin, drop the skill directories into any agent that discovers skills (Codex, Cursor, custom Claude Agent SDK agents, …), or paste a `SKILL.md` into any capable LLM chat as instructions.
 
 Everything is plain Markdown and HTML files on disk. No database, no service, no session state shared between skills — which means every artifact (your course, your notes, your error history, your playbook) is inspectable, versionable, and yours.
 
@@ -100,20 +102,30 @@ See [The Skills](#the-skills) for each component's responsibility and durable ou
 
 ### Prerequisites
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (CLI, desktop app, or IDE extension) with plugin support.
+Any AI agent that supports Markdown skills — Claude Code, Codex, or another skills-aware agent. As a fallback, any capable LLM chat works: the skills are plain instructions.
 
 ### Install
 
-Inside a Claude Code session:
+**Option A — Claude Code plugin** (inside a Claude Code session):
 
 ```text
 /plugin marketplace add XinheLIU/learning-os
 /plugin install learning-os@learning-os
 ```
 
+**Option B — any skills-aware agent:** copy or symlink the skill directories into your agent's skills discovery path, e.g.:
+
+```bash
+git clone https://github.com/XinheLIU/learning-os
+ln -s "$(pwd)/learning-os/skills/"* ~/.claude/skills/   # Claude Code, without the plugin
+ln -s "$(pwd)/learning-os/skills/"* ~/.agents/skills/   # Codex and other agents
+```
+
+**Option C — no agent at all:** open the relevant `skills/<name>/SKILL.md` and paste it into an LLM chat as instructions. Each `SKILL.md` is self-contained; you play the role of the file system.
+
 ### First session
 
-Skills read and write files relative to **the directory where you run Claude Code** — pick (or create) a folder you want to keep your learning materials in, then:
+Skills read and write files relative to **the directory where you run your agent** — pick (or create) a folder you want to keep your learning materials in, then invoke the skills by name (shown here as Claude Code slash commands):
 
 ```text
 /survey distributed systems        # ~30 min: map the field, triage DEEP/SKIM/SKIP, pick sources
@@ -425,10 +437,10 @@ The full theory reference lives at [skills/learn/references/learning-theory.md](
 
 ```text
 learning-os/
-├── .claude-plugin/
+├── .claude-plugin/          # Claude Code install path only — skills work without it
 │   ├── plugin.json          # plugin manifest (name, version, description)
 │   └── marketplace.json     # marketplace entry for /plugin marketplace add
-├── skills/                  # one directory per skill, each with SKILL.md
+├── skills/                  # one directory per skill, each with SKILL.md (portable Agent Skills format)
 │   ├── survey/              # /survey — investment gate
 │   ├── curriculum/          # /curriculum — course designer (+ format specs, evals)
 │   ├── learn/               # /learn — AI tutor (+ learning-theory reference)
