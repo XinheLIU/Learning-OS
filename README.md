@@ -1,20 +1,19 @@
-# Learn & Wiki Platform
+# Learning OS
 
-Last updated: 2026-07-16
+Last updated: 2026-07-18
 
-<div align="center">
-  <a href="../../README.md">Home</a> &bull;
-  <a href="../../product-planning/README.md">Product Planning</a> &bull;
-  <a href="../../architecture-design/README.md">Architecture Design</a> &bull;
-  <a href="../../feature-delivery/README.md">Feature Delivery</a> &bull;
-  <a href="../../visualization/README.md">Visualization</a> &bull;
-  <a href="../README.md">Knowledge Management</a> &bull;
-  <a href="../../team-collaboration/README.md">Collaboration</a> &bull;
-  <a href="../../user-setup/README.md">User Setup</a>
-</div>
-<br>
+> Part of [agent-skills](https://github.com/XinheLIU/agent-skills) — extracted into its own repo and packaged as a Claude Code plugin.
 
-A capability domain for personal knowledge, built as a **Learning OS**: a set of atomic components — knowledge distillation, knowledge graph, tutoring, deliberate practice, evaluation, and research — wired together through a shared file-based memory. Per this repo's maturity model, the Learning OS is a **Power** — multiple skills composed into a self-coordinating domain capability.
+A capability domain for personal knowledge, built as a **Learning OS**: a set of atomic components — knowledge distillation, knowledge graph, tutoring, deliberate practice, evaluation, and research — wired together through a shared file-based memory. Per the agent-skills maturity model, the Learning OS is a **Power** — multiple skills composed into a self-coordinating domain capability.
+
+## Install (Claude Code plugin)
+
+```bash
+/plugin marketplace add XinheLIU/learning-os
+/plugin install learning-os@learning-os
+```
+
+Then use `/survey`, `/curriculum`, `/learn`, `/practice`, `/evaluate`, `/reflect`, `/research`, and the `llm-wiki-*` skills. All 11 skills live under [skills/](skills/).
 
 > **Status:** First version of all seven Learning OS skills is **implemented** under [skills/](skills/) — `survey`, `curriculum` (+ `references/syllabus-format.md`, `lesson-format.md`), `learn` (+ `references/learning-theory.md`, `notes-format.md`), `practice`, `evaluate`, `reflect`, `research` — each per its inline contract test (see [Implementation Order](#implementation-order)). The LLM Wiki Suite (Knowledge Distillation + Knowledge Graph) is live.
 
@@ -344,7 +343,7 @@ wiki/
 
 ## Inspiration & Comparative Analysis
 
-The **Course Designer + AI Tutor pair** (`/curriculum` + `/learn`) borrows heavily from [Matt Pocock's `teach` skill](https://github.com/mattpocock/skills/tree/main) (vendored for study at [teach/](teach/)). From it we adapted: the **mission-first** rule (no course without a concrete real-world why), the **Knowledge → Skills → Wisdom** depth ladder, self-contained **interactive HTML lessons** with durable `reference/` docs, ADR-style **learning records**, the earned-**glossary** discipline, and the fluency-vs-storage-strength distinction. Our implementation departs from teach's single monolithic skill: designing and tutoring are split (`/curriculum` designs and builds the full HTML course; `/learn` tutors over it and revises lessons to the learner's actual state), K/S/W is integrated with the five-theory engine (ICAP targets, load notes, staged sequencing), and teach's seven workspace files are compressed into `syllabus.md` + `notes.md`.
+The **Course Designer + AI Tutor pair** (`/curriculum` + `/learn`) borrows heavily from [Matt Pocock's `teach` skill](https://github.com/mattpocock/skills/tree/main). From it we adapted: the **mission-first** rule (no course without a concrete real-world why), the **Knowledge → Skills → Wisdom** depth ladder, self-contained **interactive HTML lessons** with durable `reference/` docs, ADR-style **learning records**, the earned-**glossary** discipline, and the fluency-vs-storage-strength distinction. Our implementation departs from teach's single monolithic skill: designing and tutoring are split (`/curriculum` designs and builds the full HTML course; `/learn` tutors over it and revises lessons to the learner's actual state), K/S/W is integrated with the five-theory engine (ICAP targets, load notes, staged sequencing), and teach's seven workspace files are compressed into `syllabus.md` + `notes.md`.
 
 The **LLM Wiki Suite** is directly inspired by [Andrej Karpathy's `llm-wiki` design pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). We have taken Karpathy's high-level concept of a persistent, compounding, LLM-maintained second brain and instantiated it into a suite of production-grade agent skills.
 

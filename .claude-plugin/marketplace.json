@@ -1,0 +1,11 @@
+{
+  "name": "learning-os",
+  "owner": { "name": "Xinhe LIU", "url": "https://github.com/XinheLIU" },
+  "plugins": [
+    {
+      "name": "learning-os",
+      "source": "./",
+      "description": "The Learning OS Power — 11 composable learning & wiki skills wired through a shared file-based memory."
+    }
+  ]
+}

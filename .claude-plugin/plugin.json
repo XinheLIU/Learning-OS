@@ -1,0 +1,8 @@
+{
+  "name": "learning-os",
+  "version": "0.1.0",
+  "description": "A Learning OS: atomic skills for surveying a field, building HTML courses, AI tutoring, deliberate practice, evaluation, reflection, and research — plus a compounding LLM wiki — wired through a shared file-based memory.",
+  "author": { "name": "Xinhe LIU", "url": "https://github.com/XinheLIU" },
+  "homepage": "https://github.com/XinheLIU/learning-os",
+  "keywords": ["learning", "tutor", "curriculum", "spaced-repetition", "wiki", "knowledge-management"]
+}
