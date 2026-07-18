@@ -1,6 +1,8 @@
-# syllabus.md Format
+# syllabus.html Format
 
-`learning/<slug>/syllabus.md` is the single course document: mission, sources, and the staged lesson plan. `/curriculum` owns it; `/learn` only checks lessons off. If it runs past what one screen per stage can hold, the course is over-scoped — cut lessons, don't grow the file.
+_Last updated: 2026-07-17_
+
+`learning/<slug>/syllabus.html` is the single course document, rendered as a browsable HTML page: mission, sources, and the staged lesson plan. `/curriculum` authors it; `/learn` only checks lessons off. Each lesson title is a live link into `lessons/*.html`, so the syllabus doubles as the course map. If it runs past what one screen per stage can hold, the course is over-scoped — cut lessons, don't grow the page. The Markdown template below is the *content* spec; `syllabus.html` renders that content as HTML (linking the shared stylesheet and `assets/math.js`), not as a `.md` file.
 
 ## Full template
 

@@ -1,0 +1,120 @@
+{
+  "skill_name": "curriculum",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Use /curriculum to build a tiny 3-lesson course covering just the RL problem setup: (1) agent-environment loop and the MDP tuple, (2) return, discounting and value functions, (3) policies and the explore/exploit dilemma. Ground it in this repo's wiki/wiki/concepts/ pages (markov-decision-process.md, agent-environment-loop.md, return-gt.md, value-function.md, bellman-equation.md, stochastic-policy.md, exploration-exploitation-dilemma.md). Learner has a general ML background but no RL. Stop after Stage 1 — do not build Stages 2-5.",
+      "expected_output": "A 3-lesson syllabus.md and matching HTML lessons where Lesson 1 has no warm-up (nothing precedes it) and Lessons 2-3 each open with a warm-up that correctly retrieves the specific concept introduced in the immediately preceding lesson, matching syllabus.md's own Prerequisites field for that lesson.",
+      "expectations": [
+        "syllabus.md's Lesson 1 has Prerequisites: none, and its lesson spec explicitly does NOT include a warm-up retrieval question (per SKILL.md, lesson 1 has nothing prior to retrieve)",
+        "syllabus.md's Lesson 2 Prerequisites field names Lesson 1 (or the specific concept Lesson 1 teaches, e.g. the MDP tuple), not Lesson 3 or no lesson at all",
+        "syllabus.md's Lesson 3 Prerequisites field names Lesson 2 (or the specific concept Lesson 2 teaches, e.g. value functions/return), not Lesson 1 skipped over",
+        "Lesson 2's HTML file opens with a warm-up section (before any new content) that asks the learner to recall something specifically taught in Lesson 1 (e.g. name the MDP tuple's elements), not a generic or unrelated question",
+        "Lesson 3's HTML file opens with a warm-up section that asks the learner to recall something specifically taught in Lesson 2 (e.g. compute a discounted return), not something from Lesson 1 instead",
+        "Lesson 1's HTML file contains no warm-up/retrieval section, and instead opens with framing tied to the course mission",
+        "No lesson's HTML content teaches a concept (e.g. Bellman optimality, exploration algorithms) that its own Load note says is deferred to a later lesson",
+        "Every lesson and index.html link a single shared stylesheet in assets/ (e.g. assets/course.css) via <link rel=\"stylesheet\">; no lesson inlines a <style> block or duplicates the CSS across files (per lesson-format.md's shared-components rule)",
+        "Source citations in the lesson HTML are clickable <a href> links to the actual repo file or its wiki page, not plain non-clickable <code> text",
+        "Math (return formulas, value/Bellman definitions) is authored as LaTeX between $...$ or $$...$$ delimiters and renders via a shared math loader in assets/ (e.g. assets/math.js loading KaTeX), not as plain text inside <pre>/<code> blocks",
+        "A syllabus.html exists, links the shared stylesheet and math loader, and each lesson title in it is a live <a href> link into lessons/*.html (the syllabus is a browsable course map, not a raw .md file)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Use /curriculum to build a 5-6 lesson course on multi-armed bandits only, grounded in code/bandits/ (naive_bandit.py, epsilon_greedy_bandit.py, ucb_bandit.py, thompson_sampling_bandit.py) and the matching wiki/wiki/concepts/ pages (multi-armed-bandit.md, incremental-mean-update.md, regret.md, ucb1.md, thompson-sampling.md, optimism-under-uncertainty.md, exploration-exploitation-dilemma.md). Learner knows basic probability but has never studied bandits. Keep it small — do not expand into MDPs, DP, or deep RL.",
+      "expected_output": "A syllabus + HTML course where the K-lesson introducing naive/epsilon-greedy bandits precedes the S-lesson on UCB/Thompson Sampling, and the S-lesson's warm-up correctly retrieves the K-lesson's content rather than re-teaching it or retrieving something unrelated.",
+      "expectations": [
+        "The lesson introducing UCB and/or Thompson Sampling is typed [S] (skill/retrieval) and comes after the [K] lesson introducing the naive/epsilon-greedy baseline, per SKILL.md's 'K before S before W per subtopic' rule",
+        "The [S] lesson's warm-up is a genuine retrieval question (recall from memory, not a multiple-choice recognition question with the answer visible) about the prior [K] lesson's specific content (e.g. the incremental-mean update or epsilon-greedy's mechanism)",
+        "syllabus.md's Prerequisites field for the UCB/Thompson lesson names the naive/epsilon-greedy lesson, not a lesson number that comes after it",
+        "If the S-lesson contains a quiz, its answer options are the same word/character count (no length-based tell) per the lesson-format.md quiz rules",
+        "Wrong quiz answers give a hint toward reconstruction rather than stating the correct answer outright",
+        "Every lesson, index.html, and reference doc link one shared stylesheet in assets/ via <link>; no file inlines a <style> block or duplicates the CSS (per lesson-format.md's shared-components rule)",
+        "The S-lesson's quiz is built from a reusable widget in assets/ (linked via <script>), not an inline one-off copy-pasted into the lesson",
+        "Source citations in the lesson HTML are clickable <a href> links to the actual repo file or its wiki page, not plain non-clickable <code> text",
+        "Math (regret, UCB index, Thompson posterior, incremental-mean update) is authored as LaTeX between $...$/$$...$$ and renders via a shared math loader in assets/ (e.g. assets/math.js loading KaTeX), not as plain text inside <pre>/<code> blocks",
+        "A syllabus.html exists, links the shared stylesheet and math loader, and each lesson title in it is a live <a href> link into lessons/*.html (the syllabus is a browsable course map, not a raw .md file)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Use /curriculum to build a small end-to-end course (aim for 8-10 lessons across all 5 stages, kept intentionally small) on policy gradient methods: REINFORCE, actor-critic, and PPO, grounded in code/policy_based/Policy-gradient.py, Actor-Critic.py, and the PPO section of PPO-DPO-GRPO.py, plus the matching wiki/wiki/concepts/ pages. Learner has an ML background but no RL. Include a real Stage 4 (whole-task, reduced support) and a real Stage 5 W-milestone connecting to an actual RL community, even though the course is otherwise small.",
+      "expected_output": "A syllabus.md that walks REINFORCE [K] before actor-critic [K] before PPO [K], includes at least one [S] retrieval/skill lesson, and ends with a [W] lesson naming a real, high-reputation RL community with concrete next steps — not a solo assignment, since no opt-out was given.",
+      "expectations": [
+        "REINFORCE is covered by a [K] lesson that comes before any lesson covering actor-critic or PPO, matching 'K before S before W per subtopic' and 'prerequisites before integration' in SKILL.md",
+        "At least one lesson in the algorithm arc is typed [S] and interleaves a concept from an earlier lesson (not just re-presenting the same lesson's content), per the ICAP-target rule that S-lessons build in desirable difficulty",
+        "ICAP targets across the stage sequence are non-decreasing for a given subtopic (e.g. P/A → C in Stage 1-2, C → I only appearing in Stage 3+), not regressing from a later stage back to P/A",
+        "There is at least one lesson typed [W] in Stage 4 or Stage 5, per SKILL.md's 'At least one W milestone, tied to the mission' hard constraint",
+        "The [W] lesson names a real, identifiable high-reputation community or venue (not a vague placeholder like 'find a community') and gives concrete next steps, per lesson-format.md's W-lesson content rule",
+        "No Stage 3+ lesson depends on a schema (e.g. PPO's clipped objective) that is introduced later in the syllabus than that lesson, per the 'prerequisites before integration' hard constraint",
+        "Every lesson, index.html, and reference doc link one shared stylesheet in assets/ via <link>; no file inlines a <style> block or duplicates the CSS (per lesson-format.md's shared-components rule)",
+        "Any reusable widget (quiz, warm-up/reveal card, footer/nav) lives once in assets/ and is linked via <script>/<link>, not re-inlined into every lesson",
+        "Source citations in the lesson HTML are clickable <a href> links to the actual repo file or its wiki page, not plain non-clickable <code> text",
+        "Math (policy-gradient theorem, advantage/GAE, PPO clipped surrogate) is authored as LaTeX between $...$/$$...$$ and renders via a shared math loader in assets/ (e.g. assets/math.js loading KaTeX), not as plain text inside <pre>/<code> blocks",
+        "A syllabus.html exists, links the shared stylesheet and math loader, and each lesson title in it is a live <a href> link into lessons/*.html (the syllabus is a browsable course map, not a raw .md file)"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Use /curriculum to build a small 4-5 lesson course on value-based deep RL: tabular Q-learning, then DQN, then Double/Dueling DQN as fixes to DQN, grounded in code/value_based/qlearning_tabular.py, dqn.py, DQN-1.py, and the matching wiki/wiki/concepts/ pages (deep-q-network.md, experience-replay.md, target-network.md, q-learning-overestimation-bias.md, clipped-double-q-learning.md). Learner knows tabular Q-learning already covered in a prior course lesson.",
+      "expected_output": "A syllabus where the DQN lesson introduces exactly one new chunk (function approximation + its two fixes: replay buffer and target network) without also covering Double/Dueling DQN, which get their own later lesson, matching the 'one new concept per Stage 2 lesson' hard constraint.",
+      "expectations": [
+        "The DQN lesson's Load note explicitly defers Double DQN and Dueling DQN to a separate, later lesson (they are not taught in the same lesson as vanilla DQN)",
+        "The DQN lesson's HTML content does not explain Double DQN's decoupled action-selection/evaluation or Dueling DQN's value/advantage split — that content only appears in the later lesson",
+        "The Double/Dueling DQN lesson's warm-up retrieves the vanilla DQN lesson's specific update rule (target network + replay buffer), not a generic 'what is Q-learning' question",
+        "Every claim in the DQN lesson about what a specific piece of code does (e.g. the replay buffer, the target network sync) is grounded in and citable to the actual primary source file listed in syllabus.md, not invented",
+        "The DQN lesson creates or links a reference/*.html doc, and the Double/Dueling lesson extends that same doc rather than creating a duplicate one, per lesson-format.md's 'every K-lesson links one' rule",
+        "Every lesson, index.html, and reference doc link one shared stylesheet in assets/ via <link>; no file inlines a <style> block or duplicates the CSS (per lesson-format.md's shared-components rule)",
+        "The S-lesson's quiz is built from a reusable widget in assets/ (linked via <script>), not an inline one-off copy-pasted into the lesson",
+        "Source citations of code files in the lesson HTML are clickable <a href> links to the actual file in code/value_based/, not plain non-clickable <code> text",
+        "Math (TD target, Bellman/loss formulas) is authored as LaTeX between $...$ or $$...$$ delimiters and renders via a shared math loader in assets/ (e.g. assets/math.js loading KaTeX), not as plain text inside <pre>/<code> blocks",
+        "A syllabus.html exists, links the shared stylesheet and math loader, and each lesson title in it is a live <a href> link into lessons/*.html (the syllabus is a browsable course map, not a raw .md file)"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Use /curriculum to build a small 2-3 lesson course on offline RL: extrapolation error, then BCQ and CQL as two different fixes, grounded in code/offline_rl/bcq.py, cql.py, and wiki/wiki/concepts/offline-reinforcement-learning.md, extrapolation-error.md, cql-conservative-regularization.md. Learner already knows DQN from a prior lesson.",
+      "expected_output": "A syllabus where the BCQ/CQL lesson is typed [K], links a reference/*.html doc it creates, and that doc actually exists as a file with content compressed enough to be a quick-reference cheat sheet rather than lesson prose copy-pasted.",
+      "expectations": [
+        "syllabus.md marks the BCQ/CQL lesson as [K] and its lesson spec names a specific reference/*.html doc it creates, per the lesson-spec rule that '[K] spec names the worked example and the reference/ doc it creates or extends'",
+        "The named reference/*.html file actually exists on disk at the path implied by the lesson's HTML link",
+        "The reference doc is compressed (tables, short lists, formulas) rather than being a near-duplicate copy of the lesson's prose paragraphs, per lesson-format.md's 'compressed, not summarized' rule",
+        "The lesson's HTML correctly attributes BCQ's fix (constraining actions to a generative model of the behavior policy) and CQL's fix (penalizing out-of-distribution Q-values) to the actual mechanisms in bcq.py and cql.py respectively, not swapped or conflated",
+        "The lesson's warm-up retrieves the DQN lesson's specific update rule as the thing that breaks on fixed data, not a generic 'what is offline RL' framing",
+        "Every lesson, index.html, and reference doc link one shared stylesheet in assets/ via <link>; no file inlines a <style> block or duplicates the CSS (per lesson-format.md's shared-components rule)",
+        "Source citations in the lesson HTML are clickable <a href> links to the actual repo file or its wiki page, not plain non-clickable <code> text",
+        "Math (CQL conservative loss, BCQ constraint, Bellman backup) is authored as LaTeX between $...$/$$...$$ and renders via a shared math loader in assets/ (e.g. assets/math.js loading KaTeX), not as plain text inside <pre>/<code> blocks",
+        "A syllabus.html exists, links the shared stylesheet and math loader, and each lesson title in it is a live <a href> link into lessons/*.html (the syllabus is a browsable course map, not a raw .md file)"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Use /curriculum to build a course on Rust's ownership and borrowing model. There is no existing wiki, survey.md, or reference material for this topic anywhere in the current project — the skill must run its mini-diagnosis and find its own sources.",
+      "expected_output": "Before writing any syllabus, the skill runs a mission interview (or the 3-question mini-diagnosis) since no survey.md or obvious material exists, finds 2-4 high-trust sources itself (e.g. the official Rust Book, not random blog posts), and produces a syllabus.md with a concrete, non-vague Mission and an honestly populated Gaps section.",
+      "expectations": [
+        "The skill does not silently invent a mission — it either asks the user why they want to learn this, or clearly states in the syllabus header what it based the course on (per 'mini-diagnosis (no survey)' source-tagging rule)",
+        "syllabus.md's Mission 'Why' field is concrete and tied to a real-world outcome (e.g. 'write a CLI tool without fighting the borrow checker'), not a restatement like 'to understand ownership and borrowing'",
+        "syllabus.md's Sources section contains 2-4 high-trust, recognizable sources (e.g. official Rust documentation/book, not marketing content or low-quality SEO blog posts), each annotated with what it covers and which lessons use it",
+        "syllabus.md's Gaps subsection is present and states something genuinely unresolved or deferred, not left as a template placeholder or trivially 'none'",
+        "The course does not demand the user run /survey first — per SKILL.md, /survey is optional context, never a precondition",
+        "Every lesson, index.html, and reference doc link one shared stylesheet in assets/ via <link>; no file inlines a <style> block or duplicates the CSS (per lesson-format.md's shared-components rule)",
+        "A syllabus.html exists (the syllabus as a browsable HTML page, not only a raw .md file), links the shared stylesheet, and each lesson title in it is a live <a href> link into lessons/*.html",
+        "If the course contains math (e.g. lifetime/borrow-checker formulas), it is authored as LaTeX between $...$/$$...$$ and renders via a shared math loader in assets/ (e.g. assets/math.js loading KaTeX), not as plain text inside <pre>/<code> blocks"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Use /curriculum to build a small 2-lesson course covering DQN specifically, grounded in code/value_based/dqn.py and code/value_based/DQN-1.py plus wiki/wiki/concepts/deep-q-network.md, experience-replay.md, target-network.md. Learner already knows tabular Q-learning.",
+      "expected_output": "Every factual claim in the lesson HTML about what the code does (variable names, update mechanics, hyperparameters) is independently verifiable against the actual files in code/value_based/, with no invented API names, incorrect algorithm descriptions, or citations to files/sections that don't exist.",
+      "expectations": [
+        "Every inline citation of the form '(see code/value_based/...)' or '(wiki/wiki/concepts/...)' in the lesson HTML points to a file that actually exists at that exact path in the repo",
+        "Every specific variable, function, or class name the lesson attributes to dqn.py or DQN-1.py actually appears in that file — spot-check at least 3 named identifiers against the real source",
+        "If dqn.py and DQN-1.py implement the target-network update differently (e.g. hard periodic copy vs. soft/Polyak averaging), the lesson does not claim they work identically — any difference between the two files is either called out or the lesson sticks to only the file it actually describes",
+        "No claim in the lesson describes behavior that isn't in either cited file (e.g. attributing Double DQN's decoupled selection/evaluation to vanilla dqn.py, which doesn't implement it)",
+        "The reference/*.html doc's pseudocode or formulas match the actual update rule implemented in the cited code, not a generic textbook version that diverges from what the repo's code does",
+        "Math formulas in the lesson and reference doc are authored as LaTeX between $...$/$$...$$ and render via a shared math loader in assets/ (e.g. assets/math.js loading KaTeX), not as plain text inside <pre>/<code> blocks",
+        "A syllabus.html exists, links the shared stylesheet and math loader, and each lesson title in it is a live <a href> link into lessons/*.html (the syllabus is a browsable course map, not a raw .md file)"
+      ]
+    }
+  ]
+}

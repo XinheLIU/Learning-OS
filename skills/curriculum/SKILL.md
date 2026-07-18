@@ -72,7 +72,7 @@ Per the full template and field rules in [references/syllabus-format.md](referen
 ## Stage 5 — Transfer & wisdom       (new domain, no support, real world)
 ```
 
-Each lesson under its stage carries a checkbox, `[K|S|W]` type, and six fields (Objective · Prerequisites · Lesson spec · Primary source · ICAP target · Load note). The spec field must be concrete per type: K names the worked example + `reference/` doc; S names the exercise, its feedback, and interleaved schemas; W names the assignment or community + debrief plan. `syllabus.md` remains the source of truth for progress — `/learn` checks lessons off here.
+Each lesson under its stage carries a checkbox, `[K|S|W]` type, and six fields (Objective · Prerequisites · Lesson spec · Primary source · ICAP target · Load note). The spec field must be concrete per type: K names the worked example + `reference/` doc; S names the exercise, its feedback, and interleaved schemas; W names the assignment or community + debrief plan. The syllabus is rendered as `syllabus.html` (a browsable HTML page with live links into the lessons); `/learn` keeps its progress checkboxes in sync.
 
 **Confirm the plan with the user before building** — the syllabus is quick to redo; a built course isn't.
 
@@ -80,9 +80,11 @@ Each lesson under its stage carries a checkbox, `[K|S|W]` type, and six fields (
 
 Author per [references/lesson-format.md](references/lesson-format.md):
 
-- **`index.html`** — the course shell: mission, stages, lesson list with links and progress. Establishes the shared style every lesson reuses.
-- **`lessons/0001-*.html`** — one self-contained file per lesson, from its spec, grounded in its primary source: warm-up first, one chunk, cited claims, K/S/W-typed interactivity, anchor-linked to shell and references.
-- **`reference/*.html`** — the docs the K-lessons link: cheat sheets, glossary seed. Compressed, print-worthy.
+- **`index.html`** — the course shell: mission, stages, lesson list with links and progress. Links the shared stylesheet in `assets/` that every lesson and reference doc also links. Cross-links `syllabus.html`.
+- **`syllabus.html`** — the syllabus rendered as a browsable HTML page: the plan (mission, sources/gaps, staged lessons with all six fields) with each lesson title a live link into `lessons/*.html`. Reads better than raw Markdown and is the course map. Links the shared stylesheet and `assets/math.js`.
+- **`assets/`** — the shared component library: one stylesheet (`assets/course.css`), a math loader (`assets/math.js`, KaTeX via CDN), plus any reusable widget (quiz, warm-up card, footer/nav). Lessons **link** these; they never inline CSS, hand-roll math, or copy-paste a widget. See [references/lesson-format.md](references/lesson-format.md).
+- **`lessons/0001-*.html`** — one file per lesson, from its spec, grounded in its primary source: links the shared stylesheet + math loader, warm-up first (except lesson 1), one chunk, math authored as `$...$`/`$$...$$` LaTeX, claims cited as clickable links to the source files, K/S/W-typed interactivity, anchor-linked to shell and references.
+- **`reference/*.html`** — the docs the K-lessons link: cheat sheets, glossary seed. Compressed, print-worthy; link the shared stylesheet and math loader.
 
 Open `index.html` for the user when done.
 
@@ -98,7 +100,7 @@ These lessons are a plan, not a prophecy — `/learn` recalibrates each one agai
 - **Every lesson carries type, ICAP target, and load note.** No exceptions — these are what `/learn` calibrates against.
 - **ICAP targets rise with the diagnosis:** novice subtopics start P/A → C; practitioner subtopics may start at C; C → I appears only in Stages 3–5.
 - **At least one W milestone**, tied to the mission, in Stage 4–5.
-- **Resumable:** lessons are checkboxes in `syllabus.md`. `/learn` picks up at the first unchecked lesson and checks it off when its construction closes; `index.html` reflects the same progress.
+- **Resumable:** lessons are checkboxes in `syllabus.html`. `/learn` picks up at the first unchecked lesson and checks it off when its construction closes; `index.html` reflects the same progress.
 - **Plan confirmed before build.** Don't author the HTML course until the user has approved the syllabus.
 
 ## Exit
@@ -107,7 +109,7 @@ Open `index.html`; recommend `/learn <slug>` to start Stage 1.
 
 ## Contract test
 
-Given a fixture `survey.md`: the syllabus opens with a populated Mission; covers DEEP rows only; every lesson carries a K/S/W type, an ICAP target, and a load note; K precedes S precedes W per subtopic; ≥1 W milestone exists; stage order respects prerequisites-before-integration; after approval, `index.html` + one HTML file per lesson exist and every K-lesson links a `reference/` doc. Given a `wiki/` vault and no survey: the course begins without demanding `/survey`, and lessons cite wiki pages as material.
+Given a fixture `survey.md`: the syllabus opens with a populated Mission; covers DEEP rows only; every lesson carries a K/S/W type, an ICAP target, and a load note; K precedes S precedes W per subtopic; ≥1 W milestone exists; stage order respects prerequisites-before-integration; after approval, `index.html` + `syllabus.html` + one HTML file per lesson exist, all linking the shared stylesheet in `assets/` with no inline `<style>`, and every K-lesson links a `reference/` doc. Given a `wiki/` vault and no survey: the course begins without demanding `/survey`, and lessons cite wiki pages as material.
 
 ## Boundaries
 

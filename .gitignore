@@ -1,2 +1,5 @@
 .DS_Store
 .claude/settings.local.json
+.vscode/settings.json
+/.vscode
+.vscode/settings.json
