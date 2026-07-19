@@ -107,12 +107,13 @@
       "prompt": "Use /curriculum to build a small 2-lesson course covering DQN specifically, grounded in code/value_based/dqn.py and code/value_based/DQN-1.py plus wiki/wiki/concepts/deep-q-network.md, experience-replay.md, target-network.md. Learner already knows tabular Q-learning.",
       "expected_output": "Every factual claim in the lesson HTML about what the code does (variable names, update mechanics, hyperparameters) is independently verifiable against the actual files in code/value_based/, with no invented API names, incorrect algorithm descriptions, or citations to files/sections that don't exist.",
       "expectations": [
-        "Every inline citation of the form '(see code/value_based/...)' or '(wiki/wiki/concepts/...)' in the lesson HTML points to a file that actually exists at that exact path in the repo",
+        "Citations appear as small footnote markers in the running text (e.g. superscript <a href=\"#src-N\"> links) with the actual source files collected in a 'Sources' list at the bottom of the lesson — not verbose '(see code/value_based/...)' links mid-sentence — and every source link (a marker's target or a Sources entry) points to a file that actually exists at that exact path in the repo",
         "Every specific variable, function, or class name the lesson attributes to dqn.py or DQN-1.py actually appears in that file — spot-check at least 3 named identifiers against the real source",
         "If dqn.py and DQN-1.py implement the target-network update differently (e.g. hard periodic copy vs. soft/Polyak averaging), the lesson does not claim they work identically — any difference between the two files is either called out or the lesson sticks to only the file it actually describes",
         "No claim in the lesson describes behavior that isn't in either cited file (e.g. attributing Double DQN's decoupled selection/evaluation to vanilla dqn.py, which doesn't implement it)",
         "The reference/*.html doc's pseudocode or formulas match the actual update rule implemented in the cited code, not a generic textbook version that diverges from what the repo's code does",
         "Math formulas in the lesson and reference doc are authored as LaTeX between $...$/$$...$$ and render via a shared math loader in assets/ (e.g. assets/math.js loading KaTeX), not as plain text inside <pre>/<code> blocks",
+        "Code blocks in the lesson HTML are explained with inline comments on the lines they describe, not with prose paragraphs placed below the block",
         "A syllabus.html exists, links the shared stylesheet and math loader, and each lesson title in it is a live <a href> link into lessons/*.html (the syllabus is a browsable course map, not a raw .md file)"
       ]
     }
