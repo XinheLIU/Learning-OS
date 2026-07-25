@@ -1,6 +1,8 @@
 # notes.md Format
 
-`learning/<slug>/notes.md` is the single working file for earned knowledge: learning records, the topic's canonical terms, and teaching preferences. `/learn` owns it; `/evaluate` appends the Mastery Snapshot; `/reflect` edits records minimally. Append; don't restructure.
+Last updated: 2026-07-23
+
+`learning/<slug>/notes.md` is the single working file for earned knowledge: learning records, the topic's attempt log, canonical terms, and teaching preferences. `/learn` owns it; `/evaluate` appends the Mastery Snapshot; `/reflect` edits records minimally. Append; don't restructure.
 
 ## Full template
 
@@ -12,9 +14,15 @@
 ### 0001 — {Short title of what was learned or established}  ({date})
 {1–3 sentences: what was learned (or what prior knowledge was established),
 and why it matters for future sessions.}
+**Evidence:** {how the learner demonstrated the understanding}
+**Assistance:** none | hint | walkthrough | solution-shown
 
 ### 0002 — {title}  ({date})  (superseded by 0005)
 …
+
+## Attempt Log
+
+- {date} {lesson-id} {task}: predicted {X} → {right | wrong: Y} → retry {resolved | narrowed: Z | failed} [assistance: {none | hint | walkthrough | solution-shown}]
 
 ## Terms
 
@@ -52,7 +60,20 @@ Records are the teaching equivalent of architecture decision records: decision-g
 
 - Sequential numbering: scan for the highest number, increment. Title + 1–3 sentences is the whole format — the value is *that* it's known and *why* it changes what to teach next, not filled-out sections.
 - Optional, only when they genuinely add value: an **Evidence** line (how the user demonstrated it) and an **Implications** line (what this unlocks or rules out).
+- A record that documents demonstrated understanding MUST include both **Evidence** and **Assistance**. `Assistance` is exactly one of `none`, `hint`, `walkthrough`, or `solution-shown`, using the most-assisted level from the demonstration. Records of disclosed prior knowledge, mission shifts, or preferences do not require this field unless they also claim demonstrated understanding.
 - **Supersede, don't delete.** When understanding deepens past an earlier record, mark the old one `(superseded by 000N)`. How understanding evolved is itself signal.
+
+## Attempt Log — compact retry evidence
+
+Append one line after every `/learn` attempt cycle:
+
+```markdown
+- <date> <lesson-id> <task>: predicted <X> → <right | wrong: Y> → retry <resolved | narrowed: Z | failed> [assistance: <none | hint | walkthrough | solution-shown>]
+```
+
+Use the maximum assistance received during that cycle. The assistance tag is a closed enum; free text is invalid. `narrowed:` must name the precise remaining error, and `failed` opens another reduced-step cycle rather than closing the segment.
+
+Keep this section compact: never expand a line into a multi-line block. Once a lesson is checked off in `syllabus.md`, its log lines MAY be pruned to the single worst-assistance line per task, ordered `none < hint < walkthrough < solution-shown`.
 
 ## Terms — the canonical language
 

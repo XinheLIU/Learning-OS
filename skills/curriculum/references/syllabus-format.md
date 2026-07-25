@@ -1,6 +1,6 @@
 # syllabus.html Format
 
-_Last updated: 2026-07-17_
+_Last updated: 2026-07-24_
 
 `learning/<slug>/syllabus.html` is the single course document, rendered as a browsable HTML page: mission, sources, and the staged lesson plan. `/curriculum` authors it; `/learn` only checks lessons off. Each lesson title is a live link into `lessons/*.html`, so the syllabus doubles as the course map. If it runs past what one screen per stage can hold, the course is over-scoped — cut lessons, don't grow the page. The Markdown template below is the *content* spec; `syllabus.html` renders that content as HTML (linking the shared stylesheet and `assets/math.js`), not as a `.md` file.
 
@@ -36,6 +36,7 @@ life or work when they have this? Avoid "to understand X" — push for the outco
 ## Stage 1 — Prerequisite schemas   (warm-up, automate parts)
 
 - [ ] Lesson 1: {title}  [K]
+  - Cell: {mainline × stage, from the survey matrix — omit when no survey exists}
   - Objective: {1 line, testable}
   - Prerequisites: {prior lessons / schemas assumed — "none" for lesson 1}
   - Lesson spec: {what the HTML contains — warm-up retrieval question; the one chunk;
@@ -46,9 +47,11 @@ life or work when they have this? Avoid "to understand X" — push for the outco
 
 ## Stage 2 — Small chunks            (one new concept per lesson)
 ## Stage 3 — Combine schemas         (integration only after parts are fluent)
-## Stage 4 — Real task               (whole-task, reduced support)
-## Stage 5 — Transfer & wisdom       (new domain, no support, real world)
+## Stage 4 — Real task               (whole-task, reduced support — loop-entry specs from here on)
+## Stage 5 — Transfer & wisdom       (new domain, no support, real world — loop-entry specs)
 ```
+
+Stage 4–5 entries are **loop-entry specs, not lessons**: same checkbox and fields, but no `lessons/*.html` file is authored for them. Their checkbox is closed by `/evaluate` when `/practice` evidence reaches the named cell — never by a tutoring session.
 
 ## Mission rules
 
@@ -68,8 +71,8 @@ life or work when they have this? Avoid "to understand X" — push for the outco
 
 ## Lesson-spec rules
 
-Every lesson block carries all six fields — type, objective, prerequisites, spec, primary source, ICAP target, load note. The spec must be concrete enough to author the HTML lesson from directly — and for `/learn` to judge, later, whether the built lesson still fits the learner:
+Every lesson block carries all six fields — type, objective, prerequisites, spec, primary source, ICAP target, load note — plus the matrix cell it serves when a survey exists. The spec must be concrete enough to author the HTML lesson from directly — and for `/learn` to judge, later, whether the built lesson still fits the learner:
 
 - **[K]** spec names the worked example and the `reference/` doc it creates or extends.
 - **[S]** spec names the interactive exercise (quiz / in-browser task), what feedback it gives, and which prior schemas it interleaves.
-- **[W]** spec names the real-world assignment or the high-reputation community to engage, and what the debrief next session covers. If the user has opted out of communities (see `notes.md` Preferences), design a solo real-world assignment instead.
+- **[W]** spec is a loop-entry: it names the real-world assignment or the high-reputation community to engage, the shape of the real case to bring to `/practice`, and what the debrief covers. No HTML lesson is authored for it; `/evaluate` closes its checkbox on evidence. If the user has opted out of communities (see `notes.md` Preferences), design a solo real-world assignment instead.

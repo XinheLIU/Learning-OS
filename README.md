@@ -1,6 +1,6 @@
 # Learning OS
 
-Last updated: 2026-07-18
+Last updated: 2026-07-25
 
 <div align="center">
 
@@ -39,14 +39,14 @@ Reading an AI-generated explanation feels like learning, but it produces familia
 
 Each skill is a plain-Markdown `SKILL.md` in the open [Agent Skills](https://agentskills.io) format, so the suite is not tied to one tool: install it as a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin, drop the skill directories into any agent that discovers skills (Codex, Cursor, custom Claude Agent SDK agents, …), or paste a `SKILL.md` into any capable LLM chat as instructions.
 
-Everything is plain Markdown and HTML files on disk. No database, no service, no session state shared between skills — which means every artifact (your course, your notes, your error history, your playbook) is inspectable, versionable, and yours.
+Everything is plain Markdown and HTML files on disk. Each topic has one shared learner-memory system under `learning/<slug>/`; skills coordinate by reading and writing those files, never through hidden session state. Every artifact — your course, notes, attempt history, evidence, and playbook — is inspectable, versionable, and yours.
 
 > [!NOTE]
 > This README is the canonical **target architecture**. [GAP_ANALYSIS.md](GAP_ANALYSIS.md) audits the current skills against it and ranks the work still required. The project was extracted from [agent-skills](https://github.com/XinheLIU/agent-skills) into its own repository.
 
 ## Architecture
 
-Each component is an atomic skill with file-based inputs and outputs. Skills share files, never session state, so each component can be tested and replaced independently.
+Each component is an atomic skill with file-based inputs and outputs. The learning-loop skills surround one shared topic memory: they read the learner's current state before acting and write durable attempts, evidence, and adaptations afterward. Because coordination happens through files rather than hidden session state, each skill remains independently testable and replaceable.
 
 ```mermaid
 flowchart TB
@@ -59,20 +59,26 @@ flowchart TB
         survey --> curriculum
     end
 
-    subgraph learnloop["Learning loop"]
-        direction LR
+    subgraph learnloop["Learning loop · shared learner memory"]
+        direction TB
         learn["/learn<br/>predict · construct"]
         practice["/practice<br/>real attempts"]
-        evaluate["/evaluate<br/>evidence"]
+        memory[("learning/&lt;slug&gt;/<br/>shared learner memory")]
+        framework[("framework.md<br/>structural memory:<br/>layers · connections · frontier")]
+        evaluate["/evaluate<br/>evidence · tier gate"]
         reflect["/reflect<br/>next change"]
-        learn --> practice --> evaluate --> reflect
-        reflect -- "errors + retries" --> learn
+        learn --> practice --> evaluate --> reflect --> learn
+        learn <--> memory
+        practice <--> memory
+        evaluate <--> memory
+        reflect <--> memory
+        learn -. "earn nodes" .-> framework
+        practice -. "earn edges" .-> framework
+        reflect -. "revise · iterate" .-> framework
     end
 
-    subgraph stores["Knowledge stores (strict boundary)"]
-        direction LR
+    subgraph stores["External knowledge (strict boundary)"]
         wiki[("wiki/<br/>external knowledge")]
-        memory[("learning/&lt;slug&gt;/<br/>earned capability")]
     end
 
     llmwiki["llm-wiki-*<br/>init · ingest · lint · book"]
@@ -83,14 +89,15 @@ flowchart TB
     llmwiki --> wiki
     wiki -- "teaching material" --> learnloop
     wiki --> research
+    survey -. "seed framework v0" .-> framework
     research -- "judgment + falsifier" --> memory
-    learnloop -- "notes · cases · playbook" --> memory
+    research -. "frontier: people · papers · tensions" .-> framework
 
     classDef cmd fill:#eef2ff,stroke:#6366f1,stroke-width:1.5px,color:#1e1b4b
     classDef store fill:#fefce8,stroke:#ca8a04,stroke-width:1.5px,color:#422006
     classDef entry fill:#fdf2f8,stroke:#db2777,stroke-width:1.5px,color:#500724
     class survey,curriculum,learn,practice,evaluate,reflect,research,llmwiki cmd
-    class wiki,memory store
+    class wiki,memory,framework store
     class mission entry
 ```
 
@@ -149,13 +156,13 @@ Seven Learning OS commands plus a four-skill LLM Wiki suite for durable external
 
 | Component | Command or skill | Primary responsibility | Durable output |
 | :--- | :--- | :--- | :--- |
-| Investment gate | `/survey` | Define the map, critical path, source set, and baseline | `survey.md` |
-| Course designer | `/curriculum` | Plan backward from the output and build the course | `syllabus.md`, HTML course |
-| AI tutor | `/learn` | Run prediction, construction, feedback, retry, and compression | lesson progress, `notes.md`, `reference/` |
-| Practice coach | `/practice` | Train one micro-skill on a real case and record attempts | `drills-*.md`, `case-*.md` |
-| Evaluator | `/evaluate` | Assess evidence, transfer, and independence | Mastery Snapshot in `notes.md` |
-| Feedback loop | `/reflect` | Convert errors and drift into changed models and next attempts | model revisions, micro-goals, `playbook.md` |
-| Research companion | `/research` | Resolve a live tension into the learner's judgment and action | `research-*.md` |
+| Investment gate | `/survey` | Define the map, critical path, source set, and baseline | `survey.md`, `framework.md` v0 |
+| Course designer | `/curriculum` | Plan backward from the output and build the Tier-1 course | `syllabus.md`, HTML course (K/S lessons + loop-entry specs) |
+| AI tutor | `/learn` | Run prediction, construction, feedback, retry, and compression | lesson progress, `notes.md`, `reference/`, promoted framework nodes |
+| Practice coach | `/practice` | Train one micro-skill on a real case and record attempts | `drills-*.md`, `case-*.md`, earned framework edges |
+| Evaluator | `/evaluate` | Assess evidence, transfer, and independence; gate the tiers | Mastery Snapshot in `notes.md` |
+| Feedback loop | `/reflect` | Convert errors and drift into changed models and next attempts | model revisions, micro-goals, `playbook.md`, framework iterations |
+| Research companion | `/research` | Resolve a live tension into the learner's judgment and action; extend the frontier | `research-*.md`, `framework.md` frontier |
 | Wiki bootstrap | `llm-wiki-init` | Scaffold a new external knowledge base | `wiki/` skeleton |
 | Knowledge distillation | `llm-wiki-ingest` | Preserve and distill curated sources | `raw/`, source-faithful pages |
 | Wiki maintenance | `llm-wiki-lint` | Audit links, orphans, drift, and tag sprawl | audit reports |
@@ -178,12 +185,16 @@ A topic is unbounded. An output creates a boundary, a quality bar, and evidence:
 "Fix a new slow query unaided"       -> evidence of transfer
 ```
 
-The system optimizes the shortest useful loop between ignorance and correction:
+The system optimizes the shortest useful loop between ignorance and correction. Every pass reads from and writes to the same topic memory:
 
 ```text
-map -> predict -> attempt -> feedback -> retry -> compress -> transfer
- ^                                                        |
- +-------------------- update the path -------------------+
+┌────────────────────── learning loop ──────────────────────┐
+│ retrieve -> predict -> attempt -> feedback -> retry       │
+│     ↑                                      ↓              │
+│     └── learning/<slug>/ shared memory <── record         │
+└────────────────────────────────────────────────────────────┘
+                              |
+                              +-> compress -> transfer -> update the path
 ```
 
 Reading speed is not the bottleneck. Iteration speed is. Feedback matters only when it changes the next attempt, and AI assistance succeeds only when it can be reduced over time.
@@ -216,6 +227,16 @@ Reading speed is not the bottleneck. Iteration speed is. Feedback matters only w
 <p align="right">(<a href="#learning-os">back to top</a>)</p>
 
 ## Operating Model
+
+The journey climbs three tiers on one shared mastery ladder. Each tier owns its rungs, and `/evaluate` — the tier gate — declares a mainline's transition only when the exit evidence exists:
+
+| Tier | Skills | Builds | Owns rungs | Exit gate (per mainline) |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 — Course | `/survey` → `/curriculum` → `/learn` | knowledge → skill | can-recall, can-apply | all K/S lessons closed; every can-apply cell's named sample reproduced at assistance ≤ hint |
+| 2 — Learning loop | `/practice` ⇄ `/reflect` (+ `/evaluate`) | skill → wisdom | can-transfer | target cell evidenced by a case outside the home domain or on the learner's own project (none/hint); ≥1 earned cross-mainline edge in `framework.md` |
+| 3 — Research companion | `/research` (+ wiki) | wisdom → generation | can-generate → can-teach | research report with judgment + falsifier; graduation = teach-back that survives a misconception |
+
+Throughout, `framework.md` is the convergence target: `/survey` seeds its skeleton top-down, the loop earns it bottom-up, and `/research` grows it past the course.
 
 ### 1. Define the output
 
@@ -258,7 +279,7 @@ Knowledge, skill, and wisdom still form a depth ladder, but not a waterfall. The
 
 ### 4. Run the learning loop
 
-`/learn` and `/practice` use one invariant loop:
+`/learn`, `/practice`, `/evaluate`, and `/reflect` form one loop around `learning/<slug>/`. They do not hand state directly to one another: each reads the shared files it needs and writes durable evidence for the next skill. Within that system, `/learn` and `/practice` use one invariant attempt loop:
 
 ```text
 1. Retrieve a prerequisite from memory.
@@ -314,11 +335,12 @@ Debugging is the preferred learning mode when a model fails: reproduce the failu
 The system separates external information from learner-owned knowledge:
 
 - `wiki/` stores source-faithful external knowledge.
-- `learning/<slug>/` stores capabilities and insights earned through attempts.
+- `learning/<slug>/` is the shared memory of the learning loop: it stores the plan, capabilities, attempts, assistance, evaluation, and adaptations earned through work.
 
 Compression happens after construction. AI may propose a draft, but an artifact becomes earned knowledge only after the learner can explain, use, or defend it. Durable outputs include:
 
 - concise mental models and canonical terms in `notes.md`;
+- earned structure — layered nodes, labeled connections, the frontier — in `framework.md`;
 - printable reference cards in `reference/`;
 - micro-skill maps in `drills-*.md`;
 - real attempts and error histories in `case-*.md`;
@@ -342,11 +364,12 @@ feedback after attempt -> feedback after completion -> unaided transfer
 
 ### Learner memory
 
-All learner paths are relative to `learning/<slug>/`:
+`learning/<slug>/` is the shared durable state read and written by `/learn`, `/practice`, `/evaluate`, and `/reflect`. All learner paths are relative to it:
 
 ```text
 learning/<slug>/
 ├── survey.md        # map, investment decisions, sources, baseline
+├── framework.md     # structural memory: layers, connections, frontier (seeded by /survey, earned by the loop)
 ├── syllabus.md      # mission, stages, outputs, progress
 ├── index.html       # course shell
 ├── notes.md         # earned models, terms, preferences, evidence snapshot
@@ -357,6 +380,37 @@ learning/<slug>/
 ├── research-*.md    # tension, connections, judgment, action, falsifier
 └── playbook.md      # defended reusable system
 ```
+
+`notes.md` holds *evidence* (linear); `framework.md` holds *structure* (a graph of concepts, models, and cross-mainline connections, plus the frontier beyond the course). A node or edge flips to `earned` only with an evidence pointer produced at assistance `none`/`hint` — coached work never earns structure. `/learn` promotes nodes, `/practice` earns edges, `/reflect` revises and bumps the iteration counter, `/research` owns the frontier; `/curriculum` and `/evaluate` only read it. Full spec: [skills/learn/references/framework-format.md](skills/learn/references/framework-format.md).
+
+`notes.md` keeps compact retry evidence alongside earned knowledge:
+
+```markdown
+## Records
+### 0001 - <demonstrated understanding>  (<date>)
+<what was established and why it changes future teaching>
+**Evidence:** <how the learner demonstrated it>
+**Assistance:** none | hint | walkthrough | solution-shown
+
+## Attempt Log
+- <date> <lesson-id> <task>: predicted <X> -> <right | wrong: Y> -> retry <resolved | narrowed: Z | failed> [assistance: <enum>]
+```
+
+Each new `case-*.md` keeps the full sequence. `Micro-goal` and `Errors made` remain mandatory; `Cell` is also required when `survey.md` exists.
+
+```markdown
+**Attempt 1:** <what the learner tried>
+**Observed failure:** <what happened>
+**Hypothesis:** <learner's cause>
+**Feedback:** <correction>
+**Retry:** <changed attempt>
+**Result:** resolved | narrowed: <remaining error> | failed
+
+**Assistance used:** none | hint | walkthrough | solution-shown
+**Next support to remove:** <specific scaffold to withhold next time>
+```
+
+Repeat the attempt block as needed and record the case's most-assisted level. Cases created before 2026-07-23 are historical artifacts: they remain unchanged and their assistance is unknown.
 
 ### External knowledge
 
@@ -396,6 +450,8 @@ Capability is cumulative, but assistance is always visible:
 
 Lesson completion and time spent are metadata, not mastery evidence.
 
+Each rung has an owner: the course tier (`/survey` → `/curriculum` → `/learn`) climbs to can-recall and can-apply; the learning loop (`/practice` ⇄ `/reflect`, gated by `/evaluate`) earns can-transfer; `/research` produces can-generate. Can-teach is the graduation test, and `Independent` spans all tiers — assistance fades everywhere.
+
 ## Cross-Cutting Rules
 
 - **Output before syllabus:** no course without a target artifact and quality bar.
@@ -405,8 +461,9 @@ Lesson completion and time spent are metadata, not mastery evidence.
 - **Feedback before closure:** a correction must change a retry or the next concrete attempt.
 - **Real cases before artificial coverage:** isolate with drills only when a real task is too complex to diagnose.
 - **Evidence before claims:** every capability claim points to an artifact.
+- **Structure is earned:** framework nodes and edges flip to `earned` only with none/hint evidence — surveys seed, they never earn.
 - **Independence before graduation:** assisted success is progress, not the end state.
-- **Files are the interface:** no skill depends on another skill's session memory.
+- **Files are the interface:** no skill depends on another skill's session memory, and every handoff is an artifact condition, not a feeling of readiness.
 - **Tutor, not answer machine:** decompose, hint, challenge, and fade support.
 
 ## Theoretical Foundation
@@ -454,7 +511,7 @@ learning-os/
 └── README.md                # this file — the canonical target architecture
 ```
 
-Each `SKILL.md` is the full contract for its skill: triggers, rules, storage paths, and output formats. Shared format specs (lesson HTML, syllabus, notes) live under each skill's `references/`.
+Each `SKILL.md` is the full contract for its skill: triggers, rules, storage paths, output formats, and a `## Handoffs` block (**In**/**Out**) of artifact-based triggers — no skill hands off on a feeling. Shared format specs (lesson HTML, syllabus, notes, framework) live under each skill's `references/`.
 
 ## Project Status
 

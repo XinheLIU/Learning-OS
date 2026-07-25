@@ -1,6 +1,6 @@
 # Course HTML Format — Shell, Lessons & Reference Docs
 
-_Last updated: 2026-07-19_
+_Last updated: 2026-07-23_
 
 What `/curriculum` authors: the course shell (`index.html`), the syllabus view (`syllabus.html`), a shared component library in `learning/<slug>/assets/`, interactive lessons in `learning/<slug>/lessons/`, and reference docs in `learning/<slug>/reference/`. `/learn` tutors over these files and **revises** them when the learner diverges from the plan. Lessons are rarely revisited; references are — design accordingly.
 
@@ -68,7 +68,7 @@ One self-contained HTML file per lesson, numbered in syllabus order, authored fr
 **Every reader question is answerable in the page** — no question is decorative. Wire each one with a shared widget in `assets/` (e.g. `assets/answer.js`), keep it simple and stupid:
 
 - **Auto-checkable questions** (multiple choice, exact/short factual answer, code output): the learner submits, the widget checks against the stored answer and shows the result immediately — a diff/highlight of their input against the correct answer, not just "right/wrong".
-- **Short-answer / open questions** (简答题): the learner types into a textarea, then hits reveal to see the reference answer beside their own for a simple self-comparison diff — never auto-graded, since there's no single right string. Their draft persists to `localStorage` so a reload doesn't wipe it.
+- **Short-answer / open questions**: the learner types into a textarea, then hits reveal to see the reference answer beside their own for a simple self-comparison diff — never auto-graded, since there's no single right string. Their draft persists to `localStorage` so a reload doesn't wipe it.
 
 **Revision (`/learn`):** pre-built lessons are a plan, not a prophecy. Before each session, `/learn` re-reads the next lesson against `notes.md` and patches it — recalibrate the warm-up, swap an example the learner already knows, adjust difficulty — or rewrites it outright when a recorded misconception or mission shift invalidates it. Patches keep the lesson's number, style, and spec fields.
 
