@@ -3,3 +3,20 @@
 .vscode/settings.json
 /.vscode
 .vscode/settings.json
+
+# Agent skill symlinks
+.claude/skills/
+.codex/skills/
+.opencode/skills/
+
+# Test cases
+/test-cases/*
+!/test-cases/attempt-retry-loop/
+!/test-cases/attempt-retry-loop/**
+
+# Iteration corpus — raw course materials may be copyright-sensitive
+/tmp/*
+!/tmp/README.md
+
+# Session scratch — handoffs and transient working notes
+/.scratch/

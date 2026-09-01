@@ -1,0 +1,4 @@
+interface:
+  display_name: "Inline Illustrator"
+  short_description: "Place existing images inline into Markdown and HTML docs"
+  default_prompt: "Illustrate this document with the images in the assets folder"

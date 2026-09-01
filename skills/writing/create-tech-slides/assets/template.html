@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>create-tech-slides</title>
+<style>
+/* ============ tokens ============ */
+:root{
+  --bg:#0b0d10; --bg2:#101318; --bg3:#0d1014;
+  --line:#2a2f36; --line2:#3d444d;
+  --ink:#e8eaec; --ink2:#9aa3ad; --ink3:#5c6570;
+  --acc:#aecbdd; --teal:#4fd1c5; --violet:#a78bfa; --sand:#e3c99a; --red:#e07a6b;
+  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --sans:-apple-system,'Helvetica Neue','PingFang SC','Noto Sans SC',sans-serif;
+}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(--sans)}
+/* ============ stage ============ */
+#viewport{position:fixed;inset:0;background:#000}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;background:var(--bg)}
+.slide{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;visibility:hidden;opacity:0;pointer-events:none;
+  background:var(--bg);color:var(--ink);box-sizing:border-box;padding:56px 72px 48px;
+  display:flex;flex-direction:column;
+  background-image:radial-gradient(circle,#1a1f26 1px,transparent 1px);background-size:56px 56px;background-position:28px 28px}
+.slide.active{visibility:visible;opacity:1;pointer-events:auto;z-index:1}
+.slide{--a:var(--acc)}
+.slide[data-accent="teal"]{--a:var(--teal)} .slide[data-accent="violet"]{--a:var(--violet)}
+.slide[data-accent="sand"]{--a:var(--sand)} .slide[data-accent="red"]{--a:var(--red)}
+/* ============ chrome (injected) ============ */
+.chrome{position:absolute;font-size:12px;letter-spacing:.16em;color:var(--ink3);text-transform:uppercase;font-family:var(--mono)}
+.chrome.eyebrow{top:26px;left:72px;color:var(--a)}
+.chrome.eyebrow::before{content:"";display:inline-block;width:8px;height:8px;border:1px solid var(--a);margin-right:10px;vertical-align:0}
+.chrome.meta{top:26px;right:72px;letter-spacing:.1em}
+.chrome.page{bottom:22px;right:72px;letter-spacing:.2em}
+.chrome.rule{top:52px;left:72px;right:72px;height:1px;background:var(--line)}
+/* ============ head / text ============ */
+.s-head{margin:14px 0 8px;flex:none}
+.s-head h2{margin:0;font-size:42px;font-weight:600;letter-spacing:.01em}
+.s-head h2 em{font-style:normal;color:var(--a)}
+.s-head .lead{margin:10px 0 0;font-size:21px;color:var(--ink2);max-width:1400px;line-height:1.5}
+.s-foot{position:absolute;bottom:22px;left:72px;font-size:12px;color:var(--ink3)}
+p,li{font-size:18px;line-height:1.55}
+/* s-body fills the rest of the canvas — use .grow/.push-b/vcenter to distribute */
+.s-body{margin-top:24px;flex:1;min-height:0;display:flex;flex-direction:column}
+.s-body.vcenter{justify-content:center}
+.s-body.vspread{justify-content:space-between}
+.grow{flex:1 1 auto;min-height:0}
+.push-b{margin-top:auto!important}
+.s-body h3{font-size:16.5px;margin:18px 0 8px;color:var(--a);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+small,.dim{color:var(--ink2)} .dim3{color:var(--ink3)}
+code{font-family:var(--mono);font-size:.92em;background:var(--bg2);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+/* ============ grids ============ */
+.cols-2{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.cols-2>.w7{grid-column:auto} .cols-2.r75{grid-template-columns:7fr 5fr}.cols-2.r57{grid-template-columns:5fr 7fr}
+.cols-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px}
+.grid-2x2{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.grid-2x3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px}
+.card{border:1px solid var(--line);background:var(--bg2);padding:20px 22px;border-radius:6px}
+.card h4{margin:0 0 8px;font-size:18px;color:var(--ink)} .card h4 b{color:var(--a)}
+.card p{margin:0;font-size:16px;color:var(--ink2)}
+.card small{display:block;margin-top:10px;font-size:13px;color:var(--ink3)}
+/* ============ table ============ */
+table.cmp{border-collapse:collapse;width:100%;font-size:15px}
+table.cmp th{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink3);font-weight:500;text-align:left;
+  padding:10px 14px;border-bottom:1px solid var(--line2)}
+table.cmp td{padding:11px 14px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top;line-height:1.5}
+table.cmp td strong,table.cmp td b{color:var(--ink)}
+table.cmp td.k{color:var(--ink3);white-space:nowrap;font-family:var(--mono);font-size:13.5px}
+table.cmp .hl{background:color-mix(in srgb,var(--a) 7%,transparent)}
+table.cmp td.hl{color:var(--ink)}
+table.cmp td.good{color:var(--teal)} table.cmp td.bad{color:var(--red)}
+/* ============ callout ============ */
+.callout{border-left:2px solid var(--a);background:var(--bg2);padding:16px 20px;margin-top:18px;display:flex;gap:14px;align-items:baseline}
+.callout .c-tag{font-size:11px;letter-spacing:.18em;color:var(--a);text-transform:uppercase;font-family:var(--mono);white-space:nowrap}
+.callout p{margin:0;font-size:17px;color:var(--ink)}
+.callout.warn{border-color:var(--sand)} .callout.warn .c-tag{color:var(--sand)}
+.callout.risk{border-color:var(--red)} .callout.risk .c-tag{color:var(--red)}
+/* ============ evidence tags ============ */
+.ev{display:inline-block;font-size:11.5px;font-family:var(--mono);letter-spacing:.06em;color:var(--acc);
+  border:1px solid color-mix(in srgb,var(--acc) 45%,transparent);border-radius:3px;padding:0 5px;margin:0 2px;vertical-align:.08em}
+.ev.ind{color:var(--teal);border-color:color-mix(in srgb,var(--teal) 45%,transparent)}
+.ev.doubt{color:var(--red);border-color:color-mix(in srgb,var(--red) 45%,transparent)}
+.ev.comp{color:var(--violet);border-color:color-mix(in srgb,var(--violet) 45%,transparent)}
+.ev.sap{color:var(--sand);border-color:color-mix(in srgb,var(--sand) 45%,transparent)}
+/* ============ spec list ============ */
+ul.spec{list-style:none;margin:0;padding:0}
+ul.spec li{display:grid;grid-template-columns:160px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:15.5px}
+ul.spec .s-k{font-family:var(--mono);font-size:13.5px;color:var(--a);letter-spacing:.04em}
+ul.spec .s-v{color:var(--ink2)} ul.spec .s-v b,ul.spec .s-v strong{color:var(--ink)}
+/* ============ steps ============ */
+ol.steps{list-style:none;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:18px;margin:8px 0 0;padding:0;position:relative}
+ol.steps::before{content:"";position:absolute;top:15px;left:4%;right:4%;height:1px;background:var(--line2)}
+ol.steps li{position:relative;padding-top:48px;font-size:15.5px}
+ol.steps .n{position:absolute;top:0;left:0;width:32px;height:32px;border:1px solid var(--a);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--a);font-family:var(--mono);font-size:14px}
+ol.steps b{display:block;color:var(--ink);margin-bottom:5px;font-size:17px}
+ol.steps small{color:var(--ink2);font-size:14px;line-height:1.5;display:block}
+/* ============ bullets ============ */
+ul.tick{list-style:none;margin:0;padding:0}
+ul.tick li{padding:8px 0 8px 20px;position:relative;color:var(--ink2);font-size:17px}
+ul.tick li::before{content:"—";position:absolute;left:0;color:var(--a)}
+ul.tick b,ul.tick strong{color:var(--ink)}
+/* ============ SVG figures ============ */
+svg.fig{width:100%;height:auto;display:block}
+svg.fig.fill{height:100%;flex:1 1 auto;min-height:0}
+/* figbox: the safe way to size a figure. Container gets its height from the layout
+   (flex/grid); the SVG is absolutely positioned inside and letterboxes via
+   preserveAspectRatio — it can NEVER drive the slide taller. Use this for any
+   figure inside a grid column; bare width:100% SVGs set their own height from
+   the viewBox aspect ratio and overflow when the column is wide. */
+.figbox{position:relative;flex:1;min-height:0}
+.figbox>svg.fig{position:absolute;inset:0;width:100%;height:100%}
+.cols-2,.cols-3,.grid-2x2,.grid-2x3{min-height:0}
+.cols-2>*,.cols-3>*{min-width:0;min-height:0}
+svg.fig .node rect{fill:var(--bg2);stroke:var(--line2);stroke-width:1.25;rx:6}
+svg.fig .node.hi rect{stroke:var(--a);fill:color-mix(in srgb,var(--a) 8%,var(--bg2))}
+svg.fig .node .t{fill:var(--ink);font-size:14px;text-anchor:middle;font-weight:600}
+svg.fig .node .s{fill:var(--ink2);font-size:12px;text-anchor:middle}
+svg.fig .node .m{fill:var(--a);font-family:var(--mono);font-size:12px;text-anchor:middle}
+svg.fig .edge{fill:none;stroke:var(--ink3);stroke-width:1.25}
+svg.fig .edge.flow{stroke-dasharray:4 4}
+svg.fig .edge.hi{stroke:var(--a);stroke-width:1.5}
+svg.fig .elabel{fill:var(--ink3);font-size:11.5px;text-anchor:middle;font-family:var(--mono)}
+svg.fig .grp rect{fill:none;stroke:var(--line);stroke-dasharray:5 5;rx:8}
+svg.fig .glabel{fill:var(--ink3);font-size:11px;letter-spacing:.16em;font-family:var(--mono)}
+svg.fig text{font-family:var(--sans)}
+/* iso */
+svg.fig .iso-face-t{fill:#141920;stroke:var(--line2);stroke-width:1.1}
+svg.fig .iso-face-t.acc{fill:color-mix(in srgb,var(--a) 14%,#141920);stroke:var(--a)}
+svg.fig .iso-face-l{fill:#0c0f13;stroke:var(--line2);stroke-width:1.1}
+svg.fig .iso-face-r{fill:#101419;stroke:var(--line2);stroke-width:1.1}
+svg.fig .iso-label{fill:var(--ink);font-size:13px;letter-spacing:.12em;font-family:var(--mono);text-transform:uppercase}
+svg.fig .iso-sub{fill:var(--ink2);font-size:12px}
+svg.fig .rail{stroke:var(--line2);stroke-width:1;fill:none}
+/* ============ covers ============ */
+.cover-main{display:flex;flex-direction:column;justify-content:center}
+.cover-main .kicker{font-family:var(--mono);font-size:14px;letter-spacing:.3em;color:var(--a);text-transform:uppercase}
+.cover-main h1{font-size:72px;font-weight:650;margin:18px 0 10px;max-width:1500px;line-height:1.15}
+.cover-main .sub{font-size:24px;color:var(--ink2);max-width:1200px;line-height:1.5}
+.cover-main .badges{margin-top:36px;display:flex;gap:12px;flex-wrap:wrap}
+.cover-main .badges span{font-size:13px;font-family:var(--mono);color:var(--ink2);border:1px solid var(--line);padding:5px 12px;border-radius:4px}
+.cover-section{display:flex;flex-direction:column;justify-content:center}
+.cover-section .ghost{font-size:160px;font-weight:200;color:transparent;-webkit-text-stroke:1px var(--line2);line-height:1;font-family:var(--mono)}
+.cover-section h2{font-size:52px;margin:8px 0 12px}
+.cover-section .thesis{font-size:23px;color:var(--ink2);max-width:1100px}
+.cover-section .mini-agenda{list-style:none;padding:0;margin:28px 0 0;display:flex;gap:28px}
+.cover-section .mini-agenda li{font-size:14px;color:var(--ink3);font-family:var(--mono)}
+.cover-section .mini-agenda li::before{content:"→ ";color:var(--a)}
+/* ============ overview / help ============ */
+#overview{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:50;display:none;overflow:auto;padding:30px}
+#overview.on{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+#overview .thumb{border:1px solid var(--line);cursor:pointer;position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--bg)}
+#overview .thumb:hover{border-color:var(--acc)}
+#overview .thumb .mini{width:1920px;height:1080px;transform:scale(.18);transform-origin:0 0;position:absolute;pointer-events:none}
+#overview .thumb .idx{position:absolute;right:6px;bottom:4px;font-family:var(--mono);font-size:11px;color:var(--acc);z-index:2}
+#hud{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:#565f6a;z-index:40;letter-spacing:.1em}
+/* ============ print ============ */
+@media print{
+  html,body{overflow:visible;height:auto;background:#0b0d10}
+  #viewport{position:static}
+  #stage{position:static;transform:none!important;width:1920px;height:auto}
+  .slide{position:relative;visibility:visible;opacity:1;page-break-after:always;break-after:page}
+  #hud,#overview{display:none!important}
+}
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage">
+
+<!-- SLIDES-START -->
+<script>window.DECK={title:"create-tech-slides demo",meta:"DEEP-TECH SLIDES · TEMPLATE",footer:"create-tech-slides skill demo"}</script>
+
+<section class="slide cover-main" data-accent="acc">
+  <div class="kicker">Deep-Tech Slides</div>
+  <h1>Engineering-drawing decks,<br>not marketing decks.</h1>
+  <p class="sub">Dense typography · isometric wireframe architecture · zero information loss. 演示模板：以下 4 页展示核心组件。</p>
+  <div class="badges"><span>1920×1080 fixed</span><span>single-file HTML</span><span>?check=1 audit</span></div>
+</section>
+
+<section class="slide" data-eyebrow="DEMO · TABLE" data-accent="teal">
+  <header class="s-head"><h2>Comparison table + <em>callout</em> + evidence tags</h2>
+    <p class="lead">源文档中的表格必须保持表格形态，每个量化声明保留证据标签。</p></header>
+  <div class="s-body">
+    <table class="cmp">
+      <thead><tr><th>维度</th><th>方案 A</th><th>方案 B</th><th class="hl">本方案</th></tr></thead>
+      <tbody>
+        <tr><td class="k">latency</td><td>~120ms</td><td>~80ms</td><td class="hl"><strong>&lt;10ms</strong> <span class="ev doubt">存疑</span></td></tr>
+        <tr><td class="k">scale</td><td>1e4</td><td>1e7</td><td class="hl">数百亿 <span class="ev">官方</span></td></tr>
+        <tr><td class="k">writes</td><td class="bad">只读</td><td class="bad">只读</td><td class="hl good">可写回</td></tr>
+        <tr><td class="k">schema</td><td>静态建模</td><td>半结构化</td><td class="hl">版本化·热演进 <span class="ev ind">独立</span></td></tr>
+        <tr><td class="k">lineage</td><td class="bad">无</td><td>表级</td><td class="hl good">列级血缘</td></tr>
+      </tbody>
+    </table>
+    <div class="cols-2 grow" style="align-content:center">
+      <ul class="tick">
+        <li><b>行完整</b>——源表格每一行都保留，绝不 "top 3" 截断</li>
+        <li><b>证据标签</b>——官方 / 独立 / 存疑跟着数字走</li>
+        <li><b>拆页不删行</b>——超 8 行标 "(1/2)" 分页</li>
+      </ul>
+      <ul class="spec">
+        <li><span class="s-k">.hl</span><span class="s-v">accent 色列——高亮"本方案"</span></li>
+        <li><span class="s-k">.good/.bad</span><span class="s-v">teal / red 语义色单元格</span></li>
+        <li><span class="s-k">.ev</span><span class="s-v">行内证据标签，四种预设变体</span></li>
+      </ul>
+    </div>
+    <div class="callout push-b"><span class="c-tag">结论</span><p>表格行数一行不丢；&gt; 8 行拆两页而不是删行。<code>.grow</code> + <code>.push-b</code> 撑满画布下半页。</p></div>
+  </div>
+  <footer class="s-foot">demo slide</footer>
+</section>
+
+<section class="slide" data-eyebrow="DEMO · FLOW" data-accent="violet">
+  <header class="s-head"><h2>Flow diagram — mermaid 的<em>原生替身</em></h2></header>
+  <div class="s-body cols-2 r57">
+    <div style="display:flex;flex-direction:column;justify-content:space-between">
+      <ul class="spec">
+        <li><span class="s-k">node</span><span class="s-v">rect rx=6 · 标题 14px · 副行 12px</span></li>
+        <li><span class="s-k">edge.flow</span><span class="s-v">虚线 = 数据流/读；实线 = 写/动作</span></li>
+        <li><span class="s-k">grp</span><span class="s-v">虚线圆角框 = subgraph 分组</span></li>
+        <li><span class="s-k">elabel</span><span class="s-v">边标签，垫底色避免线穿字</span></li>
+      </ul>
+      <ol class="steps">
+        <li><span class="n">①</span><b>识别节点</b><small>nodes / edges / groups</small></li>
+        <li><span class="n">②</span><b>布局</b><small>正交路径，标签垫底色</small></li>
+        <li><span class="n">③</span><b>高亮</b><small>node.hi 用 accent</small></li>
+      </ol>
+      <div class="callout"><span class="c-tag">规则</span><p>节点文字 ≤3 行，超出移到图下脚注；viewBox 长宽比对齐所在栏。</p></div>
+    </div>
+    <div class="figbox">
+      <svg class="fig" viewBox="0 0 760 600">
+        <defs><marker id="ar0" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5c6570"/></marker></defs>
+        <g class="grp"><rect x="20" y="30" width="330" height="530"/><text class="glabel" x="36" y="54">WRITE PATH</text></g>
+        <g class="node"><rect x="50" y="80" width="180" height="56"/><text class="t" x="140" y="104">Source</text><text class="s" x="140" y="122">SAP · Oracle</text></g>
+        <g class="node hi"><rect x="50" y="240" width="180" height="56"/><text class="t" x="140" y="264">Funnel</text><text class="s" x="140" y="282">索引主干</text></g>
+        <g class="node"><rect x="50" y="400" width="180" height="56"/><text class="t" x="140" y="424">Object DB</text><text class="s" x="140" y="442">点查·状态</text></g>
+        <g class="node"><rect x="480" y="240" width="180" height="56"/><text class="t" x="570" y="264">OSS</text><text class="s" x="570" y="282">查询主网关</text></g>
+        <path class="edge" d="M140 136V240" marker-end="url(#ar0)"/>
+        <path class="edge" d="M140 296V400" marker-end="url(#ar0)"/>
+        <path class="edge flow" d="M230 428H570V296" marker-end="url(#ar0)"/>
+        <text class="elabel" x="400" y="418">read path</text>
+      </svg>
+    </div>
+  </div>
+  <footer class="s-foot">demo slide</footer>
+</section>
+
+<section class="slide" data-eyebrow="DEMO · ISO" data-accent="acc">
+  <header class="s-head"><h2>Isometric exploded stack — <em>signature</em> artwork</h2></header>
+  <div class="s-body">
+    <svg class="fig iso" viewBox="0 0 1300 660" data-iso-demo></svg>
+  </div>
+  <footer class="s-foot">demo slide · ISO.stack()</footer>
+</section>
+
+<section class="slide" data-eyebrow="DEMO · LOOP" data-accent="sand">
+  <header class="s-head"><h2>Loop diagram — 闭环即<em>论点</em></h2></header>
+  <div class="s-body cols-2">
+    <div style="display:flex;flex-direction:column;justify-content:space-between">
+      <p>经典本体是直线，操作本体是圆圈。用 <code>data-loop</code> 自动生成环形箭头图，中心可放数据库。</p>
+      <ul class="spec">
+        <li><span class="s-k">data-nodes</span><span class="s-v">3–5 个节点名，"|" 分隔</span></li>
+        <li><span class="s-k">data-center</span><span class="s-v">可选，中心数据库标签</span></li>
+      </ul>
+      <div class="callout"><span class="c-tag">动机</span><p>闭环本身就是论点——执行 → 写回 → 学习。</p></div>
+    </div>
+    <div class="figbox"><svg class="fig" viewBox="0 0 520 430" data-loop data-nodes="用数据做决策|捕获决策·写回|评估影响" data-center="决策谱系"></svg></div>
+  </div>
+  <footer class="s-foot">demo slide</footer>
+</section>
+<!-- SLIDES-END -->
+
+</div></div>
+<div id="overview"></div>
+<div id="hud"></div>
+
+<script>
+/* ================= engine ================= */
+(function(){
+'use strict';
+var stage=document.getElementById('stage'),
+    slides=[].slice.call(document.querySelectorAll('.slide')),
+    N=slides.length, cur=0, deck=window.DECK||{};
+
+if(deck.title)document.title=deck.title;
+
+/* chrome injection */
+slides.forEach(function(s,i){
+  var rule=document.createElement('div');rule.className='chrome rule';s.appendChild(rule);
+  if(s.dataset.eyebrow){var e=document.createElement('div');e.className='chrome eyebrow';e.textContent=s.dataset.eyebrow;s.appendChild(e);}
+  var m=document.createElement('div');m.className='chrome meta';m.textContent=deck.meta||'';s.appendChild(m);
+  var p=document.createElement('div');p.className='chrome page';
+  p.textContent=String(i+1).padStart(2,'0')+' / '+String(N).padStart(2,'0');s.appendChild(p);
+});
+
+/* scale */
+function fit(){var w=innerWidth,h=innerHeight,k=Math.min(w/1920,h/1080);
+  stage.style.transform='translate('+(w-1920*k)/2+'px,'+(h-1080*k)/2+'px) scale('+k+')';}
+addEventListener('resize',fit);fit();
+
+/* nav */
+function go(i){cur=Math.max(0,Math.min(N-1,i));
+  slides.forEach(function(s,j){s.classList.toggle('active',j===cur)});
+  history.replaceState(null,'','#'+(cur+1));
+  document.getElementById('hud').textContent=(cur+1)+' / '+N+'   ←→ nav · O overview · P print';}
+var h=parseInt((location.hash||'').replace('#',''),10);
+go(isNaN(h)?0:h-1);
+
+addEventListener('keydown',function(ev){
+  if(ev.key==='ArrowRight'||ev.key===' '||ev.key==='PageDown')go(cur+1);
+  else if(ev.key==='ArrowLeft'||ev.key==='PageUp')go(cur-1);
+  else if(ev.key==='Home')go(0); else if(ev.key==='End')go(N-1);
+  else if(ev.key==='o'||ev.key==='O')toggleOverview();
+  else if(ev.key==='p'||ev.key==='P')window.print();
+});
+addEventListener('hashchange',function(){var n=parseInt(location.hash.replace('#',''),10);if(!isNaN(n))go(n-1);});
+
+/* overview */
+var ov=document.getElementById('overview'),ovBuilt=false;
+function toggleOverview(){
+  if(!ovBuilt){slides.forEach(function(s,i){
+    var t=document.createElement('div');t.className='thumb';
+    var c=s.cloneNode(true);c.className='slide active mini';t.appendChild(c);
+    var x=document.createElement('span');x.className='idx';x.textContent=i+1;t.appendChild(x);
+    t.onclick=function(){go(i);ov.classList.remove('on')};ov.appendChild(t);});ovBuilt=true;}
+  ov.classList.toggle('on');}
+
+/* ============ ISO helpers ============ */
+var SVGNS='http://www.w3.org/2000/svg';
+function el(svg,tag,attrs,txt){var n=document.createElementNS(SVGNS,tag);
+  for(var k in attrs)n.setAttribute(k,attrs[k]);if(txt!=null)n.textContent=txt;svg.appendChild(n);return n;}
+function plane(svg,cx,cy,w,opts){opts=opts||{};var h=w/2;
+  var pts=cx+','+(cy-h)+' '+(cx+w)+','+cy+' '+cx+','+(cy+h)+' '+(cx-w)+','+cy;
+  return el(svg,'polygon',{points:pts,'class':'iso-face-t'+(opts.accent?' acc':'')});}
+function cube(svg,x,y,s,opts){opts=opts||{};var h=s/2,d=opts.depth||s*.7;
+  el(svg,'polygon',{points:(x-s)+','+y+' '+x+','+(y+h)+' '+x+','+(y+h+d)+' '+(x-s)+','+(y+d),'class':'iso-face-l'});
+  el(svg,'polygon',{points:(x+s)+','+y+' '+x+','+(y+h)+' '+x+','+(y+h+d)+' '+(x+s)+','+(y+d),'class':'iso-face-r'});
+  el(svg,'polygon',{points:x+','+(y-h)+' '+(x+s)+','+y+' '+x+','+(y+h)+' '+(x-s)+','+y,'class':'iso-face-t'+(opts.accent?' acc':'')});}
+function cyl(svg,x,y,r){el(svg,'rect',{x:x-r,y:y,width:2*r,height:r*1.4,fill:'#0c0f13',stroke:'#3d444d','stroke-width':1.1});
+  el(svg,'ellipse',{cx:x,cy:y+r*1.4,rx:r,ry:r*.45,fill:'#0c0f13',stroke:'#3d444d','stroke-width':1.1});
+  el(svg,'ellipse',{cx:x,cy:y,rx:r,ry:r*.45,fill:'#141920',stroke:'#3d444d','stroke-width':1.1});}
+function arrow(svg,x1,y1,x2,y2,opts){opts=opts||{};
+  var mid=(y1+y2)/2, d='M'+x1+' '+y1+' C '+(x1-120)+' '+mid+', '+(x2-120)+' '+mid+', '+x2+' '+y2;
+  var p=el(svg,'path',{d:d,'class':'edge'+(opts.dashed?' flow':'')+(opts.hi?' hi':''),fill:'none'});
+  var a=Math.atan2(y2-mid,120), s=8;
+  el(svg,'polygon',{points:x2+','+y2+' '+(x2-10)+','+(y2-5)+' '+(x2-10)+','+(y2+5),fill:opts.hi?'var(--a)':'#5c6570'});
+  return p;}
+function stack(sel,cfg){var svg=document.querySelector(sel);if(!svg)return;
+  var cx=cfg.cx,w=cfg.w,gap=cfg.gap||150,layers=cfg.layers,rail=cfg.rail;
+  /* bottom-up so upper layers overlap */
+  for(var i=layers.length-1;i>=0;i--){var L=layers[i],cy=cfg.topY+w/2+i*gap;
+    if(L.kind==='scatter'){
+      for(var s=0;s<(L.count||14);s++){var ang=(s*137)%360, r=40+((s*97)%3)*38;
+        var sx=cx+Math.cos(ang*Math.PI/180)*r*1.7, sy=cy+Math.sin(ang*Math.PI/180)*r*.5;
+        (s%3===0)?cyl(svg,sx,sy,13):cube(svg,sx,sy,15,{depth:12});}
+    }else{
+      plane(svg,cx,cy,w,{accent:L.accent});
+      if(L.kind==='grid'){var n=4;for(var gy=0;gy<n;gy++)for(var gx=0;gx<n;gx++){
+        var u=(gx-n/2+.5)/n, v=(gy-n/2+.5)/n;
+        cube(svg,cx+(u-v)*w*.82,cy+(u+v)*w*.41,w*.075,{depth:w*.05,accent:L.accent&&(gx+gy)%3===0});}}
+      if(L.kind==='graph'){var pts=[[-.45,0],[.05,-.28],[.5,-.02],[.18,.3],[-.2,.22],[.42,.33],[-.5,.35]];
+        pts.forEach(function(q,qi){var nx=cx+(q[0]-q[1])*w*.8, ny=cy+(q[0]+q[1])*w*.4;
+          if(qi)el(svg,'line',{x1:cx,y1:cy,x2:nx,y2:ny,stroke:'#3d444d','stroke-width':1,'stroke-dasharray':'3 3'});
+          cube(svg,nx,ny,11,{depth:8,accent:qi===0});});}
+      if(L.kind==='options'){[[-.35,-.1],[.1,-.22],[.4,.02],[0,.18]].forEach(function(q){
+        var nx=cx+(q[0]-q[1])*w*.8, ny=cy+(q[0]+q[1])*w*.4;
+        el(svg,'rect',{x:nx-34,y:ny-11,width:68,height:22,rx:3,fill:'#141920',stroke:'#3d444d','stroke-width':1,
+          transform:'skewX(-24) rotate(6 '+nx+' '+ny+')'});});}
+    }
+  }
+  /* rail labels top-down */
+  if(rail)layers.forEach(function(L,i){var cy=cfg.topY+w/2+i*gap;
+    el(svg,'path',{d:'M'+(cx+w+18)+' '+cy+' H '+(rail.x-14),'class':'rail','stroke-dasharray':'2 3'});
+    el(svg,'path',{d:'M'+rail.x+' '+(cy-16)+' h-8 v32 h8','class':'rail'});
+    el(svg,'text',{x:rail.x+14,y:cy-2,'class':'iso-label'},L.label);
+    if(L.sub)el(svg,'text',{x:rail.x+14,y:cy+16,'class':'iso-sub'},L.sub);
+    var iy0=L.sub?33:16;
+    (L.items||[]).forEach(function(it,k){el(svg,'text',{x:rail.x+14,y:cy+iy0+k*17,'class':'iso-sub'},'→ '+it);});});
+  if(cfg.arrows!==false&&layers.length>1){
+    var y1=cfg.topY+w/2, y2=cfg.topY+w/2+(layers.length-1)*gap;
+    arrow(svg,cx-w-26,y1+10,cx-w+30,y2-6,{hi:true});
+  }}
+window.ISO={stack:stack,cube:cube,plane:plane,cyl:cyl,arrow:arrow,el:el};
+
+/* ============ loop generator ============ */
+[].forEach.call(document.querySelectorAll('svg[data-loop]'),function(svg){
+  var names=(svg.dataset.nodes||'').split('|'),center=svg.dataset.center;
+  var vb=svg.viewBox.baseVal,cx=vb.width/2,cy=vb.height/2-10,R=Math.min(cx,cy)-70;
+  names.forEach(function(nm,i){
+    var a0=-Math.PI/2+i*2*Math.PI/names.length, a1=-Math.PI/2+(i+1)*2*Math.PI/names.length;
+    var pad=.34;
+    var sx=cx+R*Math.cos(a0+pad),sy=cy+R*Math.sin(a0+pad),ex=cx+R*Math.cos(a1-pad),ey=cy+R*Math.sin(a1-pad);
+    el(svg,'path',{d:'M'+sx+' '+sy+' A '+R+' '+R+' 0 0 1 '+ex+' '+ey,'class':'edge hi'});
+    var aa=a1-pad, tx=cx+R*Math.cos(aa), ty=cy+R*Math.sin(aa), na=aa+Math.PI/2;
+    el(svg,'polygon',{points:(tx+9*Math.cos(na))+','+(ty+9*Math.sin(na))+' '+(tx+4*Math.cos(na-2.6))+','+(ty+4*Math.sin(na-2.6))+' '+(tx+4*Math.cos(na+2.6))+','+(ty+4*Math.sin(na+2.6)),fill:'var(--a)'});
+    var nx=cx+R*Math.cos(a0),ny=cy+R*Math.sin(a0);
+    el(svg,'rect',{x:nx-92,y:ny-24,width:184,height:48,rx:6,fill:'var(--bg2)',stroke:'var(--line2)','stroke-width':1.25});
+    el(svg,'text',{x:nx,y:ny+5,'class':'t',fill:'var(--ink)','font-size':14,'text-anchor':'middle'},nm);});
+  if(center){cyl(svg,cx,cy-46,34);
+    el(svg,'text',{x:cx,y:cy+30,'text-anchor':'middle',fill:'var(--ink2)','font-size':13},center);}});
+
+/* demo iso */
+if(document.querySelector('[data-iso-demo]'))ISO.stack('[data-iso-demo]',{cx:380,topY:40,w:230,gap:130,
+  layers:[{label:'DECISION ORCHESTRATION',kind:'options'},{label:'DYNAMIC ONTOLOGY',kind:'graph',accent:true,sub:'对象 · 关联 · 动作'},
+          {label:'YOUR DATA PLATFORM',kind:'grid',items:['AWS','SNOWFLAKE']},{label:'OPERATIONAL SYSTEMS',kind:'scatter',items:['SAP','KAFKA','ORACLE']}],
+  rail:{x:840,w:300}});
+
+/* ============ ?check audit ============ */
+if(/[?&]check=1/.test(location.search)){
+  setTimeout(function(){
+    var bad=[],under=[];
+    slides.forEach(function(s,i){s.classList.add('active');
+      var ow=s.scrollWidth,oh=s.scrollHeight;
+      if(ow>1930||oh>1090){var worst='',mx=0;
+        [].forEach.call(s.querySelectorAll('*'),function(n){var r=n.getBoundingClientRect?n:null;
+          var b=n.offsetTop+n.offsetHeight;if(b>mx&&n.offsetHeight){mx=b;worst=(n.className&&n.className.baseVal!==undefined?n.className.baseVal:n.className)||n.tagName;}});
+        bad.push({slide:i+1,w:ow,h:oh,hint:String(worst).slice(0,60)});}
+      /* underfill: on non-cover slides, real content (leaf text / svg ink / table / img,
+         excluding chrome + footer) must reach at least y=880 of the 1080 canvas */
+      if(!/cover/.test(s.className)){
+        var srect=s.getBoundingClientRect(),mb=0;
+        [].forEach.call(s.querySelectorAll('*'),function(n){
+          if(n.closest('.chrome')||n.closest('.s-foot'))return;
+          if(n.ownerSVGElement)return;
+          var tag=n.tagName.toLowerCase();
+          if(tag!=='svg'&&tag!=='table'&&tag!=='img'&&n.children.length)return;
+          var r=n.getBoundingClientRect();if(!r.height)return;
+          var bottom=r.bottom;
+          if(tag==='svg'){ /* measure drawn ink, not the (possibly letterboxed) element box */
+            try{var vb=n.viewBox.baseVal,bb=n.getBBox();
+              if(vb&&vb.width&&bb.height){var k=Math.min(r.width/vb.width,r.height/vb.height);
+                bottom=r.top+(r.height-vb.height*k)/2+(bb.y+bb.height-vb.y)*k;}}catch(e){}}
+          var b=(bottom-srect.top)/srect.height*1080;if(b>mb)mb=b;});
+        if(mb&&mb<880)under.push({slide:i+1,contentBottom:Math.round(mb)});
+      }
+      if(i!==cur)s.classList.remove('active');});
+    var pre=document.createElement('pre');pre.id='check-report';
+    pre.textContent='OVERFLOW-REPORT:'+JSON.stringify({total:N,fails:bad,underfill:under});
+    pre.style.cssText='position:fixed;left:0;bottom:0;font-size:9px;color:#666;z-index:99;max-width:100%;overflow:hidden';
+    document.body.appendChild(pre);
+    document.title=bad.length?('CHECK-FAIL '+bad.length):(under.length?('CHECK-UNDERFILL '+under.length):'CHECK-OK');
+  },600);}
+})();
+</script>
+</body>
+</html>

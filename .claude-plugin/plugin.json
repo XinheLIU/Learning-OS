@@ -1,8 +1,9 @@
 {
   "name": "learning-os",
   "version": "0.1.0",
-  "description": "A Learning OS: atomic skills for surveying a field, building HTML courses, AI tutoring, deliberate practice, evaluation, reflection, and research — plus a compounding LLM wiki — wired through a shared file-based memory.",
+  "description": "A Learning OS for deep learning, durable knowledge, research synthesis, document organization, and publication workflows.",
+  "skills": "./.claude-plugin/skills",
   "author": { "name": "Xinhe LIU", "url": "https://github.com/XinheLIU" },
   "homepage": "https://github.com/XinheLIU/learning-os",
-  "keywords": ["learning", "tutor", "curriculum", "spaced-repetition", "wiki", "knowledge-management"]
+  "keywords": ["learning", "tutor", "curriculum", "wiki", "knowledge-management", "writing", "publishing"]
 }

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "learning-os",
+  "title": "Learning OS",
+  "tagline": "Learn deeply, organize knowledge, and turn it into clear writing.",
+  "description": "A file-based system for learning, durable knowledge, research synthesis, document organization, and publication workflows.",
+  "version": "0.1.0",
+  "repository": "https://github.com/XinheLIU/learning-os",
+  "accent": "sage",
+  "sourcePattern": "skills/{category}/{skill}/SKILL.md",
+  "install": "/plugin install learning-os@learning-os",
+  "categories": [
+    {
+      "id": "pipeline",
+      "label": "Information Pipeline",
+      "skills": ["llm-wiki-init", "llm-wiki-ingest", "llm-wiki-lint", "llm-wiki-book", "clean-notes", "organize-docs"]
+    },
+    {
+      "id": "learning",
+      "label": "Learning Loop",
+      "skills": ["survey", "curriculum", "learn", "recall", "practice", "evaluate", "reflect", "synthesis-research"]
+    },
+    {
+      "id": "writing",
+      "label": "Writing & Publishing",
+      "skills": ["frame-piece", "build-skeleton", "write-content", "review-draft", "edit-targeted", "book-translator", "insert-inline-images", "book-diagrams", "create-tech-slides"]
+    }
+  ]
+}
