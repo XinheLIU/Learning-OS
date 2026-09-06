@@ -1,6 +1,6 @@
 # retrieval.md Format
 
-Last updated: 2026-09-01
+Last updated: 2026-09-06
 
 `learning/<slug>/retrieval.md` is the course's retrieval ledger: one row per **item** — a unit
 testable by a single cold recall prompt. It is the file that answers "what is due today". `/recall`
@@ -18,7 +18,7 @@ One ledger per course. `/recall` with no argument unions the due rows of every c
 
 | id | kind | pointer | earned | last-fired | next-due | interval-days | streak | lapses | last-assistance | state |
 | :-- | :-- | :-- | :-- | :-- | :-- | --: | --: | --: | :-- | :-- |
-| two-state-machine | schema | framework.md#two-state-machine | 2026-08-31 | 2026-08-31 | 2026-09-01 | 1 | 0 | 0 | none | active |
+| two-state-machine | schema | notes.md#structural-memory:two-state-machine | 2026-08-31 | 2026-08-31 | 2026-09-01 | 1 | 0 | 0 | none | active |
 | hold-vs-free | term | notes.md#terms:hold-vs-free | 2026-08-31 | 2026-09-02 | 2026-09-05 | 3 | 1 | 0 | none | active |
 ```
 
@@ -29,8 +29,8 @@ Column order is fixed. Alignment padding is not — do not reflow the table to k
 | Column | Value |
 | :--- | :--- |
 | `id` | kebab-case, unique within the course. Stable: never renumber, never reuse. |
-| `kind` | `schema` or `term`. Nothing else — see *What is not an item*. |
-| `pointer` | Where the item's content lives: `notes.md#terms:<term>`, `notes.md#0004`, or `framework.md#<node>`. One pointer per row. |
+| `kind` | `schema`, `term`, or `operational`. Operational rows cover bounded commands, shortcuts, patterns, or recovery actions from the syllabus Memory Budget. |
+| `pointer` | Where the item's content lives: `notes.md#terms:<term>` (a term), `notes.md#0004` (a record), or `notes.md#structural-memory:<node>` (a Structural Memory node). One pointer per row. (`framework.md#<node>` appears only in pre-v2 ledgers — treat it as `notes.md#structural-memory:<node>`.) |
 | `earned` | ISO date of the first successful demonstration — the row's creation date. Never changes. |
 | `last-fired` | ISO date of the most recent `/recall` firing. Equals `earned` until the first firing. |
 | `next-due` | ISO date. `/recall` selects rows where `next-due <= today`. |
@@ -64,10 +64,11 @@ row, for the same reason it does not earn a framework node.
 
 ### What is not an item
 
-`kind` is deliberately two values. A case record is *evidence*, not an item — it is a specific
+`kind` has three values. A case record is *evidence*, not an item — it is a specific
 event, and re-asking it tests episodic memory rather than a chunk. A problem is a task, not a unit
 of knowledge. A framework node that is not also a schema or a term has no single cold prompt. If
-something cannot be tested by one prompt with one right answer, it does not get a row.
+something cannot be tested by one prompt with one right answer, it does not get a row. Operational
+items qualify only when the prompt tests a bounded recall or execution action.
 
 ## The schedule
 

@@ -1,26 +1,23 @@
 # Course HTML Format — Shell, Lessons & Reference Docs
 
-_Last updated: 2026-09-01_
+_Last updated: 2026-09-06_
 
-What `/curriculum` authors: the course shell (`index.html`), the syllabus view (`syllabus.html`), a shared component library in `learning/<slug>/assets/`, interactive lessons in `learning/<slug>/lessons/`, and reference docs in `learning/<slug>/reference/`. `/learn` tutors over these files and **revises** them when the learner diverges from the plan. Lessons are rarely revisited; references are — design accordingly.
+What `/curriculum` authors: the course shell (`index.html`), a shared component library in `learning/<slug>/assets/`, interactive lessons in `learning/<slug>/lessons/`, the recall page (`recall.html`), and reference docs in `learning/<slug>/reference/`. `/learn` **revises** lessons when the learner diverges from the plan (recalibrated warm-ups, swapped examples, rewritten misconceptions). Lessons are rarely revisited; references are — design accordingly.
+
+Every lesson is anchored to a roadmap checkpoint. It displays `Checkpoint: CP<n>` and an observable
+`Capability delta: Before → After`. The first lesson shows the mission, baseline, target output,
+whole roadmap, scope cuts, rehearsal method, and next checkpoint before new teaching.
+
+The HTML course carries the learning experience: reading, opening tasks, drills, quizzes, embedded recall. Chat is reserved for post-lesson bookkeeping and user-initiated tutoring — so every lesson must be completable, checkable, and closable **inside the page**.
 
 ## Course shell — `index.html`
 
 One page rendering the course: mission, stages, and the lesson list with links. It is the front door the user opens between sessions.
 
-- Mirrors `syllabus.html` — same stages, same lesson titles, same order. When one changes, the other is updated in the same session (both are *views* of the same plan; `syllabus.html` stays the source of truth for the plan and progress, `index.html` is the lesson-launcher view of it).
-- Shows progress: completed lessons visibly distinct from upcoming ones. `/learn` checks lessons off, **and** the learner can click each lesson's check-in checkbox themselves — the checkbox is a real control (see the interactivity rule under Shared components), persisting to `localStorage` so it survives a reload.
-- Links the course's shared stylesheet from `assets/` (see below) — `index.html` is the first page to link it, and every lesson and reference doc links the same file, so the course looks like one course, not a pile of one-offs.
-- Cross-links `syllabus.html` (and vice-versa), so the shell and the syllabus are always one click apart.
-
-## Syllabus view — `syllabus.html`
-
-The plan, rendered as a browsable HTML page rather than a `.md` file — easier to read than raw Markdown, and it links straight into the lessons it schedules.
-
-- A faithful HTML rendering of `syllabus.md`: mission, sources/gaps, and the staged lesson plan with every lesson's type, objective, prerequisites, spec, primary source, ICAP target, and load note visible.
-- **Lesson titles are live links into `lessons/*.html`** — the syllabus is the course map: read the plan, click through to the lesson. (The shell's lesson list links the same files; the syllabus additionally shows the *why* — objectives, prerequisites, load notes — that the shell omits.)
-- Links the shared stylesheet and `assets/math.js` (see Math, below) so formulas render.
-- `/learn` keeps it in sync with `syllabus.md`'s progress checkboxes. The Markdown `syllabus.md` is no longer authored as a separate deliverable — `syllabus.html` **is** the syllabus; keep a Markdown mirror only if a downstream tool demands `.md`.
+- Renders `syllabus.md` — same stages, same lesson titles, same order. `syllabus.md` is the source of truth for the plan and progress; `index.html` is the lesson-launcher view of it. There is **no `syllabus.html`** — eliminated in v2; the shell reads and renders `syllabus.md` directly via `assets/progress.js`.
+- Shows progress: completed lessons visibly distinct from upcoming ones. Progress checkboxes reflect the checkboxes in `syllabus.md` (persisted to `localStorage` as a convenience view; the durable record is the `syllabus.md` checkbox written at bookkeeping).
+- Links the course's shared stylesheet from `assets/` (see below) — `index.html` is the first page to link it, and every lesson, `recall.html`, and every reference doc links the same file, so the course looks like one course, not a pile of one-offs.
+- Links `recall.html` prominently — the return path is part of the front door, not a hidden page.
 
 ## Shared components — `assets/`
 
@@ -38,7 +35,7 @@ Formulas appear inline (`$...$`) and display (`$$...$$`). Render them with **KaT
 - `assets/math.js` is the loader: it pulls KaTeX (CSS + JS + auto-render) from `cdn.jsdelivr.net`, then runs `renderMathInElement` over `<main>` to turn `$...$` / `$$...$$` into typeset math. Every page that may contain math links it: `<script src="../assets/math.js" defer></script>`.
 - **Author math in LaTeX**, between the right delimiters: inline `$G_t = \sum_{k\ge0}\gamma^k R_{t+k+1}$`, display `$$\nabla_\theta J(\pi_\theta) = \mathbb{E}[\nabla_\theta \log \pi_\theta(a|s)\, Q(s,a)]$$`. KaTeX's supported set: https://katex.org/docs/support_table.
 - **Escaping in HTML:** because `$` and `\` are ordinary in HTML but load-bearing for KaTeX, put math inside element text (not attributes), and don't HTML-encode the backslashes. KaTeX auto-render handles the delimiter scanning; you only write the LaTeX.
-- Link it on **every** lesson, `syllabus.html`, and any reference doc that contains a formula — a page that conditionally "might have math" should just link it unconditionally, since the loader is a no-op when there's nothing to render.
+- Link it on **every** lesson, `index.html`, `recall.html`, and any reference doc that contains a formula — a page that conditionally "might have math" should just link it unconditionally, since the loader is a no-op when there's nothing to render.
 
 
 ## Lessons — `lessons/0001-<dash-case-name>.html`
@@ -48,29 +45,53 @@ One self-contained HTML file per lesson, numbered in syllabus order, authored fr
 **Every lesson MUST:**
 
 - **Teach one tightly-scoped thing** tied to the mission, completable in one sitting — one chunk, one tangible win.
-- **Open with the warm-up** — a retrieval question from a *prior* lesson (spacing), before the new material. **The first lesson of the course has no warm-up** — nothing precedes it to retrieve; it opens with mission framing instead. (If the learner declared relevant prior knowledge, lesson 1 may activate *that* pre-course knowledge, but frame it as such, not as spaced retrieval of a prior lesson.)
+- **Open with the opening task** — a hands-on command, a small variant to try, observing output *before* any explanation (do first, explain second). **The warm-up comes second** — a retrieval question from a *prior* lesson (spacing), before the new material. **The first lesson of the course has no warm-up** — nothing precedes it to retrieve; it opens with mission framing after the opening task. (If the learner declared relevant prior knowledge, lesson 1 may activate *that* pre-course knowledge, but frame it as such, not as spaced retrieval of a prior lesson.)
 - **Be beautiful.** Clean, readable typography and layout; think Tufte. Link the shared stylesheet in `assets/` — never inline a `<style>` block or duplicate the CSS.
 - **Name its primary source** — the single highest-trust resource for this topic, from the syllabus — and cite sources for every substantive claim. **Inline, a citation is just a little mark** — a small superscript footnote marker (e.g. `<sup><a href="#src-3">3</a></sup>`), never a verbose path link mid-sentence. A `(see wiki/wiki/concepts/agent-environment-loop.md)` spelled out in the running text is visual noise. **Collect the real materials in a bulleted "Sources" list at the bottom of the lesson**, each entry a clickable `<a href>` to the actual file (a relative path to the repo file, or its wiki page) — that list is what lets the learner verify each claim.
-- **Anchor-link** the course shell, related lessons, and `reference/` docs.
+- **Anchor-link** the course shell, `recall.html`, related lessons, and `reference/` docs.
 - **Explain code inline.** When a lesson shows a code block, put the comments and explanation *inside* the block — inline comments on the lines they describe — not as prose paragraphs below it. The learner reads each annotation at the exact line it applies to, instead of mapping a paragraph back onto code they've already scrolled past.
-- **End with a follow-up reminder:** the agent is the tutor — ask it anything unclear.
+- **End with the checkpoint block** (see below) — not a vague "ask the tutor" reminder. The checkpoint is how the lesson closes.
+- **Name its checkpoint and capability delta** in the page and connect the opening task, construction,
+  and retry to that expected change.
 
 **Per K/S/W type:**
 
 | Type | The HTML contains |
 | :--- | :--- |
-| **K** | Worked example first, explained with inline code comments (not prose below the block); the one new concept, minimally loaded; links its `reference/` doc |
+| **K** | Worked example first, explained with inline code comments (not prose below the block); the one new concept, minimally loaded; links its `reference/` doc; **1–2 check-yourself items** (quiz or short-answer) so the K-lesson closes with learner construction, not just reading |
 | **S** | A tight feedback loop: quiz or in-browser task with immediate, ideally automatic feedback; retrieval from memory, not recognition; interleaves the prior schemas named in the spec |
 | **W** | The real-world assignment or community engagement, with concrete steps and a debrief plan for the following session |
 
+Operational-memory items use the same feedback loop: cold prompt, learner attempt, answer/reveal, then
+an optional timed execution. Recognition alone is not evidence of recall or fluent execution.
+
 **Quiz rules (S-lessons):** answer options must be the same number of words (and characters where possible) — no formatting clues; feedback names *what* was right or wrong, not just that it was; wrong answers get a hint toward reconstruction, never the solution (the prime directive applies inside the HTML too).
 
-**Every reader question is answerable in the page** — no question is decorative. Wire each one with a shared widget in `assets/` (e.g. `assets/answer.js`), keep it simple and stupid:
+**Every reader question is answerable in the page** — no question is decorative. Wire each one with a shared widget in `assets/` (e.g. `assets/quiz.js`), keep it simple and stupid:
 
 - **Auto-checkable questions** (multiple choice, exact/short factual answer, code output): the learner submits, the widget checks against the stored answer and shows the result immediately — a diff/highlight of their input against the correct answer, not just "right/wrong".
 - **Short-answer / open questions**: the learner types into a textarea, then hits reveal to see the reference answer beside their own for a simple self-comparison diff — never auto-graded, since there's no single right string. Their draft persists to `localStorage` so a reload doesn't wipe it.
 
-**Revision (`/learn`):** pre-built lessons are a plan, not a prophecy. Before each session, `/learn` re-reads the next lesson against `notes.md` and patches it — recalibrate the warm-up, swap an example the learner already knows, adjust difficulty — or rewrites it outright when a recorded misconception or mission shift invalidates it. Patches keep the lesson's number, style, and spec fields.
+**Revision (`/learn`):** pre-built lessons are a plan, not a prophecy. Before each session, `/learn` re-reads the next lesson against `notes.md` and patches it — recalibrate the warm-up against the actual `retrieval.md` ledger (what is due, what has lapsed), swap an example the learner already knows, adjust difficulty — or rewrites it outright when a recorded misconception or mission shift invalidates it. Patches keep the lesson's number, style, and spec fields.
+
+## The checkpoint block — how a lesson closes
+
+Every lesson ends with a **checkpoint block**: a card that packages what the learner did in the page and tells them exactly what happens next. It replaces "return to chat when done" with a concrete, mechanical handoff.
+
+- **The completion manifest button.** One button (wired by the shared `assets/quiz.js`): *"Copy completion manifest → paste in chat: done L&lt;n&gt;"*. Clicking it collects the lesson's `localStorage` widget state (every quiz answer and its correctness, every drill draft's presence and whether the reference was revealed, timestamps) into a compact JSON block and copies it to the clipboard. The user pastes it into chat with `done L<n>` — that paste *is* the done-signal.
+- **What the manifest contains:** `{lesson, items: {<id>: {val, correct} | {draft: bool, revealed: bool}}, completed-at}`. It carries *what the page already knows* — nothing more. `/learn` parses it at bookkeeping and infers assistance from the pattern: locked-correct-first-try reads as `none`; wrong-then-correct as `hint`; revealed-without-draft as `walkthrough`. It is not trusted blindly — an ambiguous pattern earns one spot-probe in chat.
+- **The next-step card.** Alongside the button, one card naming what comes next, from the lesson's `Next:` field in `syllabus.md`: the next lesson link, or "run recall first — N items due" when a gate applies, or "bring a real case to `/practice`" at a mainline close. The learner should never finish a lesson and wonder what to do.
+- **Tutor escape hatch, demoted.** One line at the bottom: *"Stuck on anything here? Ask the tutor in chat — that conversation is where questions belong."* Present on every lesson, never the focus.
+
+## The recall page — `recall.html`
+
+One course page for the return path: every due retrieval item as a self-contained flashcard. `/recall` (the chat skill) is the planner that points here; the page is where the firings happen.
+
+- **Two data sources, same dual-path pattern as `assets/progress.js`:** fetch `retrieval.md` and render due rows live when served over http; otherwise fall back to an embedded snapshot (`window.<SLUG>_RECALL`) regenerated by `/learn` or `/recall` at every bookkeeping pass. Served beats snapshot when both exist.
+- **Per due item:** the cold prompt alone (derived from the row's pointer — a term asks for its definition, a schema for its rule/trigger/transition), a *reveal* button, then self-grade buttons — **got it** / **missed it** / **peeked**. Grades persist to `localStorage`.
+- **Cold integrity is enforced by grading, not by hiding:** an item revealed *before* the learner committed an attempt is graded **peeked**, which syncs as assistance `walkthrough` — the honest treatment of a warm retrieval. The page never shows an answer next to its prompt unprompted.
+- **A sync block at the bottom:** the same manifest pattern as the checkpoint — *"Copy recall results → paste in chat: sync recall"* — packaging the self-grades for the ledger. `/recall` applies the scheduling rules on that paste.
+- **No teaching on the page.** A missed item names the correct answer after the attempt is graded — nothing more. Re-derivation belongs to a lesson revision or a tutor conversation.
 
 ## Reference docs — `reference/<name>.html`
 

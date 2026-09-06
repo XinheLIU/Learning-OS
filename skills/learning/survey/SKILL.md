@@ -1,11 +1,30 @@
 ---
 name: survey
-description: Investment gate before learning a field. Use when the user wants to explore a new domain, decide what's worth learning, allocate learning time, or says "/survey <field>". Outputs a mainline × mastery-stage matrix — 3–5 learning mainlines (breadth) crossed with four mastery stages (depth), a behavioral milestone in every cell — plus investment triage, curated sources, a gap diagnosis, and a seeded framework.md v0 skeleton that /curriculum, /learn, /evaluate, and /reflect build on.
+description: Investment gate before learning a field. Use when the user wants to explore a new domain, decide what's worth learning, allocate learning time, or says "/survey <field>". Outputs a mainline × mastery-stage matrix — 3–5 learning mainlines (breadth) crossed with four mastery stages (depth), a behavioral milestone in every cell — plus investment triage, curated sources, a gap diagnosis, and a seeded Structural Memory v0 skeleton in notes.md that /curriculum, /learn, /evaluate, and /reflect build on.
 ---
 
 # Survey — Investment Gate
 
-Last updated: 2026-07-24
+Last updated: 2026-09-06
+
+## Mission Contract intake
+
+Before researching or building the matrix, run a required interview and persist a `## Mission
+Contract` section in `survey.md`:
+
+- **Desired change / output:** an observable real-world result. If the user says “understand”, ask
+  what they will produce, diagnose, decide, or perform.
+- **Current level evidence:** concrete work, reading, performance, or a short probe. Unsupported
+  self-ratings are rounded down to the lowest evidenced rung.
+- **Why now:** the present consequence or opportunity that makes the topic relevant.
+- **Capability gap:** current state → desired state, stated so it can drive sequencing.
+- **Constraints:** time, tools, budget, prior commitments, and learning preferences.
+- **Non-goals:** explicit scope cuts.
+- **Uncertainty:** unresolved answers or confidence limits; never silently guess.
+
+Use adaptive follow-up questions when an answer is vague, unsupported, inconsistent, or overly broad.
+Continue only when the outcome is observable, relevance is concrete, current level has evidence, and the
+gap can guide the matrix.
 
 Runs before any information enters the learning pipeline. The deliverable is an **investment decision on a two-dimensional matrix, not a textbook**:
 
@@ -33,7 +52,7 @@ Mapped onto the mastery ladder shared with `/evaluate` — never invent a parall
 - **The triage MUST be argued.** Every mainline's target has a why; a survey that cuts nothing is a reading list, not a gate — you MUST name at least one SKIP or stop-early.
 - **Two entry paths, one output.** Existing material → deepen and reorganize it. Blank slate → full web research. Re-running `/survey` on a topic with an existing `survey.md` is a *deepening pass* — refine the mainlines and milestones against what `notes.md` now shows, don't start over.
 - **You MUST NOT build models or teach here.** That is `/learn`'s job. Map the terrain, allocate the time, hand off.
-- **Seed structure, never earn it.** You write `framework.md` v0 — `target` nodes and `hypothesized` edges only. Marking anything `earned` from a survey is confabulation; earning belongs to the loop.
+- **Seed structure, never earn it.** You write the Structural Memory section of `notes.md` v0 — `target` nodes and `hypothesized` edges only. Marking anything `earned` from a survey is confabulation; earning belongs to the loop.
 - **Never write to `wiki/`.** The wiki is owned by the llm-wiki suite; the handoff is an offer, not an action.
 
 ## Flow
@@ -144,18 +163,22 @@ The **gap (current → target) is the supervision signal**: `/curriculum` front-
 
 ### 9. Write survey.md
 
-Write `learning/<slug>/survey.md`: date + sources consulted, a short narrative section (history & people, current state & controversies, trajectory), then **mainlines** (fold-in table + graph), then **the matrix**, then triage, sources, gap diagnosis.
+Write `learning/<slug>/survey.md`: date + sources consulted, the Mission Contract, a short narrative
+section (history & people, current state & controversies, trajectory), then **mainlines** (fold-in
+table + graph), **the matrix**, triage, sources, gap diagnosis, and a **Roadmap**. The Roadmap must
+show the whole field, selected critical path, in-scope topics, deferred/skipped topics, and 3–5
+checkpoint outcomes phrased as observable `Before → After` changes.
 
-### 10. Seed framework.md v0
+### 10. Seed Structural Memory v0
 
-Write `learning/<slug>/framework.md` per [../learn/references/framework-format.md](../learn/references/framework-format.md) — the skeleton the journey will converge on:
+Initialize or update the **Structural Memory** section in `learning/<slug>/notes.md` per [../learn/references/notes-format.md](../learn/references/notes-format.md) — the skeleton the journey will converge on:
 
 - Map: mainline subgraphs; the matrix's key concepts as `target` nodes; your ≥3 labeled cross-links as `hypothesized` edges (dashed).
 - Layers: concepts and models listed with status `target`, no gloss — the learner's words come later.
 - Frontier → Open tensions: the controversies from step 3, each tied to why it will matter.
 - `Iteration: 0`.
 
-Re-running `/survey` (deepening pass) revises `target`/`hypothesized` structure only; anything `earned` is the loop's and MUST NOT be touched here.
+If `notes.md` doesn't exist yet, create it with the Structural Memory section. Re-running `/survey` (deepening pass) revises `target`/`hypothesized` structure only; anything `earned` is the loop's and MUST NOT be touched here.
 
 ### 11. Exit handoffs
 
@@ -164,7 +187,15 @@ Re-running `/survey` (deepening pass) revises `target`/`hypothesized` structure 
 
 ## Contract test
 
-`survey.md` contains: 3–5 mainlines each with its question and a fold-in table; ≥3 labeled cross-mainline links; a full mainlines × four-stages matrix where every cell is behavioral, every can-apply cell names a sample, and every mainline has a marked target stage; an argued investment table summing to ~100% with ≥1 SKIP/stop-early; a gap diagnosis per mainline with current + target + evidence on the shared ladder; Read/Don't-read lists with reasons; wiki ingest offered, not forced. `framework.md` v0 exists with only `target` nodes and `hypothesized` edges, seeded tensions, and `Iteration: 0`; a deepening pass leaves `earned` structure untouched.
+`survey.md` contains a complete Mission Contract (goal/output, baseline evidence, relevance, gap,
+constraints, non-goals, uncertainty); a Roadmap with whole-field orientation, critical path, scope
+cuts, and 3–5 `Before → After` checkpoints; 3–5 mainlines each with its question and a fold-in table;
+≥3 labeled cross-mainline links; a full mainlines × four-stages matrix where every cell is behavioral,
+every can-apply cell names a sample, and every mainline has a marked target stage; an argued investment
+table summing to ~100% with ≥1 SKIP/stop-early; a gap diagnosis per mainline with current + target +
+evidence on the shared ladder; Read/Don't-read lists with reasons; wiki ingest offered, not forced.
+Structural Memory section in `notes.md` exists with only `target` nodes and `hypothesized` edges,
+seeded tensions, and `Iteration: 0`; a deepening pass leaves `earned` structure untouched.
 
 ## Handoffs
 
@@ -172,9 +203,9 @@ Re-running `/survey` (deepening pass) revises `target`/`hypothesized` structure 
 
 **Out:**
 - `survey.md` written → matrix + gap diagnosis + sources → `/curriculum <slug>`.
-- `framework.md` v0 seeded → skeleton for the loop skills to earn against.
+- Structural Memory section in `notes.md` v0 seeded → skeleton for the loop skills to earn against.
 - Read list curated → offer `llm-wiki-ingest` (soft, never forced).
-- Controversies surfaced → logged in `framework.md` Frontier as `/research` candidates — not resolved here.
+- Controversies surfaced → logged in Structural Memory Frontier as `/synthesis-research` candidates — not resolved here.
 
 ## Boundaries
 

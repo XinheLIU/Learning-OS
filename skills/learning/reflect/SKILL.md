@@ -5,7 +5,7 @@ description: Close the learning loop - decide what should change next. Use after
 
 # Reflect — Continuous Feedback
 
-Last updated: 2026-07-24
+Last updated: 2026-09-02
 
 The loop-closer: **what should change next.** Reflect consumes `/evaluate`'s snapshot rather than duplicating it — evaluate measures state; reflect changes trajectory (model edits, next micro-goals, playbook, framework structure). It keeps the knowledge base alive rather than a frozen snapshot.
 
@@ -21,7 +21,7 @@ The loop-closer: **what should change next.** Reflect consumes `/evaluate`'s sna
 
 ### 1. Gather state
 
-Read `learning/<slug>/`: `notes.md` (records + terms, including the latest Mastery Snapshot — if absent or stale, recommend `/evaluate <slug>` first), all `case-*.md`, `framework.md`, and `survey.md`.
+Read `learning/<slug>/`: `notes.md` (the consolidated file containing Records, Terms, Structural Memory, Micro-Skills, Playbook, and the latest Mastery Snapshot — if absent or stale, recommend `/evaluate <slug>` first), all `case-*.md`, and `survey.md`.
 
 ### 2. Three questions
 
@@ -46,9 +46,9 @@ Either answer (recalibrate the matrix, or change the habit) is fine; unexamined 
 
 ### 5. Update models & framework structure
 
-For any record that needs adjustment: ask what changed (sharper boundary? new example? doesn't hold?), edit it minimally in `notes.md`, append `(revised <date> — <what changed>)`. Dead records → archive (see Rules).
+For any record that needs adjustment: ask what changed (sharper boundary? new example? doesn't hold?), edit it minimally in the **Records** section of `notes.md`, append `(revised <date> — <what changed>)`. Dead records → archive (see Rules).
 
-Then mirror the structural consequences in `framework.md` (per [../learn/references/framework-format.md](../learn/references/framework-format.md)): a cracked model archives or re-glosses its node; a revised boundary may re-label an edge; a "no model fits" pattern becomes a Missing-links entry. If the tables changed, regenerate the Map and **bump `Iteration` by 1** — you are the only skill that touches the counter. Earning is not yours: never flip `target` → `earned` here (that needs `/learn` or `/practice` evidence).
+Then mirror the structural consequences in the **Structural Memory** section of `notes.md` (per [../learn/references/notes-format.md](../learn/references/notes-format.md)): a cracked model archives or re-glosses its node; a revised boundary may re-label an edge; a "no model fits" pattern becomes a Missing-links entry. If the tables changed, regenerate the Map and **bump `Iteration` by 1** — you are the only skill that touches the counter. Earning is not yours: never flip `target` → `earned` here (that needs `/learn` or `/practice` evidence).
 
 ### 6. Playbook — behind the defense gate
 
@@ -58,7 +58,7 @@ At **5+ cases**, offer playbook synthesis. But first, the **adversarial defense 
 - The user defends or revises. A position enters the playbook **only** if it survives or is revised — this keeps positions defensible from both sides and guards against self-congratulation.
 - You MUST refuse to write the playbook for positions that were neither defended nor revised.
 
-Then write/update `learning/<slug>/playbook.md`: the user's repeatable method and defended positions, each noting the objection it survived.
+Then write/update the **Playbook** section of `notes.md`: the user's repeatable method and defended positions, each noting the objection it survived.
 
 ### 7. Close
 
@@ -66,7 +66,7 @@ Set next micro-goals (from step 3).
 
 ## Contract test
 
-Recurring error surfaced across ≥2 cases; drift vs the matrix reported on both axes (breadth and depth); playbook refused until positions survive the steelman; a structural change to `framework.md` regenerates the Map and bumps `Iteration` exactly once; no `target` → `earned` flip happens here.
+Recurring error surfaced across ≥2 cases; drift vs the matrix reported on both axes (breadth and depth); playbook refused until positions survive the steelman; a structural change to Structural Memory regenerates the Map and bumps `Iteration` exactly once; no `target` → `earned` flip happens here.
 
 ## Handoffs
 
@@ -74,10 +74,10 @@ Recurring error surfaced across ≥2 cases; drift vs the matrix reported on both
 
 **Out:**
 - Recurring errors compressed → next micro-goals → `/practice`'s next session opener.
-- Model revisions + framework structure revised, `Iteration` bumped → `notes.md` / `framework.md`.
+- Model revisions + framework structure revised, `Iteration` bumped → Playbook and Structural Memory sections in `notes.md`.
 - Matrix drift confirmed as a targets problem → back to `/survey` — the matrix is not yours to edit.
-- 5+ cases and positions survive the steelman → `playbook.md` (its positions enter `framework.md` General frameworks).
-- A `/research` judgment contradicted a record → resolve here via minimal model edit or archive.
+- 5+ cases and positions survive the steelman → Playbook section in `notes.md` (its positions enter Structural Memory General frameworks).
+- A `/synthesis-research` judgment contradicted a record → resolve here via minimal model edit or archive.
 
 ## Boundaries
 

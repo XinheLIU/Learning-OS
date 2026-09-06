@@ -5,9 +5,9 @@ description: Synthesis researcher - produce judgment no single source contains. 
 
 # Research — Research Companion
 
-Last updated: 2026-07-24
+Last updated: 2026-09-06
 
-The one component of the Learning OS that **creates** knowledge instead of consuming it. Everything upstream feeds it: `wiki/` holds what the sources say, `learning/` holds what the learner has earned — research overlays them and produces the judgment that exists in neither. It owns the `can-generate` rung and the `framework.md` Frontier: the system's growth past what any course contained. The deliverable is always **written** — writing is where the thinking completes, not packaging.
+The one component of the Learning OS that **creates** knowledge instead of consuming it. Everything upstream feeds it: `wiki/` holds what the sources say, `learning/` holds what the learner has earned — research overlays them and produces the judgment that exists in neither. It owns the `can-generate` rung and the Structural Memory Frontier (in `notes.md`): the system's growth past what any course contained. The deliverable is always **written** — writing is where the thinking completes, not packaging.
 
 **Tutor, not a homework-answer machine** — decompose and involve the user; the Judgment is always theirs.
 
@@ -24,15 +24,15 @@ No tension? Say so and route: quick factual question → answer it directly or q
 
 ## Frontier mode — extend past the course
 
-Entered when `/evaluate` closes a mainline's loop tier, or the user asks to deepen a mastered area ("who moves this field? what's current?"). No tension required — the input is `framework.md`: its earned Layers and its Frontier.
+Entered when `/evaluate` closes a mainline's loop tier, or the user asks to deepen a mastered area ("who moves this field? what's current?"). No tension required — the input is the Structural Memory section of `notes.md`: its earned Layers and its Frontier.
 
 1. Read the earned structure — frontier work anchors to *what the learner owns*, not to the field in the abstract.
 2. Scan the field's living edge: key people and groups, current advances, the papers that matter now. Web research, heterogeneous sources.
-3. **Annotation rule:** every entry written to `framework.md` Frontier MUST name the earned Layer item it *extends* or *threatens* ("MuZero line — threatens your 'model-free is enough' model"). Unanchored link dumps are a reading list, not a frontier.
+3. **Annotation rule:** every entry written to the Structural Memory Frontier MUST name the earned Layer item it *extends* or *threatens* ("MuZero line — threatens your 'model-free is enough' model"). Unanchored link dumps are a reading list, not a frontier.
 4. Add `hypothesized` edges the scan suggests; add `frontier` nodes for structures beyond the course.
 5. If the scan surfaces a live tension — and it usually does — offer to escalate into the report pipeline above.
 
-Frontier mode's deliverable is the updated `framework.md` Frontier (+ optional wiki ingest offer). It produces **no judgment and no report**, so it is NOT `can-generate` evidence — only the report pipeline is.
+Frontier mode's deliverable is the updated Structural Memory Frontier in `notes.md` (+ optional wiki ingest offer). It produces **no judgment and no report**, so it is NOT `can-generate` evidence — only the report pipeline is.
 
 ## One question per report
 
@@ -83,7 +83,7 @@ Write `learning/<slug>/research-<question-slug>.md` (standalone if no topic exis
 ## Feedback into the system
 
 - The report is `can-generate` evidence for `/evaluate` — the system's highest mastery tier.
-- The user's judgment enters `framework.md` under General frameworks; report insights add `hypothesized` edges. Frontier mode writes the Frontier section (annotation rule above). Research never flips anything to `earned` — that takes the loop.
+- The user's judgment enters the Structural Memory section of `notes.md` under General frameworks; report insights add `hypothesized` edges. Frontier mode writes the Frontier section (annotation rule above). Research never flips anything to `earned` — that takes the loop.
 - If the judgment contradicts an earned `learning/` record, flag it for `/reflect` — don't edit the model here.
 - Offer (soft, never force) to file the report into the wiki via `llm-wiki-ingest`; never write `wiki/` directly.
 
@@ -93,12 +93,12 @@ Report contains a steelmanned tension with a named crux; every connection cites 
 
 ## Handoffs
 
-**In:** a live tension (report pipeline) — or, for frontier mode, a mainline whose loop tier `/evaluate` closed, plus `framework.md`'s earned Layers and Frontier.
+**In:** a live tension (report pipeline) — or, for frontier mode, a mainline whose loop tier `/evaluate` closed, plus the Structural Memory section's earned Layers and Frontier.
 
 **Out:**
-- Report written → `research-*.md` → `can-generate` evidence for `/evaluate`; judgment into `framework.md` General frameworks.
+- Report written → `research-*.md` → `can-generate` evidence for `/evaluate`; judgment into the Structural Memory section of `notes.md` (General frameworks).
 - Judgment contradicts an earned record → flag → `/reflect <slug>`.
-- Frontier scan done → annotated Frontier entries + `hypothesized` edges in `framework.md` → tensions found become the next report candidates.
+- Frontier scan done → annotated Frontier entries + `hypothesized` edges in the Structural Memory section of `notes.md` → tensions found become the next report candidates.
 - Sources worth keeping → offer `llm-wiki-ingest` (soft, never forced).
 
 ## Boundaries

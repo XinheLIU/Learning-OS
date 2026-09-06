@@ -1,6 +1,6 @@
 # The Learning Loop
 
-Last updated: 2026-09-01
+Last updated: 2026-09-06
 
 **Learn deeply, with evidence — until the assistance is no longer needed.**
 
@@ -8,18 +8,34 @@ AI makes consuming knowledge nearly free, but consuming is not learning. The lea
 
 This document is the canonical **target architecture** for the learning system. [`docs/exec-plans/learning.md`](../../docs/exec-plans/learning.md) contains only the work still required. For the whole three-system picture (information pipeline → learning loop → writing system), see the [root README](../../README.md).
 
+## The interaction contract (v3)
+
+**The HTML course carries the learning experience.** Reading, opening tasks, drills, quizzes, mini-cases, and spaced recall all happen in the browser — completable, checkable, and closable inside the page. **Chat is reserved for exactly two things:**
+
+1. **Bookkeeping** — after a lesson, the learner pastes its completion manifest with `done L<n>`; the agent records what was earned (`notes.md`, `retrieval.md`, syllabus checkbox) and says what comes next. Short and mechanical — never a re-teach.
+2. **Questions** — the learner asks; the AI answers as a tutor. Always learner-initiated.
+
+The learner's chat surface is four verbs: `/learn <slug>` (open the next lesson), `done L<n>` (bookkeeping), `/recall` (what's due → `recall.html`), `sync recall` (apply recall results). Everything else — practice, evaluation, reflection — starts from evidence these four produce.
+
+The planning handoff is unified: `/survey` records a Mission Contract, Roadmap, and gap; `/curriculum`
+preserves those decisions in `syllabus.md`, adds checkpoints and a bounded Memory Budget; `/learn`
+orients each lesson to its checkpoint and records conceptual plus operational evidence. Operational
+memory covers only mission-critical commands, shortcuts, patterns, and recovery actions. It uses the
+existing retrieval ledger and may optionally use a learner-built memory palace; imagery never replaces
+behavioral evidence.
+
 ## The Skills
 
 | Component | Command | Primary responsibility | Durable output |
 | :--- | :--- | :--- | :--- |
-| Investment gate | `/survey` | Define the map, critical path, source set, and baseline | `survey.md`, `framework.md` v0 |
-| Course designer | `/curriculum` | Plan backward from the output and build the Tier-1 course | `syllabus.md`, HTML course (K/S lessons + loop-entry specs) |
-| AI tutor | `/learn` | Run prediction, construction, feedback, retry, and compression | lesson progress, `notes.md`, `reference/`, promoted framework nodes, opened ledger rows |
-| Retrieval scheduler | `/recall` | Test due items cold, record the outcome, and reschedule | `retrieval.md` |
-| Practice coach | `/practice` | Train one micro-skill on a real case and record attempts | `drills-*.md`, `case-*.md`, earned framework edges |
+| Investment gate | `/survey` | Define the map, critical path, source set, and baseline | `survey.md`, Structural Memory v0 in `notes.md` |
+| Course orchestrator & builder | `/curriculum` | Plan backward from the output; build the Tier-1 course and orchestrate the loop inside it | `syllabus.md` (+ `Next:`/`Gate:` fields), HTML course (K/S lessons + mini-cases with checkpoint blocks, `recall.html`, loop-entry specs) |
+| Session manager & AI tutor | `/learn` | Open revised lessons (`start`); record earned knowledge from completion manifests (`done`); answer questions (`tutor`) | lesson progress, `notes.md`, `reference/`, promoted Structural Memory nodes, opened ledger rows, fresh recall queue |
+| Retrieval planner | `/recall` | Compute what's due, point at `recall.html`, apply scheduling rules to synced results | `retrieval.md`, refreshed recall queue |
+| Practice coach | `/practice` | Train one micro-skill on a real case and record attempts | `case-*.md`, Micro-Skills in `notes.md`, earned Structural Memory edges |
 | Evaluator | `/evaluate` | Assess evidence, transfer, and independence; gate the tiers | Mastery Snapshot in `notes.md` |
-| Feedback loop | `/reflect` | Convert errors and drift into changed models and next attempts | model revisions, micro-goals, `playbook.md`, framework iterations |
-| Research companion | `/synthesis-research` | Resolve a live tension into the learner's judgment and action; extend the frontier | `research-*.md`, `framework.md` frontier |
+| Feedback loop | `/reflect` | Convert errors and drift into changed models and next attempts | model revisions, micro-goals, Playbook in `notes.md`, framework iterations |
+| Research companion | `/synthesis-research` | Resolve a live tension into the learner's judgment and action; extend the frontier | `research-*.md`, Structural Memory frontier |
 
 `/recall` is the loop's **return path**. Every other skill moves knowledge forward; this one is the
 only thing that comes back for it. A lesson checkbox is terminal, but a ledger row keeps coming due.
@@ -35,17 +51,17 @@ flowchart TB
     subgraph plan["Map &amp; plan"]
         direction TB
         survey["/survey<br/>map · 80/20 path · sources"]
-        curriculum["/curriculum<br/>staged, evidence-gated path"]
+        curriculum["/curriculum<br/>orchestrate · build the course"]
         survey --> curriculum
     end
 
     subgraph learnloop["Learning loop · shared learner memory"]
         direction TB
-        learn["/learn<br/>predict · construct"]
+        learn["/learn<br/>start · done · tutor"]
         practice["/practice<br/>real attempts"]
-        recall["/recall<br/>cold retrieval · reschedule"]
+        recall["/recall<br/>plan · sync · reschedule"]
         memory[("learning/&lt;slug&gt;/<br/>shared learner memory")]
-        framework[("framework.md<br/>structural memory:<br/>layers · connections · frontier")]
+        framework[("Structural Memory<br/>in notes.md:<br/>layers · connections · frontier")]
         ledger[("retrieval.md<br/>what is due today")]
         evaluate["/evaluate<br/>evidence · tier gate"]
         reflect["/reflect<br/>next change"]
@@ -147,10 +163,10 @@ The journey climbs three tiers on one shared mastery ladder. Each tier owns its 
 | Tier | Skills | Builds | Owns rungs | Exit gate (per mainline) |
 | :--- | :--- | :--- | :--- | :--- |
 | 1 — Course | `/survey` → `/curriculum` → `/learn` | knowledge → skill | can-recall, can-apply | all K/S lessons closed; every can-apply cell's named sample reproduced at assistance ≤ hint |
-| 2 — Learning loop | `/practice` ⇄ `/reflect` (+ `/evaluate`) | skill → wisdom | can-transfer | target cell evidenced by a case outside the home domain or on the learner's own project (none/hint); ≥1 earned cross-mainline edge in `framework.md` |
+| 2 — Learning loop | `/practice` ⇄ `/reflect` (+ `/evaluate`) | skill → wisdom | can-transfer | target cell evidenced by a case outside the home domain or on the learner's own project (none/hint); ≥1 earned cross-mainline edge in the Structural Memory section of `notes.md` |
 | 3 — Research companion | `/synthesis-research` (+ wiki) | wisdom → generation | can-generate → can-teach | research report with judgment + falsifier; graduation = teach-back that survives a misconception |
 
-Throughout, `framework.md` is the convergence target: `/survey` seeds its skeleton top-down, the loop earns it bottom-up, and `/synthesis-research` grows it past the course.
+Throughout, the Structural Memory section of `notes.md` is the convergence target: `/survey` seeds its skeleton top-down, the loop earns it bottom-up, and `/synthesis-research` grows it past the course.
 
 `/recall` sits outside the tier table on purpose: it owns no rung. Tiers describe how deep capability goes; retrieval describes whether it is still there. A row opened by a Tier-1 lesson and a row opened by a Tier-2 case are fired the same way, so `/recall` runs across all three tiers and gates none of them. What it produces is not a mastery claim — `/evaluate` reads the ledger as corroboration and still requires its own rubric evidence.
 
@@ -195,7 +211,7 @@ Knowledge, skill, and wisdom still form a depth ladder, but not a waterfall. The
 
 ### 4. Run the learning loop
 
-`/learn`, `/practice`, `/evaluate`, and `/reflect` form one loop around `learning/<slug>/`, with `/recall` running across it on its own schedule. They do not hand state directly to one another: each reads the shared files it needs and writes durable evidence for the next skill. Within that system, `/learn` and `/practice` use one invariant attempt loop:
+`/learn`, `/practice`, `/evaluate`, and `/reflect` form one loop around `learning/<slug>/`, with `/recall` running across it on its own schedule. They do not hand state directly to one another: each reads the shared files it needs and writes durable evidence for the next skill. One invariant attempt loop runs through the whole system — embedded in the HTML lessons (opening task → check-yourself → checkpoint) and in `/learn`'s tutor mode and `/practice`'s coaching dialogue alike:
 
 ```text
 1. Retrieve a prerequisite from memory.
@@ -256,13 +272,13 @@ The system separates external information from learner-owned knowledge:
 Compression happens after construction. AI may propose a draft, but an artifact becomes earned knowledge only after the learner can explain, use, or defend it. Durable outputs include:
 
 - concise mental models and canonical terms in `notes.md`;
-- earned structure — layered nodes, labeled connections, the frontier — in `framework.md`;
+- earned structure — layered nodes, labeled connections, the frontier — in the Structural Memory section of `notes.md`;
 - retrieval history — intervals, streaks, lapses — in `retrieval.md`;
 - printable reference cards in `reference/`;
-- micro-skill maps in `drills-*.md`;
+- micro-skill maps in the Micro-Skills section of `notes.md`;
 - real attempts and error histories in `case-*.md`;
 - judgments and falsifiers in `research-*.md`;
-- defended procedures and decision rules in `playbook.md`.
+- defended procedures and decision rules in the Playbook section of `notes.md`.
 
 ### 8. Fade support and prove independence
 
@@ -279,31 +295,41 @@ feedback after attempt -> feedback after completion -> unaided transfer
 
 ### Learner memory
 
-`learning/<slug>/` is the shared durable state read and written by `/learn`, `/practice`, `/evaluate`, and `/reflect`. All learner paths are relative to it:
+`learning/<slug>/` is the shared durable state. All skills read from and write to these files:
 
-```text
-learning/<slug>/
-├── survey.md        # map, investment decisions, sources, baseline
-├── framework.md     # structural memory: layers, connections, frontier (seeded by /survey, earned by the loop)
-├── retrieval.md     # the retrieval ledger: one row per item, what is due today (rows opened by /learn and /practice, fired by /recall)
-├── syllabus.md      # mission, stages, outputs, progress
-├── index.html       # course shell
-├── notes.md         # earned models, terms, preferences, evidence snapshot
-├── lessons/         # course material, revised as evidence changes
-├── reference/       # compressed reusable references
-├── drills-*.md      # micro-skills, failure modes, success criteria
-├── case-*.md        # attempts, feedback, retries, errors, assistance
-├── research-*.md    # tension, connections, judgment, action, falsifier
-└── playbook.md      # defended reusable system
-```
+| Artifact | Owner(s) | Readers | Content | Lifecycle |
+|----------|----------|---------|---------|-----------|
+| `survey.md` | `/survey` | `/curriculum`, `/learn`, `/practice`, `/reflect` | Investment matrix, mainlines × stages, triage, gap diagnosis, curated sources | Created once, refined by `/survey` deepening pass |
+| `syllabus.md` | `/curriculum` | `/learn`, `/evaluate` | Mission Contract, Roadmap, checkpoints, Memory Budget, staged lesson specs (K/S/W) with `Next:`/`Gate:` orchestration fields, checkboxes | Created by `/curriculum`, checkboxes updated by `/learn` & `/evaluate` |
+| `index.html` | `/curriculum` | human | Course shell: mission, stages, lesson list with progress (rendered from syllabus.md) | Generated by `/curriculum`, updated on checkpoint |
+| `lessons/*.html` | `/curriculum`, `/learn` | human | K/S lesson + mini-case content (Stages 1–3): interactive, opening task first, drills/quizzes, **checkpoint block** closing the lesson | Authored by `/curriculum`, revised by `/learn` per learner |
+| `recall.html` | `/curriculum`, `/learn`, `/recall` | human | The return path: due items as flashcards (prompt, reveal, self-grade, sync block) | Built by `/curriculum`; embedded queue refreshed by `/learn` & `/recall` at every bookkeeping pass |
+| `reference/*.html` | `/curriculum`, `/learn` | human | Compressed reference docs: cheat sheets, glossary, syntax cards | Seeded by `/curriculum`, extended by `/learn` |
+| `notes.md` | `/learn`, `/practice`, `/evaluate`, `/reflect` | all skills | Records, attempt log, terms, **operational memory**, **structural memory**, **micro-skills**, **playbook**, preferences, mastery snapshot | Grows through the loop, pruned by `/reflect` |
+| `retrieval.md` | `/learn`, `/practice`, `/recall` | `/recall`, `/evaluate` | Retrieval ledger: schema, term, and operational items, intervals, due dates, lapses, state | Rows opened by `/learn` & `/practice`, fired in `recall.html`, rescheduled by `/recall` |
+| `case-*.md` | `/practice` | `/evaluate`, `/reflect` | Practice attempts: scenario, models applied, errors, assistance, retry cycles | One file per case, read-only after creation |
+| `research-*.md` | `/synthesis-research` | `/evaluate`, `/reflect` | Synthesis research: judgment, falsifier, frontier | One file per synthesis question |
 
-`notes.md` holds *evidence* (linear); `framework.md` holds *structure* (a graph of concepts, models, and cross-mainline connections, plus the frontier beyond the course); `retrieval.md` holds *decay* (when each item was last retrieved and when it is next due). A node or edge flips to `earned` only with an evidence pointer produced at assistance `none`/`hint` — coached work never earns structure. `/learn` promotes nodes, `/practice` earns edges, `/reflect` revises and bumps the iteration counter, `/synthesis-research` owns the frontier; `/curriculum` and `/evaluate` only read it. Full spec: [learn/references/framework-format.md](learn/references/framework-format.md).
+**Key changes from v1**:
+- `framework.md`, `drills-*.md`, and `playbook.md` are now consolidated into `notes.md` sections (`## Structural Memory`, `## Micro-Skills`, `## Playbook`)
+- `syllabus.html` eliminated — `index.html` renders syllabus.md directly
+- Reduced from ~14 artifacts per topic to ~10
 
-The same first-successful-demonstration moment that promotes a framework node also opens a `retrieval.md` row — one per **item**: a schema or a term testable by a single cold prompt. Rows are never opened at exposure, and coached demonstrations open none. `/recall` alone fires and reschedules them; a firing records a correctness bit and an assistance level on two separate axes ([ADR-005](../../docs/adr.md#adr-005-score-retrieval-on-correctness-and-assistance-separately)). Full spec: [learn/references/retrieval.md](learn/references/retrieval.md).
+**Key changes from v2 (v3 — HTML-first)**:
+- Every lesson ends in a **checkpoint block**: a completion-manifest button (packages the page's quiz/drill state as JSON) + a next-step card. The paste-back manifest is the done-signal; `/learn` does bookkeeping from it instead of re-teaching in chat.
+- **`recall.html`** is the return path: due items fire in the browser (prompt alone, reveal, self-grade); `/recall` plans and reschedules — it never quizzes in chat.
+- **Mini-cases get lesson files**; Stage 4–5 W entries remain chat-executed loop-entry specs.
+- `syllabus.md` carries the orchestration contract: `Next:` pointers and recall `Gate:` conditions per lesson.
 
-`notes.md` keeps compact retry evidence alongside earned knowledge:
+`notes.md` now holds *evidence* (Records, Attempt Log), *structure* (Structural Memory: layers, nodes/edges, earned vs target, iteration), *micro-skills* (decomposition per skill area), and *defended procedures* (Playbook). A node or edge flips to `earned` only with an evidence pointer produced at assistance `none`/`hint` — coached work never earns structure. `/learn` promotes nodes, `/practice` earns edges, `/reflect` revises and bumps the iteration counter, `/synthesis-research` owns the frontier; `/curriculum` and `/evaluate` only read it.
+
+The same first-successful-demonstration moment that promotes a framework node also opens a `retrieval.md` row — one per **item**: a schema or a term testable by a single cold prompt. Rows are never opened at exposure, and coached demonstrations open none. They fire in `recall.html` (prompt alone, reveal, self-grade) and `/recall` alone reschedules them; a firing records a correctness bit and an assistance level on two separate axes ([ADR-005](../../docs/adr.md#adr-005-score-retrieval-on-correctness-and-assistance-separately)). Full spec: [learn/references/retrieval.md](learn/references/retrieval.md).
+
+`notes.md` consolidates all learner memory into one file:
 
 ```markdown
+# Notes: <topic>
+
 ## Records
 ### 0001 - <demonstrated understanding>  (<date>)
 <what was established and why it changes future teaching>
@@ -312,6 +338,42 @@ The same first-successful-demonstration moment that promotes a framework node al
 
 ## Attempt Log
 - <date> <lesson-id> <task>: predicted <X> -> <right | wrong: Y> -> retry <resolved | narrowed: Z | failed> [assistance: <enum>]
+
+## Terms
+- **term-name** — definition and usage
+
+## Structural Memory
+(was framework.md: layers, nodes/edges with earned vs target status, iteration counter)
+
+### Layers
+...
+
+### Map
+...
+
+### Frontier
+...
+
+## Micro-Skills
+(was drills-*.md: decomposition per skill area)
+
+### Micro-skill: <name>
+- Cell: <mainline × stage>
+- Failure modes: ...
+- Success criteria: ...
+- Difficulty curve: ...
+
+## Playbook
+(was playbook.md: defended procedures)
+
+### <procedure-name>
+...
+
+## Preferences
+- preference statements
+
+## Mastery Snapshot — <date>
+(from /evaluate: evidence-backed rubric levels per node)
 ```
 
 Each new `case-*.md` keeps the full sequence. `Micro-goal` and `Errors made` remain mandatory; `Cell` is also required when `survey.md` exists.
@@ -347,7 +409,7 @@ Capability is cumulative, but assistance is always visible:
 
 | Level | Minimum evidence |
 | :--- | :--- |
-| Can recall | Correct closed-book retrieval — a `/recall` firing at assistance `none` is the canonical instance |
+| Can recall | Correct closed-book retrieval — a `recall.html` firing graded clean at assistance `none` is the canonical instance |
 | Can explain | Plain-language explanation that survives challenge |
 | Can apply | Successful use in a real case |
 | Can debug | Failure localized and corrected through a tested hypothesis |

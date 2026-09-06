@@ -1,6 +1,6 @@
 # Learning OS
 
-Last updated: 2026-09-01
+Last updated: 2026-09-06
 
 <div align="center">
 
@@ -25,7 +25,7 @@ gather → process → distill    →    learn · practice · evaluate    →   
 ```
 
 - **[Information Pipeline](skills/pipeline/README.md)** — turn raw material (transcripts, course notes, articles) into clean, source-faithful, teaching-ready knowledge. Nothing enters the system without provenance.
-- **[Learning Loop](skills/learning/README.md)** — build durable capability with evidence: map the field, build a course, be tutored, practice on real cases, evaluate, reflect. AI guides thought; the learner constructs the answers.
+- **[Learning Loop](skills/learning/README.md)** — build durable capability with evidence: map the field, build a course, learn it, practice on real cases, evaluate, reflect. The HTML course carries the learning experience end to end (reading, drills, quizzes, mini-cases, spaced recall); chat is reserved for bookkeeping (`done L<n>`) and questions. AI guides thought; the learner constructs the answers.
 - **[Writing System](skills/writing/README.md)** — turn earned knowledge into articles, chapters, translations, diagrams, and slides in fast iterations. Writing is the graduation artifact: what you can publish unaided, you have learned — and what you can't write yet, you haven't.
 
 Each skill is a plain-Markdown `SKILL.md` in the open [Agent Skills](https://agentskills.io) format, so the suite is not tied to one tool: install it as a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin, symlink the skill directories into any skills-aware agent (Codex, Cursor, custom Claude Agent SDK agents, …), or paste a `SKILL.md` into any capable LLM chat as instructions.
@@ -112,10 +112,11 @@ Skills read and write files relative to **the directory where you run your agent
 ```text
 /survey distributed systems        # ~30 min: map the field, triage DEEP/SKIM/SKIP, pick sources
 /curriculum consensus algorithms   # design + build an HTML course grounded in the survey
-/learn consensus algorithms        # be tutored through the next lesson, dialogue-first
+/learn consensus algorithms        # open the next lesson — learning happens in the browser
+done L1                            # paste the lesson's manifest: bookkeeping, what's next
 ```
 
-Close the loop after a few sessions (`/practice`, `/evaluate`, `/reflect`), and run `/recall` on the days between — it fires whatever is due across every course in ten to fifteen minutes. Then prove it in writing:
+Close the loop after a few lessons (`/practice`, `/evaluate`, `/reflect`), and on the days between run `/recall` — it reports what's due across every course and points you at each course's `recall.html`, where the retrieval itself happens in ten to fifteen minutes. Then prove it in writing:
 
 ```text
 /frame-piece find the angle for a piece from my raft learning notes
@@ -145,9 +146,9 @@ Twenty-three skills across the three systems. Each table links to the system con
 | Skill | Responsibility |
 | :--- | :--- |
 | `/survey` | Investment gate: map, critical path, sources, baseline |
-| `/curriculum` | Build the course, planned backward from a real output |
-| `/learn` | AI tutor: prediction, construction, feedback, retry |
-| `/recall` | The return path: test due items cold, record, reschedule |
+| `/curriculum` | Orchestrate + build the course, planned backward from a real output |
+| `/learn` | Session manager & tutor: open lessons, checkpoint bookkeeping, questions |
+| `/recall` | The return path: plan what's due, sync results from recall.html, reschedule |
 | `/practice` | Deliberate practice on real cases, attempts recorded |
 | `/evaluate` | Evidence-backed mastery snapshot; the tier gate |
 | `/reflect` | Compress errors into what changes next |
@@ -179,7 +180,7 @@ learning-os/
 ├── docs/                    # architecture decisions and unfinished execution plans
 ├── .claude-plugin/          # plugin manifest + flat skill symlinks (Claude Code install path)
 ├── catalog/                 # shared-catalog metadata (skill-set.json) for the agent-skills hub
-├── test-cases/              # contract fixtures: compliant / non-compliant skill artifacts
+├── trials/                  # end-to-end testing runbooks: you run the chain, step by step
 └── tmp/                     # gitignored iteration corpus for pipeline & writing skills (see tmp/README.md)
 ```
 

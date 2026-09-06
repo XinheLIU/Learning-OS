@@ -1,6 +1,6 @@
 # Repository Execution Plan
 
-Last updated: 2026-09-01
+Last updated: 2026-09-02
 
 The three-system restructure and first skill implementations are complete. The work below remains.
 
@@ -15,15 +15,15 @@ The three-system restructure and first skill implementations are complete. The w
 Acceptance: a fixture moves earned learning artifacts into a draft, records the assistance used,
 and lets `/evaluate` accept or reject it against an explicit quality bar.
 
-## 2. Add pipeline and writing contract fixtures
+## 2. Add pipeline and writing contract coverage
 
-- Add compliant and non-compliant fixtures for preprocessing and writing skills.
-- Resolve whether the currently ignored `test-cases/tier-handoffs/`, `test-cases/framework/`, and
-  `test-cases/case1/` are canonical fixtures. Track canonical fixtures or remove their references;
-  do not leave referenced tests excluded from version control.
+- The learning chain is covered end to end by the two runbooks in
+  [`trials/`](../../trials/README.md). The pipeline and writing skills have no equivalent.
+- Decide how to cover them: extend a runbook, add a third trial, or accept `## Contract test` blocks
+  alone as the standard for those skills.
 
-Acceptance: every maintained fixture is tracked, every documented fixture path exists, and no
-ignored fixture is part of a claimed verification path.
+Acceptance: every documented verification path exists and is tracked, and no skill claims a
+verification that nothing exercises.
 
 ## 3. Verify the current uncommitted restructure
 

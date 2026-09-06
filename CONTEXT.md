@@ -3,7 +3,7 @@
 A set of skills that take a learner from surveying a field to demonstrated mastery, and the
 dogfood machinery that validates whether those skills actually work.
 
-Last updated: 2026-09-01
+Last updated: 2026-09-03
 
 ## Language
 
@@ -11,7 +11,9 @@ Last updated: 2026-09-01
 
 **Trial**:
 One end-to-end validation of the skill chain against a chosen subject, run as repeated cycles
-until it passes or is abandoned. Two exist: the DP trial and the herdr trial.
+until it passes or is abandoned. Two exist: the herdr trial (bounded topic, ground truth in the
+installed CLI) and the swe-basics trial (unbounded topic, contradictory literature, no ground
+truth). They are chosen to fail differently, not to repeat each other.
 _Avoid_: test case, experiment, study
 
 **Cycle**:
@@ -92,9 +94,14 @@ _Avoid_: help level, scaffolding, support
 **Case**:
 A real problem a learner works during `/practice`, recorded as a case file. Reserved for this
 meaning only.
-_Avoid_: using "case" for a trial, a cycle, or a `test-cases/` fixture
+_Avoid_: using "case" for a trial, a cycle, or a runbook step
 
-**Fixture**:
-A compliant or non-compliant artifact under `test-cases/`, used to check a skill's contract.
-Never dogfood output.
-_Avoid_: test case, example
+**Runbook**:
+The step-by-step script for one trial, under `trials/<topic>/RUNBOOK.md`. Holds the prompts to
+paste, what to watch for, the shell checks, and the numbered assertions the learner ticks off.
+_Avoid_: test case, script, protocol
+
+**Assertion**:
+One numbered, checkable claim in a runbook. `L1.*` is mechanical and gating; `L2.*` is behavioral
+and gates only where the learner's ignorance is genuine.
+_Avoid_: fixture, test, check

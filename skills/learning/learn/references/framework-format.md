@@ -1,63 +1,64 @@
-# framework.md Format
+# Structural Memory Format (notes.md section)
 
-Last updated: 2026-07-24
+Last updated: 2026-09-06
 
-`learning/<slug>/framework.md` is the topic's **structural memory** — the general framework linking knowledge, skills, and wisdom that the whole journey converges on. `notes.md` holds *evidence* (linear: records, attempts, terms); `framework.md` holds *structure* (a graph: concepts, models, connections, frontier). It is the core output of every learning cycle: `/survey` seeds a top-down skeleton (a hypothesis), each loop pass earns pieces of it bottom-up, and the file records how far the learner's owned structure has converged toward — and grown past — the survey's map.
+> **v2 consolidation:** structural memory lives in `learning/<slug>/notes.md` as the `## Structural Memory` section — the separate `framework.md` file is retired. This document defines that section's schema; everything else about it (statuses, growth rules, ownership) is unchanged. Where older files say `framework.md#<node>`, the pointer is now `notes.md#structural-memory:<node>`.
+
+`## Structural Memory` in `learning/<slug>/notes.md` is the topic's **structural memory** — the general framework linking knowledge, skills, and wisdom that the whole journey converges on. The other sections of `notes.md` hold *evidence* (linear: records, attempts, terms); this section holds *structure* (a graph: concepts, models, connections, frontier). It is the core output of every learning cycle: `/survey` seeds a top-down skeleton (a hypothesis), each loop pass earns pieces of it bottom-up, and the section records how far the learner's owned structure has converged toward — and grown past — the survey's map.
 
 ## Full template
 
 ```markdown
-# Framework: {Topic}
+## Structural Memory
 
-Last updated: {date}
-Iteration: {N}        <!-- /reflect bumps by 1 per pass that changed structure -->
-
-## Map
+### Map
 
 {One Mermaid `graph`. Subgraphs = mainlines from survey.md. Node class = status
 (earned / target / frontier). Edge labels = the survey vocabulary; solid = earned,
 dashed = hypothesized. REGENERATED from the tables below — never hand-drifted.}
 
-## Layers
+### Layers
 
-### Representations
+#### Representations
 Canonical terms and notation live in notes.md `## Terms` — pointer only, no duplication.
 {List only notation conventions that aren't terms, if any.}
 
-### Concepts
+#### Concepts
 - **{concept}** · {mainline} · {target | earned | frontier} · {evidence pointer [assistance] | —}
   {one line, in the learner's words once earned}
 
-### Models
+#### Models
 - **{model}** · {mainline} · {status} · {evidence pointer [assistance] | —}
   Holds when: {boundary}. Breaks when: {boundary}.
 
-### General frameworks
+#### General frameworks
 - **{framework}** · cross-mainline · {status} · {playbook position | research-*.md | —}
   {the structure it imposes — the learner's own design, defended or judged}
 
-## Connections
+### Connections
 
 | From | To | Type | Status | Earned by |
 | :-- | :-- | :-- | :-- | :-- |
 | {node} | {node} | bridges | earned | case-{slug} [assistance: hint] |
 | {node} | {node} | special-case-of | hypothesized (survey v0) | — |
 
-## Frontier
+### Frontier
 
-### Open tensions
-- {tension} — {why it matters to an earned model} → `/research` candidate
+#### Open tensions
+- {tension} — {why it matters to an earned model} → `/synthesis-research` candidate
 
-### People & papers
-- {who/what} — {what it extends or threatens in the Layers above}   <!-- written by /research -->
+#### People & papers
+- {who/what} — {what it extends or threatens in the Layers above}   <!-- written by /synthesis-research -->
 
-### Missing links
+#### Missing links
 - {node} ↔ {node} — should connect, no earned edge yet
+
+### Iteration: {N}        <!-- /reflect bumps by 1 per pass that changed structure -->
 ```
 
 ## Statuses
 
-- **Node:** `target` (survey says it matters; not yet earned) → `earned` (evidence exists) · `frontier` (beyond the course's scope; added by `/research` or surfaced in practice).
+- **Node:** `target` (survey says it matters; not yet earned) → `earned` (evidence exists) · `frontier` (beyond the course's scope; added by `/synthesis-research` or surfaced in practice).
 - **Edge:** `hypothesized` (proposed by survey or research) → `earned` (a case or construction demonstrated it).
 - **Edge types** are the survey's closed vocabulary: `bridges` | `prerequisite-of` | `contrasts-with` | `special-case-of`.
 
@@ -72,15 +73,15 @@ Canonical terms and notation live in notes.md `## Terms` — pointer only, no du
 
 ## Section ownership
 
-| Section | Written by | Others |
+| Sub-section | Written by | Others |
 | :-- | :-- | :-- |
 | Map | whoever changed the tables (regenerate) | — |
 | Layers | `/learn` promotes after a construction closes | `/reflect` revises minimally, archives |
-| Connections | `/practice` earns edges from cases | `/survey` and `/research` add hypothesized rows; `/reflect` revises |
-| Frontier | `/research` owns | `/survey` seeds Open tensions; `/practice`/`/reflect` may append candidates |
+| Connections | `/practice` earns edges from cases | `/survey` and `/synthesis-research` add hypothesized rows; `/reflect` revises |
+| Frontier | `/synthesis-research` owns | `/survey` seeds Open tensions; `/practice`/`/reflect` may append candidates |
 | Iteration | `/reflect` only | — |
 
-`/curriculum` and `/evaluate` read the file; they never write it.
+`/curriculum` and `/evaluate` read the section; they never write it.
 
 ## Contract test
 

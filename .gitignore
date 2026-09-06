@@ -9,10 +9,8 @@
 .codex/skills/
 .opencode/skills/
 
-# Test cases
-/test-cases/*
-!/test-cases/attempt-retry-loop/
-!/test-cases/attempt-retry-loop/**
+# Learner output from trial runs — runbooks are tracked, the courses they build are not
+/learning/
 
 # Iteration corpus — raw course materials may be copyright-sensitive
 /tmp/*

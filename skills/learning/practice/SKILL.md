@@ -5,7 +5,7 @@ description: Deliberate-practice coach for applying models to real cases. Use wh
 
 # Practice — Deliberate Practice Coach
 
-Last updated: 2026-09-01
+Last updated: 2026-09-06
 
 Apply known models to real cases, deliberately. Experience alone plateaus; improvement needs micro-skill decomposition, one high-resolution goal at a time, work at the edge of ability, and immediate feedback. Errors are recorded, not just corrected — they feed `/reflect`'s compression and become the next micro-goals. Practice owns the `can-transfer` rung: this is where models earned in lessons meet cases with no recipe, and where the framework's *edges* — connections between mainlines — get earned.
 
@@ -20,23 +20,28 @@ Apply known models to real cases, deliberately. Experience alone plateaus; impro
 
 ### 1. Load context
 
-Read `learning/<slug>/notes.md` (records + terms — what the learner has earned), any `drills-*.md`, `framework.md` (which structure is earned vs still `target`/`hypothesized`), `retrieval.md` if present (which schemas already have rows), and `survey.md` if present — its matrix is what drills and cases anchor to. If nothing is earned yet: "No earned models yet for <slug>. `/learn` first, or work through this and extract as we go?" Check the syllabus's Stage 4–5 loop-entry specs — they are pre-designed cases waiting for this skill.
+Read `learning/<slug>/notes.md` — including Operational Memory — plus `retrieval.md`, `survey.md`, and
+`syllabus.md`. Use the syllabus Roadmap/checkpoint and Memory Budget to anchor the case. Operational
+items are rehearsed in context but a case still produces transfer evidence, not a memorization claim.
+If nothing is earned yet: "No earned models yet for <slug>. `/learn` first, or work through this and
+extract as we go?" Check the syllabus's Stage 4–5 loop-entry specs — they are pre-designed cases waiting
+for this skill.
 
 ### 2. Decompose (first time a skill is practiced)
 
-If no `drills-<skill-slug>.md` exists for this skill, build it with the user before practicing:
+If no Micro-Skills section exists in `notes.md` for this skill, build it with the user before practicing. Add to the **Micro-Skills** section of `notes.md`:
 
 ```markdown
-# Drills: <skill>
+## Micro-Skills
 
-## Micro-skill: <name>
+### <skill>: <micro-skill-name>
 - Cell: <mainline × stage, from survey.md — omit when no survey exists>
 - Failure modes: <how this specifically goes wrong>
 - Success criteria: <observable — what "did it right" looks like>
 - Difficulty curve: <easy variant → hard variant>
 ```
 
-(E.g. presentation → story / slide design / voice / timing.) When `survey.md` exists, anchor each micro-skill to a matrix cell and read the difficulty curve off the row: the easy variant reproduces the cell's named sample (`can-apply`); the hard variant is a transfer scenario (`can-transfer`). Write it to `learning/<slug>/drills-<skill-slug>.md`. Sessions then target **one micro-skill at a time**.
+(E.g. presentation → story / slide design / voice / timing.) When `survey.md` exists, anchor each micro-skill to a matrix cell and read the difficulty curve off the row: the easy variant reproduces the cell's named sample (`can-apply`); the hard variant is a transfer scenario (`can-transfer`). Sessions then target **one micro-skill at a time**.
 
 ### 3. Open with a micro-goal
 
@@ -102,7 +107,7 @@ Case files that existed before this schema was adopted on 2026-07-23 are grandfa
 
 ### 6. Earn framework edges
 
-A case that carried a model into a new domain, or connected two mainlines ("the flame graph told me which Docker layer to cache"), earned structure. Update `framework.md` Connections (per [../learn/references/framework-format.md](../learn/references/framework-format.md)): flip the matching `hypothesized` edge to `earned` with the case as pointer, or add a new `earned` edge the survey never predicted. Only cases at assistance `none`/`hint` earn edges. Edges only — node promotion is `/learn`'s, iteration is `/reflect`'s.
+A case that carried a model into a new domain, or connected two mainlines ("the flame graph told me which Docker layer to cache"), earned structure. Update the **Structural Memory** section in `notes.md` Connections (per [../learn/references/notes-format.md](../learn/references/notes-format.md)): flip the matching `hypothesized` edge to `earned` with the case as pointer, or add a new `earned` edge the survey never predicted. Only cases at assistance `none`/`hint` earn edges. Edges only — node promotion is `/learn`'s, iteration is `/reflect`'s.
 
 ### 6b. Open retrieval items
 
@@ -118,14 +123,14 @@ Coached cases (`walkthrough`, `solution-shown`) open no rows, for the same reaso
 
 ## Contract test
 
-Drills file created on first use; every new case file has micro-goal + errors fields, a complete attempt sequence, a valid assistance enum value, and a specific next support to remove; feedback is followed by a recorded retry; drills and cases carry cell tags when a survey exists; difficulty adjustment announced mid-session; a `none`/`hint` case that crosses mainlines or domains earns its framework edge with the case as pointer; a `none`/`hint` case demonstrating a schema for the first time opens its `retrieval.md` row, and no row is opened for the case, a drill, or a schema that already has one. Reject a new case that omits any attempt field, ends a correction without a retry, or uses free-text assistance; reject an edge or a ledger row earned from a `walkthrough`/`solution-shown` case. Grandfathered cases remain valid but provide assistance-unknown evidence.
+Micro-Skills section created in `notes.md` on first use (no separate `drills-*.md` file); every new case file has micro-goal + errors fields, a complete attempt sequence, a valid assistance enum value, and a specific next support to remove; feedback is followed by a recorded retry; drills and cases carry cell tags when a survey exists; difficulty adjustment announced mid-session; a `none`/`hint` case that crosses mainlines or domains earns its Structural Memory edge in `notes.md` with the case as pointer; a `none`/`hint` case demonstrating a schema for the first time opens its `retrieval.md` row, and no row is opened for the case, a drill, or a schema that already has one. Reject a new case that omits any attempt field, ends a correction without a retry, or uses free-text assistance; reject an edge or a ledger row earned from a `walkthrough`/`solution-shown` case. Grandfathered cases remain valid but provide assistance-unknown evidence.
 
 ## Handoffs
 
-**In:** a real case the user brings (or a Stage 4–5 loop-entry spec from the syllabus); earned models in `notes.md`; `/reflect`'s latest micro-goals if any.
+**In:** a real case the user brings (or a Stage 4–5 loop-entry spec from the syllabus); earned models in `notes.md` (including Structural Memory section); `/reflect`'s latest micro-goals if any.
 
 **Out:**
-- Case captured → `case-*.md` (+ earned edges in `framework.md`) → evidence for `/evaluate`.
+- Case captured → `case-*.md` (+ earned edges in Structural Memory section of `notes.md`) → evidence for `/evaluate`.
 - First-time schema demonstrated at `none`/`hint` → row in `retrieval.md` → `/recall`.
 - No model fits / a schema is missing → candidate model named in the case file → `/learn`.
 - Recurring error across ≥2 cases, or 3–5 cases accumulated → `Errors made` fields → `/reflect <slug>`.

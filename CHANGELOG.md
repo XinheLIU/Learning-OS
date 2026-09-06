@@ -1,6 +1,49 @@
 # Changelog
 
-Last updated: 2026-09-01
+Last updated: 2026-09-06
+
+## 2026-09-06
+
+### Changed — v3: HTML-first learning loop
+
+- **The HTML course now carries the whole learning experience.** Reading, opening tasks, drills, quizzes, mini-cases, and spaced recall all complete inside the browser; chat is reserved for exactly two things — post-lesson bookkeeping (`done L<n>` + the lesson's completion manifest) and learner-initiated tutor Q&A. The learner's chat surface shrinks to four verbs: `/learn <slug>`, `done L<n>`, `/recall`, `sync recall`.
+- **`/learn` runs three modes instead of one tutoring session.** `start` revises the next lesson against `notes.md` + `retrieval.md` and opens it (no tutoring); `done` parses the checkpoint manifest and does honest bookkeeping — attempt log, records, terms, node promotion, ledger rows, syllabus checkbox, refreshed recall queue — with at most one spot-probe when the manifest pattern is ambiguous; `tutor` is bounded Q&A whose corrected misconceptions land in `notes.md`. The segment-core teaching loop moves into the HTML lessons.
+- **`/recall` stops firing in chat.** It plans (counts, courses, overflow order), refreshes `recall.html`'s embedded due queue, and applies the scheduling rules to the self-graded results the learner syncs back. Cold integrity is enforced by grading, not by chat discipline: an answer revealed before an attempt syncs as `walkthrough`.
+- **`/curriculum` becomes orchestrator + builder.** Every lesson ends in a **checkpoint block** (completion-manifest button + next-step card); mini-cases get their own lesson files; `syllabus.md` carries the orchestration contract — a `Next:` pointer per lesson and optional recall `Gate:` conditions. New deliverable: `recall.html` (due items as flashcards: prompt alone, reveal, self-grade, sync block), linked from the shell.
+- The checkpoint/recall **manifest** is the localStorage ↔ memory-file bridge: widgets persist state in the browser; the button packages it as JSON the learner pastes into chat. Assistance is inferred from the pattern (locked-correct-first-try → `none`; wrong-then-correct → `hint`; revealed-without-draft → `walkthrough`), not trusted blindly.
+- Fixed the v2 doc drift in the same pass: `lesson-format.md`/`syllabus-format.md` no longer describe a `syllabus.html`; `notes-format.md` documents all eight consolidated sections; `framework-format.md` defines the Structural Memory *section* (with `notes.md#structural-memory:<node>` pointers in the ledger); curriculum evals updated to match; opening-task-first lesson order made consistent.
+- Migrated `learning/herdr` as the v3 exemplar: checkpoint blocks on all lessons, `recall.html` + `assets/recall.js`, manifest packaging in `assets/quiz.js`, the Stage 2 mini-case promoted to `lessons/0004-mini-case-wait-and-read.html`, and `Next:`/`Gate:` fields in `syllabus.md`.
+
+## 2026-09-03
+
+### Added
+
+- Added a second end-to-end runbook at [`trials/swe-basics/RUNBOOK.md`](trials/swe-basics/RUNBOOK.md): writing good code and design patterns at `--depth=quick`, two 30-minute sessions per day across three days, run against the learner's own repository inside a throwaway `git worktree`. Day 3 measures independence against a 6-item battery sealed on Day 0.
+- The two trials are chosen to **fail differently**, not to repeat each other. herdr is bounded and its installed CLI settles every question, so it cannot catch a chain that lectures fluently from parametric memory. `swe-basics` has no ground truth and a literature that openly contradicts itself, so it gates on citation (every lesson claim links a real source), on argued SKIPs (≥3 — in an unbounded field what gets cut is the deliverable), and on refusing to flatten a live disagreement into a slogan.
+- `swe-basics` covers `/synthesis-research`, which no trial reached before: entry gate, steelman of both positions, a located crux, insights citing ≥2 independent sources, HITL judgment the tutor may not ghost-write, and a negative check that a tension-free question (`what does the S in SOLID stand for`) is refused and routed rather than researched. This closes the `/synthesis-research` gap in [the learning execution plan](docs/exec-plans/learning.md) §7; the pipeline and writing skills remain uncovered.
+- Running the two trials at **opposite ends of `--depth`** — herdr at `standard`, `swe-basics` at `quick` — is what establishes that the parameter is real. If both produce the same lesson lengths, `--depth` is a comment.
+- Recorded that a rubric-graded battery fails differently from an answer-keyed one: generosity, not forgetting, is its default failure. The `swe-basics` runbook carries three literal grading questions (structural not cosmetic · cost stated · no pattern named without its problem) and scores an item 0 if any fails.
+
+## 2026-09-02
+
+### Added
+
+- Added a `--depth` parameter to `/curriculum`: `quick` (~10 min lessons, 1–2 drills), `standard` (~20–30 min, 2–3 drills, the default), and `deep` (~60–90 min, 4–6 drills plus synthesis, multi-source reading with compare/contrast prompts, reference docs carrying edge cases and citations). Depth changes lesson length, drill count, and reading scope — not just prose length.
+- Added an **Opening task** field to every lesson: a hands-on micro-task run in the real environment *before* any explanation. Do first, explain second.
+- Added `[mini-case]` entries from Stage 2 onward — a simplified real scenario at walkthrough scaffolding, heavier than a drill and lighter than a Stage 4 transfer case. Pulls real practice earlier instead of reserving it for Stage 4–5. Optional at `quick` depth; required with multiple solution paths at `deep`.
+- Added an end-to-end testing runbook at [`trials/herdr/RUNBOOK.md`](trials/herdr/RUNBOOK.md): herdr at `--depth=standard`, 60 minutes per day across three days, walking the whole chain — `/survey` → `/curriculum` → `/learn` → `/practice` → `/recall` → `/evaluate` → `/reflect`. Each step gives the learner the prompt to paste, what to watch for while it runs, a shell check, and numbered assertions. Day 3 measures independence against an 8-item battery sealed on Day 0 in a session that never saw a lesson.
+
+### Changed
+
+- Consolidated learner memory into `notes.md`. `framework.md` became its `## Structural Memory` section, `drills-*.md` became `## Micro-Skills`, and `playbook.md` became `## Playbook`. A topic now produces about ten artifacts rather than fourteen, and a skill reads one file where it previously read four.
+- Removed `syllabus.html`. `syllabus.md` is the single source of truth for the plan and its progress; `index.html` renders it. Progress no longer has to stay synchronized across three files.
+- Settled the format split: Markdown is internal memory, HTML is what a human reads. `notes.md`, `survey.md`, `syllabus.md`, `retrieval.md`, `case-*.md`, and `research-*.md` are Markdown; `index.html`, `lessons/`, and `reference/` are HTML.
+- Updated all eight learning skills, their contract tests, and their handoff blocks for the consolidated files.
+
+### Removed
+
+- Removed the static `test-cases/` fixture tree. The fixtures duplicated contracts already stated in each skill's `## Contract test` block, and two of the four directories were written against the pre-consolidation file layout. The herdr runbook exercises those contracts live instead.
+- Removed the `dp-stocks` trial and the earlier `herdr` cycle artifacts, both written against the v1 file layout. **The herdr cycle's `survey.md` and `RATING.md` were untracked and are unrecoverable.** The course output survives, archived at `learning/herdr-v1/`.
 
 ## 2026-09-01
 

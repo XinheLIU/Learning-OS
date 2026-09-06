@@ -1,8 +1,8 @@
 # notes.md Format
 
-Last updated: 2026-09-01
+Last updated: 2026-09-06
 
-`learning/<slug>/notes.md` is the single working file for earned knowledge: learning records, the topic's attempt log, canonical terms, and teaching preferences. `/learn` owns it; `/evaluate` appends the Mastery Snapshot; `/reflect` edits records minimally. Append; don't restructure.
+`learning/<slug>/notes.md` is the single working file for earned knowledge: learning records, the topic's attempt log, canonical terms, structural memory, micro-skill decomposition, the playbook, teaching preferences, and the mastery snapshot. `/learn` owns it; `/evaluate` appends the Mastery Snapshot; `/reflect` edits records minimally and bumps the Iteration counter; `/practice` writes Micro-Skills entries and Structural Memory edges; `/survey` seeds Structural Memory v0. Append; don't restructure.
 
 ## Full template
 
@@ -30,6 +30,57 @@ and why it matters for future sessions.}
 
 - **{Term}** — {tight 1–2 line definition: what it IS, not what it does}
   _Avoid:_ {loose synonyms this workspace doesn't use}
+
+## Operational Memory
+
+Use this section for the syllabus Memory Budget only:
+
+| id | item | class | mode | target fluency | evidence | latency / errors | palace cue |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| {id} | {command / shortcut / pattern / recovery action} | core | recognition / recall / execution | {observable target} | {lesson or case pointer [assistance]} | {attempt history} | {optional learner-authored cue} |
+
+Imagery or palace placement is a retrieval cue, not evidence above `can-recall`. Execution fluency
+requires repeated contextual demonstrations.
+
+## Structural Memory
+
+{The topic's structural memory (was framework.md): Map, Layers, Connections,
+Frontier, Iteration counter. Full schema: framework-format.md, with the
+sections below living here instead of a separate file.}
+
+### Map
+{Mermaid graph regenerated from the Layers/Connections tables}
+
+### Layers
+- **{concept|model|framework}** · {mainline} · {target | earned | frontier} · {evidence pointer [assistance] | —}
+
+### Connections
+| From | To | Type | Status | Earned by |
+
+### Frontier
+#### Open tensions
+#### People & papers
+#### Missing links
+
+### Iteration: {N}          <!-- /reflect bumps by 1 per pass that changed structure -->
+
+## Micro-Skills
+
+{Decomposition per skill area (was drills-*.md). Written by /practice on first use.}
+
+### {skill}: {micro-skill-name}
+- Cell: {mainline × stage — omit when no survey exists}
+- Failure modes: {how this specifically goes wrong}
+- Success criteria: {observable — what "did it right" looks like}
+- Difficulty curve: {easy variant → hard variant}
+
+## Playbook
+
+{The learner's repeatable method and defended positions (was playbook.md).
+Written by /reflect only, behind the adversarial defense gate.}
+
+### {procedure-name}
+{the defended procedure; each position notes the objection it survived}
 
 ## Preferences
 
