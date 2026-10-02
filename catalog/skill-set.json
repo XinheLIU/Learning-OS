@@ -40,20 +40,56 @@
       ]
     },
     {
-      "id": "writing",
-      "label": "Writing & Publishing",
+      "id": "writing/foundations",
+      "label": "Writing Foundations",
+      "skills": [
+        "frame",
+        "snapshot-writing"
+      ]
+    },
+    {
+      "id": "writing/analytical",
+      "label": "Analytical Writing",
       "skills": [
         "pre-write-grill",
-        "frame",
         "develop-argument",
         "develop-examples",
-        "build-skeleton",
-        "write-content",
+        "write-content"
+      ]
+    },
+    {
+      "id": "writing/explanatory",
+      "label": "Explanatory Writing",
+      "skills": [
+        "define-audience",
+        "outcome-design",
+        "sequence-design"
+      ]
+    },
+    {
+      "id": "writing/learning-to-teaching",
+      "label": "Learning to Teaching",
+      "skills": [
+        "assess-readiness",
+        "elevate-draft",
+        "add-pedagogy"
+      ]
+    },
+    {
+      "id": "writing/operations",
+      "label": "Writing Operations",
+      "skills": [
         "review-draft",
         "edit-targeted",
-        "snapshot-writing",
         "grill",
-        "package-chapter",
+        "package-chapter"
+      ]
+    },
+    {
+      "id": "writing/delivery",
+      "label": "Writing Delivery",
+      "skills": [
+        "build-skeleton",
         "book-translator",
         "insert-inline-images",
         "book-diagrams",

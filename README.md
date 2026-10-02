@@ -19,14 +19,14 @@ AI makes consuming knowledge nearly free, but consuming is not learning — and 
 Three connected systems, each a folder of composable skills:
 
 ```text
-gather → process → distill    →    learn · practice · evaluate    →    draft → review → publish
+gather → process → distill    →    learn · practice · evaluate    →    framework → material plan → draft → edit
    Information Pipeline                   Learning Loop                    Writing System
    skills/pipeline/                       skills/learning/                 skills/writing/
 ```
 
 - **[Information Pipeline](skills/pipeline/README.md)** — turn raw material (transcripts, course notes, articles) into clean, source-faithful, teaching-ready knowledge. Nothing enters the system without provenance.
 - **[Learning Loop](skills/learning/README.md)** — build durable capability with evidence: map the field, build a course, learn it, practice on real cases, evaluate, reflect. The HTML course carries the learning experience end to end (reading, drills, quizzes, mini-cases, spaced recall); chat is reserved for bookkeeping (`done L<n>`) and questions. AI guides thought; the learner constructs the answers.
-- **[Writing System](skills/writing/README.md)** — turn earned knowledge into articles, chapters, translations, diagrams, and slides in fast iterations. Writing answers reader questions and preserves evolving understanding. An unaided chapter can also supply graduation evidence when the learning loop verifies it.
+- **[Writing System](skills/writing/README.md)** — turn earned knowledge into articles, chapters, translations, diagrams, and slides through deliberate preparation and final editing. Writing answers reader questions and preserves evolving understanding. An unaided chapter can also supply graduation evidence when the learning loop verifies it.
 
 Each skill is a plain-Markdown `SKILL.md` in the open [Agent Skills](https://agentskills.io) format, so the suite is not tied to one tool: install it as a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin, symlink the skill directories into any skills-aware agent (Codex, Cursor, custom Claude Agent SDK agents, …), or paste a `SKILL.md` into any capable LLM chat as instructions.
 
@@ -58,14 +58,14 @@ flowchart LR
 
     subgraph writing["Writing System"]
         direction TB
-        write["frame → logic ⇄ evidence → draft<br/>review ⇄ edit · snapshot"]
+        write["framework → material plan → draft<br/>final review → edit · snapshot"]
         drafts[("drafts → publication")]
         write <--> drafts
     end
 
     raw --> pipeline
     wiki -- "teaching material" --> learning
-    pipeline -. "processed notes,<br/>ready to draft" .-> writing
+    pipeline -. "processed notes,<br/>ready to frame" .-> writing
     memory -- "earned knowledge<br/>as raw material" --> writing
     writing -. "writing reveals gaps →<br/>new learning" .-> learning
     writing --> published
@@ -120,15 +120,17 @@ Close the loop after a few lessons (`/practice`, `/evaluate`, `/reflect`), and o
 
 ```text
 /frame find the angle for a piece from my raft learning notes
-/write-content draft it from the brief
-/review-draft check section 2
+/develop-argument develop and stress-test the framework
+/develop-examples select excerpts and agree section budgets
+/write-content draft from the agreed plan
+/review-draft check the completed draft
 ```
 
-`/frame` chooses one reader question and a concrete gain. `/develop-argument` makes the reasoning inspectable; `/develop-examples` supplies attributable support. Enter directly at the stage you need; `/snapshot-writing` keeps meaningful changes for the next piece.
+`/frame` records intent. For analytical writing, `/pre-write-grill` and `/develop-argument` establish an agreed framework and original contribution; `/develop-examples` settles excerpts, example depth and section budgets before prose. Confirmation or explicit delegation closes each checkpoint. Enter at the stage you need; `/snapshot-writing` keeps meaningful changes for the next piece.
 
 ## The Skills
 
-Thirty-one skills across the three systems. Each table links to the system contract; detailed behavior lives in each skill's `SKILL.md`.
+Thirty-eight cataloged skills across the three systems. Each table links to the system contract; detailed behavior lives in each skill's `SKILL.md`.
 
 ### [Information Pipeline](skills/pipeline/README.md) — `skills/pipeline/`
 
@@ -162,11 +164,12 @@ Thirty-one skills across the three systems. Each table links to the system contr
 | Skill | Responsibility |
 | :--- | :--- |
 | `frame` | Choose one familiar reader question with a specific gain; record judgment and scope |
-| `develop-argument` | Develop justified logic, teaching dependencies, reading order and a derived map |
-| `develop-examples` | Build attributable evidence and examples with explicit limits |
+| `pre-write-grill` | Stress-test the thesis and evolving framework with the author |
+| `develop-argument` | Develop justified logic and an original analytical contribution; settle the framework checkpoint |
+| `develop-examples` | Select excerpts and agree example depth, section budgets and evidence limits |
 | `snapshot-writing` | Preserve substantive understanding changes and topic connections |
 | `build-skeleton` | Create and maintain publication structure and navigation |
-| `write-content` | Turn a brief, or source materials, into publishable nonfiction |
+| `write-content` | Draft from agreed preparation; preserve direct summary and teaching routes |
 | `review-draft` | Ranked findings on question, reasoning, evidence and expression; purpose-aware, never rewrites |
 | `edit-targeted` | Apply one instruction to one location; minimal diff |
 | `grill` | Interview the author from their own draft; split misses into author gaps and draft gaps |
@@ -196,7 +199,7 @@ Each `SKILL.md` is the full contract for its skill: triggers, rules, storage pat
 
 ## Project Status
 
-All 31 skills have first versions. The writing redesign has a staged brief contract and regression checks; live author trials remain explicit in its execution plan. The remaining work is explicit: [learning](docs/exec-plans/learning.md), [writing](docs/exec-plans/writing.md), [the concept-to-chapter loop](docs/exec-plans/article-loop.md), and [repository integration](docs/exec-plans/repository.md).
+The catalog includes 38 skills, including teaching-track scaffolds. Analytical writing has two pre-draft checkpoints and regression checks; live author trials remain explicit in its execution plan. The remaining work is explicit: [learning](docs/exec-plans/learning.md), [writing](docs/exec-plans/writing.md), [the concept-to-chapter loop](docs/exec-plans/article-loop.md), and [repository integration](docs/exec-plans/repository.md).
 
 Learning OS publishes its shared-catalog metadata through [`catalog/skill-set.json`](catalog/skill-set.json); the [agent-skills](https://github.com/XinheLIU/agent-skills) hub owns the common discovery frontend. The project was extracted from that hub into its own repository.
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write Content"
+  short_description: "Draft from an agreed framework and material plan"
+  default_prompt: "Use $write-content to check my preparation and draft from the agreed framework, selected evidence, example treatment and section budgets."

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Write Content"
-  short_description: "Draft articles and chapters from agreed reasoning"
-  default_prompt: "Use $write-content to draft from my brief, preserving its reasoning and evidence."

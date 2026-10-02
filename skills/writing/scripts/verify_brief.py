@@ -20,7 +20,9 @@ class Schema(TypedDict):
 
 
 SCHEMA = cast(Schema, json.loads(Path(__file__).resolve().parents[1].joinpath("brief-schema.json").read_text()))
-STAGES = ("frame", "argument", "examples", "ship")
+STAGES = ("frame", "argument", "examples", "draft", "ship")
+ARTICLE_KINDS = {"piece", "analytical-piece"}
+CHAPTER_KINDS = {"chapter", "explanatory-chapter", "graduated-chapter"}
 
 
 @dataclass(frozen=True)
@@ -130,6 +132,81 @@ def check_graph(body: str, nodes: dict[str, Row], relations: list[Row], errors: 
         errors.append("Logic map: edges differ from Logic relations")
 
 
+def check_draft_plan(
+    meta: dict[str, str], parts: dict[str, str], nodes: dict[str, Row],
+    reading_order: list[Row], evidence: list[Row], errors: list[str],
+) -> None:
+    """Check the recorded plan; dialogue authenticity and originality require semantic review."""
+    for heading in SCHEMA["sections"]["draft"]:
+        if parts.get(heading, "").strip() in ("", "—", "none"):
+            errors.append(f"{heading}: required at draft stage")
+    if meta.get("length-unit") not in SCHEMA["metadata"]["length-unit"]:
+        errors.append("length-unit: expected words or characters")
+    total = meta.get("target-length", "")
+    if not re.fullmatch(r"[1-9]\d*", total):
+        errors.append("target-length: expected a positive integer")
+
+    planned = table(parts.get("Section plan", ""), "Section plan", errors)
+    if [row.cells["Section"] for row in planned] != [row.cells["Section"] for row in reading_order]:
+        errors.append("Section plan: sections must match Reading order exactly once and in order")
+    section_nodes = {row.cells["Section"]: ids(row.cells["Nodes"]) for row in reading_order}
+    if len(section_nodes) != len(reading_order):
+        errors.append("Reading order: duplicate section name")
+    evidence_by_id = {row.cells["ID"]: row for row in evidence}
+    allocated = 0
+    supported: set[str] = set()
+    for row in planned:
+        cells = row.cells
+        length = cells["Target length"]
+        if not re.fullmatch(r"[1-9]\d*", length):
+            errors.append(f"Section plan row {row.line}: Target length must be a positive integer")
+        else:
+            allocated += int(length)
+        for column in ("Craft", "Transition"):
+            if cells[column] in ("", "—", "none"):
+                errors.append(f"Section plan row {row.line}: {column} needs a stated purpose")
+        treatment = cells["Evidence treatment"]
+        if treatment == "—":
+            continue
+        seen: set[str] = set()
+        for item in treatment.split(","):
+            match = re.fullmatch(r"(e[1-9]\d*):\s*([a-z]+)", item.strip())
+            if not match or match[2] not in SCHEMA["values"]["treatment"]:
+                errors.append(f"Section plan row {row.line}: expected e<number>: developed or brief")
+                continue
+            evidence_id = match[1]
+            if evidence_id in seen:
+                errors.append(f"Section plan row {row.line}: duplicate evidence {evidence_id}")
+            seen.add(evidence_id)
+            entry = evidence_by_id.get(evidence_id)
+            if entry is None:
+                errors.append(f"Section plan row {row.line}: unknown evidence {evidence_id}")
+                continue
+            refs = ids(entry.cells["Nodes"]) & section_nodes.get(cells["Section"], set())
+            if not refs:
+                errors.append(f"Section plan row {row.line}: {evidence_id} serves no node in this section")
+            for node_id in refs & nodes.keys():
+                concept = nodes[node_id].cells["Kind"] == "concept"
+                if entry.cells["Role"] == "supports" or (concept and entry.cells["Role"] == "explains"):
+                    supported.add(node_id)
+    if re.fullmatch(r"[1-9]\d*", total) and allocated != int(total):
+        errors.append(f"Section plan: target lengths sum to {allocated}, expected {total}")
+    required = {key for key, row in nodes.items()
+                if row.cells["Need"] == "required" and row.cells["Kind"] != "question"}
+    if missing := required - supported:
+        errors.append(f"Section plan: selected evidence does not support required nodes {', '.join(sorted(missing))}")
+
+    checkpoints = table(parts.get("Checkpoints", ""), "Checkpoints", errors)
+    names = [row.cells["Checkpoint"] for row in checkpoints]
+    if sorted(names) != sorted(SCHEMA["values"]["checkpoint"]):
+        errors.append("Checkpoints: framework and material-plan must each appear exactly once")
+    for row in checkpoints:
+        if row.cells["State"] not in ("confirmed", "delegated"):
+            errors.append(f"Checkpoints {row.cells['Checkpoint']}: requires confirmation or delegation")
+        if row.cells["Basis"] in ("", "—", "none"):
+            errors.append(f"Checkpoints {row.cells['Checkpoint']}: missing author response or delegation basis")
+
+
 def verify(text: str, stage: str = "examples") -> Result:
     if stage not in STAGES:
         raise ValueError(f"unknown stage: {stage}")
@@ -145,17 +222,19 @@ def verify(text: str, stage: str = "examples") -> Result:
         else:
             errors.append("brief-kind: ambiguous legacy brief; clarify before use")
     if kind not in SCHEMA["metadata"]["brief-kind"]:
-        errors.append("brief-kind: expected piece or chapter")
+        errors.append("brief-kind: expected a supported article or chapter kind")
     if legacy:
         # Legacy layout and evidence remain read-compatible, not silently migrated or certified.
         if kind == "chapter" and not parts.get("教学目标", "").strip():
             errors.append("教学目标: required for chapter")
         if kind == "piece" and not any(parts.get(key, "").strip() for key in ("议题", "Angle", "Question")):
             errors.append("legacy piece: missing question or angle")
+        if stage == "draft":
+            errors.append("draft: legacy compatibility is not readiness; assess equivalent preparation manually")
         return Result(kind, True, tuple(errors))
     if meta.get("brief-version") != "2":
         errors.append("brief-version: unsupported version")
-    if kind == "piece" and meta.get("intent") not in SCHEMA["metadata"]["intent"]:
+    if kind in ARTICLE_KINDS and meta.get("intent") not in SCHEMA["metadata"]["intent"]:
         errors.append("intent: expected argue, explain or explore")
     if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", meta.get("piece", "")):
         errors.append("piece: expected a stable kebab-case slug")
@@ -165,7 +244,7 @@ def verify(text: str, stage: str = "examples") -> Result:
         for heading in SCHEMA["sections"][phase]:
             if not parts.get(heading, "").strip():
                 errors.append(f"{heading}: required at {phase} stage")
-    if kind == "chapter" and not parts.get("教学目标", "").strip():
+    if kind in CHAPTER_KINDS and not parts.get("教学目标", "").strip():
         errors.append("教学目标: required for chapter")
     if stage == "frame":
         return Result(kind, False, tuple(errors))
@@ -210,7 +289,8 @@ def verify(text: str, stage: str = "examples") -> Result:
     required_nodes = {key for key, row in nodes.items() if row.cells["Need"] == "required"}
     needs_evidence = {key for key in required_nodes if nodes[key].cells["Kind"] != "question"}
     covered: set[str] = set()
-    for row in rows("Reading order"):
+    reading_order = rows("Reading order")
+    for row in reading_order:
         covered.update(references(row.cells["Nodes"], "Reading order"))
     if missing := required_nodes - covered:
         errors.append(f"Reading order: missing required nodes {', '.join(sorted(missing))}")
@@ -221,7 +301,8 @@ def verify(text: str, stage: str = "examples") -> Result:
     covered.clear()
     supported: set[str] = set()
     evidence_ids: set[str] = set()
-    for row in rows("Evidence"):
+    evidence = rows("Evidence")
+    for row in evidence:
         cells = row.cells
         if not re.fullmatch(r"e[1-9]\d*", cells["ID"]) or cells["ID"] in evidence_ids:
             errors.append(f"Evidence: invalid or duplicate ID {cells['ID']}")
@@ -243,22 +324,24 @@ def verify(text: str, stage: str = "examples") -> Result:
             concept = nodes[node_id].cells["Kind"] == "concept"
             if role == "supports" or (concept and role == "explains"):
                 supported.add(node_id)
-        if stage == "ship" and refs & needs_evidence and state in ("unverified", "gap"):
+        if stage in ("draft", "ship") and refs & needs_evidence and state in ("unverified", "gap"):
             errors.append(f"Evidence {cells['ID']}: unresolved evidence on a required node")
     if missing := needs_evidence - covered:
         errors.append(f"Evidence: missing evidence or gap for {', '.join(sorted(missing))}")
-    if stage == "ship" and (missing := needs_evidence - supported):
+    if stage in ("draft", "ship") and (missing := needs_evidence - supported):
         errors.append(f"Evidence: no suitable support/explanation for {', '.join(sorted(missing))}")
     for row in rows("Selection map"):
         enum(row, "Disposition", "disposition", "Selection map")
         references(row.cells["Nodes"], "Selection map", row.cells["Disposition"] in ("core", "support"))
-    if kind == "chapter":
+    if kind in CHAPTER_KINDS:
         code = parts.get("Code & math", "")
         if not code.strip().lower().startswith("none"):
             for row in rows("Code & math"):
                 references(row.cells["Nodes"], "Code & math", row.cells["Placement"] != "cut")
                 if row.cells["Source"] in ("—", "none") or row.cells["Placement"] in ("—", "none"):
                     errors.append("Code & math: source and placement required")
+    if stage == "draft" and kind in ARTICLE_KINDS:
+        check_draft_plan(meta, parts, nodes, reading_order, evidence, errors)
     return Result(kind, False, tuple(errors))
 
 

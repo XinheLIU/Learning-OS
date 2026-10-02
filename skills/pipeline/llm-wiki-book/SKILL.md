@@ -11,7 +11,7 @@ metadata:
 
 # Karpathy's LLM Wiki — Book Plan
 
-Last updated: 2026-10-01
+Last updated: 2026-10-02
 
 Turn an existing wiki into a **book plan**. Output is a plan only: thesis, narrative
 arc, table of contents, a chapter↔wiki selection map, and the research/writing still
@@ -79,7 +79,7 @@ become if elevated.
 ### 3. Commit the reader question and gain
 
 Use the question dialogue in
-[`../../writing/frame/references/framing-questions.md`](../../writing/frame/references/framing-questions.md)
+[`../../writing/foundations/frame/references/framing-questions.md`](../../writing/foundations/frame/references/framing-questions.md)
 at book scale. Read relevant writing snapshots when available. Identify the reader's recognizable
 situation, what this book adds, the author's current answer or uncertainty, and what it leaves out.
 Propose ranked candidates only where the choice is open. Reuse explicit author decisions.

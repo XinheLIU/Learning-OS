@@ -1,16 +1,17 @@
 # Writing System Execution Plan
 
-Last updated: 2026-10-01
+Last updated: 2026-10-02
 
-The staged writing redesign is implemented: framing, logic, evidence, purpose-aware review and
-editorial snapshots. Contracts live in the [writing README](../../skills/writing/README.md) and
-rationale in ADR-014/015. This file tracks validation that requires real author participation and
+The analytical redesign establishes framework and material-plan checkpoints before prose, with
+section budgets and deliberate evidence treatment. Final editing follows the complete draft. Contracts live in the [writing README](../../skills/writing/README.md) and
+rationale in ADR-014/015/016. This file tracks validation that requires real author participation and
 future extensions; it does not duplicate skill instructions.
 
 ## Validate with the author
 
 Run [the writing trial](../../trials/writing/RUNBOOK.md) on Learning How to Learn material and a
-related second article. Judge reader gain and inference quality, not just file validity. The live
+related second article. Judge the usefulness of framework grilling, the originality of the synthesis, excerpt selection
+and section allocation before drafting, then whether the resulting draft realizes those decisions. The live
 conversation and the author's endorsement of changed judgments remain unrun; synthetic tests and
 implementation-agent walkthroughs are separate evidence layers.
 

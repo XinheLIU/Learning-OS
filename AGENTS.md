@@ -1,6 +1,6 @@
 # Agent Instructions
 
-Last updated: 2026-09-01
+Last updated: 2026-10-02
 
 ## Repository boundary
 
@@ -10,17 +10,20 @@ Last updated: 2026-09-01
 
 ## Skill layout
 
-- Skills live at `skills/{pipeline,learning,writing}/<name>/SKILL.md`, grouped by system; each system folder carries a `README.md` contract, and the root `README.md` is the front door.
+- Skills live at `skills/{pipeline,learning}/<name>/SKILL.md` and `skills/writing/<group>/<name>/SKILL.md`, grouped by system; each system folder carries a `README.md` contract, and the root `README.md` is the front door.
 - Skill discovery requires flat directories, so flat symlink layers point into the nested tree: `.claude-plugin/skills/` (tracked, the plugin install path) and the gitignored `.claude/skills/`, `.codex/skills/`, `.opencode/skills/` mirrors. After adding, renaming, or moving a skill, regenerate all four layers:
 
   ```bash
   for layer in .claude-plugin .claude .codex .opencode; do
     rm -rf "$layer/skills" && mkdir -p "$layer/skills"
-    for d in skills/*/*/; do ln -sfn "../../${d%/}" "$layer/skills/$(basename "$d")"; done
+    rg --files skills -g SKILL.md | while IFS= read -r skill; do
+      d="${skill%/SKILL.md}"
+      ln -sfn "../../$d" "$layer/skills/$(basename "$d")"
+    done
   done
   ```
 
-- A skill change also means updating `catalog/skill-set.json` (categories map 1:1 to the system folders via `sourcePattern: skills/{category}/{skill}/SKILL.md`).
+- A skill change also means updating `catalog/skill-set.json` (category IDs map to folders, including `writing/analytical` and the other writing groups via `sourcePattern: skills/{category}/{skill}/SKILL.md`).
 - `tmp/` is the gitignored iteration corpus for pipeline and writing skills; `tmp/README.md` defines its convention. Durable rationale lives in `docs/adr.md`; unfinished work lives in `docs/exec-plans/`.
 
 ## Shared frontend

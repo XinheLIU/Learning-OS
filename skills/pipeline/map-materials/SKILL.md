@@ -3,7 +3,7 @@ name: map-materials
 description: Rank a raw materials folder once, for every downstream reader — one row per file recording what it is, which registry source it belongs to, whether it is key, redundant, or peripheral, and what it actually teaches. Writes materials.md at the archive root and nothing else. Tier 2, workflow, ~45 min. Use for "map these materials", "整理素材", 素材分级, 材料处理, or before /survey on a topic whose archive has never been processed.
 ---
 
-Last updated: 2026-10-01
+Last updated: 2026-10-02
 
 # Map Materials
 
@@ -24,7 +24,7 @@ fixed.
 
 The map is **processing, not curation**. It says "these five notebooks are the same notebook" and
 "this folder is about vision, not this topic". It does not say what the chapter will use (that is
-`frame`'s selection map) or how good the source is (that is `sources/<domain>.md`).
+`develop-examples`' selection map) or how good the source is (that is `sources/<domain>.md`).
 
 ## The archive is read-only
 
@@ -88,7 +88,7 @@ Files: <n> · key <n> · redundant <n> · peripheral <n>
 
 | Column | Rule |
 | :--- | :--- |
-| `id` | `m<nnn>`, unique within this map, stable forever. Referenced by `frame`'s selection map |
+| `id` | `m<nnn>`, unique within this map, stable forever. Referenced by `develop-examples`' selection map |
 | `path` | relative to the archive root. A note is rowed **per section** (`file.md § Heading`) when its sections have different fates; a folder row ends in `/**` and carries its file count |
 | `kind` | `note` \| `paper` \| `notebook` \| `code` \| `image` \| `slides` \| `link-list` \| `data` \| `other` |
 | `source-id` | the `sources/<domain>.md` row this file is a copy or part of; `—` when the file is the author's own or the source is unregistered |

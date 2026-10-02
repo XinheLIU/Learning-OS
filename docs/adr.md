@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-Last updated: 2026-10-01
+Last updated: 2026-10-02
 
 This file records durable decisions and why they were made. Current work belongs in
 [`exec-plans/`](exec-plans/).
@@ -285,3 +285,25 @@ capability. Keeping source/material pointers avoids duplicate registries.
 **Consequences:** Source tiers and material usage retain their existing owners. No writing skill
 writes mastery. Relations are attributed candidate/confirmed editorial connections, not earned
 learner edges. No database, new search service, publishing adapter or workflow controller is added.
+
+## ADR-016: Settle analytical framework and material treatment before prose
+
+**Status:** Accepted — 2026-10-02. Refines ADR-014 for original analytical writing.
+
+**Decision:** Analytical writing has two pre-draft checkpoints: an agreed logical framework with a
+defensible synthesis, then an agreed excerpt selection and section plan. The latter assigns target
+lengths, developed/brief evidence treatment, craft choices and transitions. `pre-write-grill` probes
+concrete framework decisions; `frame` records intent; `develop-argument` and `develop-examples` own
+the checkpoints. One Markdown brief remains authoritative, with an optional derived HTML view.
+Confirmation or explicit scoped delegation closes a checkpoint; unchanged decisions are reused.
+
+**Why:** Once a draft has a shape, local editing rarely repairs its thesis, originality or allocation
+of attention efficiently. Those decisions need inspection while the author can still change them
+cheaply. More sources and equal example depth do not imply stronger reasoning.
+
+**Consequences:** Article prose follows both checkpoints. Research answers named gaps; counterevidence
+reopens the affected framework. Final review diagnoses defects and local edits repair expression;
+a fundamental flaw returns to preparation. Additive v2 planning fields and a `draft` validator stage
+check readiness without migrating historical briefs. Originality and real author agreement remain
+semantic judgments. Source count does not exempt analytical work. Faithful summaries, standalone
+edits and teaching tracks keep their distinct preparation needs. No new controller skill or service.

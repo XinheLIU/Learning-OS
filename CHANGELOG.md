@@ -1,6 +1,40 @@
 # Changelog
 
-Last updated: 2026-10-01
+Last updated: 2026-10-02
+
+## 2026-10-02 — Framework-first analytical writing
+
+### Changed
+
+- Move the main analytical work before prose: source reconnaissance → logical framework and
+  grilling → framework checkpoint → excerpt selection, example treatment and section budgets →
+  material-plan checkpoint → complete draft → final review and targeted edits.
+- Require a defensible synthesis beyond source restatement, with enough reasoning to earn the
+  thesis. Present the framework in Markdown, with an optional derived HTML view.
+- Select precise passages across the declared inventory. Develop decisive examples, cite others
+  briefly, and research only named gaps. Allocate section length by its contribution to the argument.
+- Reuse actual author confirmation or explicit scoped delegation. Replace repeated per-skill
+  approvals and the separate specification document with two checkpoints in one working brief.
+- Reopen affected preparation when evidence changes the thesis or reasoning; reserve final editing
+  for bounded repairs. Preserve faithful-summary, teaching and standalone-edit routes.
+- Organize writing skills into foundations, analytical, explanatory, learning-to-teaching,
+  operations and delivery groups. Repair catalog paths, shared references and all discovery layers.
+
+### Added
+
+- Additive v2 brief fields for original contribution, section targets, developed/brief evidence
+  treatment, craft choices, transitions and checkpoint records.
+- `verify_brief.py --stage draft` checks preparation completeness, budget arithmetic, selected
+  evidence references, checkpoint readiness and central support. Existing stages remain compatible;
+  legacy briefs can supply equivalent preparation through manual assessment.
+- Preserve the new explanatory and learning-to-teaching skill scaffolds as unfinished preparation
+  for those tracks; this release implements the analytical workflow.
+- Fourteen regression tests and a recorded synthetic walkthrough of preparation, selective depth,
+  drafting and checkpoint reopening. All 31 tests pass; all nine revised skill entrypoints validate;
+  all 38 catalog entries and four discovery layers resolve. Live author evaluation remains pending.
+
+See [the writing workflow](skills/writing/README.md) and
+[verification results](trials/writing/RESULTS.md) for the maintained contracts and evidence.
 
 ## 2026-10-01
 

@@ -1,8 +1,8 @@
 # Writing Redesign Trial
 
-Last updated: 2026-10-01
+Last updated: 2026-10-02
 
-Test reader gain, reasoning, evidence and continuity as separate properties. For each future run,
+Test framework quality, originality, material treatment, draft readiness and final delivery as separate properties. For each future run,
 create a fresh output folder under `tmp/`; do not overwrite the existing Learning How to Learn brief
 or the original Transformer library. The mechanical suite is reproducible without those private
 materials. The completed implementation walkthrough's temporary artifacts were discarded on
@@ -37,6 +37,29 @@ conditions. No scenario permits inventing a real author experience.
 | Teaching chapter contains no opposing view | review-draft | assess capability, prerequisites and evidence without requesting 正方 |
 | A ready brief and outline were already confirmed | write-content | use them without asking to approve the same outline again |
 
+## Analytical preparation scenarios
+
+Use fictional source passages and clearly labelled synthetic author responses for repeatable tests.
+They demonstrate a walkthrough, not real author endorsement. Preserve source bytes and record each
+checkpoint artifact before advancing. Evaluate decisions and outputs, not matched instruction text.
+
+| Scenario/input | Required observable result |
+| :--- | :--- |
+| Four sources repeat that AI speeds answer retrieval; practice and total task time differ | Framework derives a bounded distinction beyond source summary, with premises and an alternative; no article paragraphs |
+| One notes file asks for an original analysis | Same analytical preparation as several files; no summary-route bypass |
+| Framework has headings but no justified inference | Grill the missing premise/contribution before accepting checkpoint 1 |
+| One detailed case, corroborating data, a counterexample and an off-topic source | Select precise excerpts, justify developed versus brief treatment, account for cuts and retain limits |
+| A 900-word article with unequal reasoning difficulty | Section targets sum to 900; the decisive inference gets room; transitions connect the reasoning |
+| Framework accepted but no material-plan agreement | No analytical prose; present excerpts, budgets and choices for checkpoint 2 |
+| Both decisions already confirmed, or explicitly delegated | Record their basis and continue without repeat approval; still produce concrete preparation |
+| Counterevidence invalidates the agreed premise | Reopen framework and dependent material plan; retain unaffected decisions; no silent prose repair |
+| A central factual gap remains | Research only that gap or narrow the claim; do not draft it as established fact |
+| Faithful source summary, teaching chapter or standalone paragraph edit | Preserve the route without imposing analytical originality or a retrospective two-checkpoint ceremony |
+
+After readiness, draft from the plan and compare actual section lengths, selected passages and
+example treatment. Perform final review, then bounded repairs. A structural defect routes upstream.
+Record command checks separately from the qualitative assessment and live author validation.
+
 ## Real corpus walkthrough
 
 1. Read the Learning How to Learn brief and only relevant selected note passages. Leave their bytes
@@ -45,8 +68,8 @@ conditions. No scenario permits inventing a real author experience.
    in the author's view.
 2. In a separate output folder, frame an explanatory article around the distinction between finding
    an answer and independently using it. Reuse actual author wording with its source pointer; ask
-   only about a genuinely new judgment. Build logic and evidence, draft, then run one review/edit
-   loop. The result should add reader understanding even if it contradicts nobody.
+   only about a genuinely new judgment. For an original analysis, present and settle its framework, then select excerpts and agree
+   treatment/section budgets before drafting. Review the complete draft and make final targeted repairs. The result should add reader understanding even if it contradicts nobody.
 3. Run the updated Transformer preparation stages or read its legacy chapter fixture. Check v2 node
    references/Code & math and purpose-aware review. The full author grill belongs to the Transformer
    runbook; reviewing a fixture cannot establish author mastery.

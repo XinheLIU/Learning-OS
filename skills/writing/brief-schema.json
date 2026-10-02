@@ -4,12 +4,24 @@
   "metadata": {
     "brief-kind": [
       "piece",
-      "chapter"
+      "chapter",
+      "analytical-piece",
+      "explanatory-chapter",
+      "graduated-chapter"
+    ],
+    "source-type": [
+      "scattered-materials",
+      "single-source",
+      "learning-artifact"
     ],
     "intent": [
       "argue",
       "explain",
       "explore"
+    ],
+    "length-unit": [
+      "words",
+      "characters"
     ]
   },
   "sections": {
@@ -20,6 +32,24 @@
       "Answer",
       "Scope"
     ],
+    "audience": [
+      "Current knowledge state",
+      "Main obstacles",
+      "Target capability",
+      "Completion evidence"
+    ],
+    "outcome": [
+      "Deliverable",
+      "Quality bar",
+      "Required capabilities",
+      "Deliberately excluded"
+    ],
+    "learning-source": [
+      "Artifact path",
+      "Mastery evidence",
+      "Independence level",
+      "Readiness assessment"
+    ],
     "argument": [
       "Logic nodes",
       "Logic relations",
@@ -29,6 +59,11 @@
     "examples": [
       "Evidence",
       "Selection map"
+    ],
+    "draft": [
+      "Original contribution",
+      "Section plan",
+      "Checkpoints"
     ]
   },
   "tables": {
@@ -72,6 +107,18 @@
       "Source",
       "Placement",
       "Why"
+    ],
+    "Section plan": [
+      "Section",
+      "Target length",
+      "Evidence treatment",
+      "Craft",
+      "Transition"
+    ],
+    "Checkpoints": [
+      "Checkpoint",
+      "State",
+      "Basis"
     ]
   },
   "values": {
@@ -118,6 +165,20 @@
       "cut",
       "gap",
       "inspect-on-demand"
+    ],
+    "treatment": [
+      "developed",
+      "brief"
+    ],
+    "checkpoint": [
+      "framework",
+      "material-plan"
+    ],
+    "checkpoint-state": [
+      "pending",
+      "confirmed",
+      "delegated",
+      "revisit"
     ]
   },
   "compatibility": {
@@ -126,12 +187,13 @@
   },
   "owners": {
     "frame": "framing",
-    "develop-argument": "logic and derived map",
-    "develop-examples": "evidence, selection, code/math",
-    "snapshot-writing": "writing-memory only"
+    "develop-argument": "logic, original contribution, derived map and framework checkpoint",
+    "develop-examples": "evidence, selection, section plan, length budget, material-plan checkpoint, code/math",
+    "snapshot-writing": "writing-memory only",
+    "pre-write-grill": "questions about unresolved framework decisions; no separate specification"
   },
   "downstreamChecks": {
-    "write-content": "reuse valid reading order; examples stage permits visible gaps",
+    "write-content": "analytical draft readiness requires agreed framework and material plan with verified central support; other tracks retain examples-stage preparation",
     "review-draft": "purpose-aware semantic review plus ship-stage checks; chapters have no opponent gate",
     "grill": "chapter with 教学目标 after ship review; taught v2 nodes or legacy 二层",
     "package-chapter": "verify delivered prose/assets, not the working brief"

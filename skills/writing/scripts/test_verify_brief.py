@@ -69,6 +69,23 @@ EVIDENCE = """
 
 BRIEF = FRAME + LOGIC + EVIDENCE
 
+PLAN = """
+## Original contribution
+The specification defines individual attempts. The article derives an aggregate attempt budget,
+separating consumption from recovery probability through n1 and n2.
+## Section plan
+| Section | Target length | Evidence treatment | Craft | Transition |
+| :--- | :--- | :--- | :--- | :--- |
+| Count the requests | 800 | e1: developed, e2: brief | Work through one failed request, then sum attempts. | Close with a bounded budget, leaving recovery probability open. |
+## Checkpoints
+| Checkpoint | State | Basis |
+| :--- | :--- | :--- |
+| framework | confirmed | Synthetic author response 2026-10-02: the aggregate-budget thesis and reasoning match my intent. |
+| material-plan | delegated | Synthetic author response 2026-10-02: select passages and allocate the agreed 800-word budget. |
+"""
+
+ANALYTICAL = BRIEF.replace("brief-kind: piece", "brief-kind: analytical-piece\ntarget-length: 800\nlength-unit: words") + PLAN
+
 
 class BriefContractTests(unittest.TestCase):
     def assert_passes(self, text: str, stage: str) -> None:
@@ -154,6 +171,100 @@ class BriefContractTests(unittest.TestCase):
         self.assertTrue(verify(chapter + piece).errors)
         self.assertTrue(verify("A draft without framing.").errors)
 
+    def test_analytical_preparation_can_finish_without_article_prose(self) -> None:
+        self.assert_passes(ANALYTICAL, "draft")
+        self.assertTrue(verify(FRAME + LOGIC, "draft").errors)
+        self.assertTrue(verify(BRIEF, "draft").errors)
+        self.assert_passes(BRIEF, "examples")
+        self.assert_passes(BRIEF, "ship")
+
+    def test_original_contribution_is_required_only_for_analytical_draft_readiness(self) -> None:
+        text = ANALYTICAL.replace("## Original contribution", "## Unrelated notes")
+        self.assertTrue(verify(text, "draft").errors)
+        self.assert_passes(text, "argument")
+
+    def test_analytical_kind_requires_intent(self) -> None:
+        self.assertTrue(verify(ANALYTICAL.replace("intent: explain\n", ""), "frame").errors)
+
+    def test_file_count_and_old_piece_kind_do_not_bypass_analytical_readiness(self) -> None:
+        text = ANALYTICAL.replace("brief-kind: analytical-piece", "brief-kind: piece\nsource-type: single-source")
+        self.assert_passes(text, "draft")
+        self.assertTrue(verify(text.replace("| framework | confirmed |", "| framework | pending |"), "draft").errors)
+
+    def test_budget_unit_and_positive_integer_targets(self) -> None:
+        for old, new in (("length-unit: words", "length-unit: pages"),
+                         ("target-length: 800", "target-length: -800"),
+                         ("target-length: 800", "target-length: 0"),
+                         ("target-length: 800", "target-length: ²"),
+                         ("| 800 |", "| 0 |"), ("| 800 |", "| 800.5 |"),
+                         ("target-length: 800\n", ""), ("length-unit: words\n", "")):
+            with self.subTest(new=new):
+                self.assertTrue(verify(ANALYTICAL.replace(old, new), "draft").errors)
+        self.assert_passes(ANALYTICAL.replace("length-unit: words", "length-unit: characters"), "draft")
+
+    def test_unequal_section_budgets_must_sum_to_total(self) -> None:
+        text = ANALYTICAL.replace(
+            "| Count the requests | n1, n2 | Compute requests without assuming any success. |",
+            "| Count the requests | n1 | Understand attempts. |\n| Budget | n2 | Compute the total. |")
+        text = text.replace(
+            "| Count the requests | 800 | e1: developed, e2: brief | Work through one failed request, then sum attempts. | Close with a bounded budget, leaving recovery probability open. |",
+            "| Count the requests | 600 | e1: developed | Work through the failure. | Now aggregate. |\n"
+            "| Budget | 200 | e2: brief | Apply the arithmetic. | Close with the bounded total. |")
+        self.assert_passes(text, "draft")
+        self.assertTrue(verify(text.replace("| 200 |", "| 300 |"), "draft").errors)
+        self.assertTrue(verify(text.replace("e1: developed", "e2: developed"), "draft").errors)
+        self.assertTrue(verify(text.replace("| Budget | 200", "| Count the requests | 200"), "draft").errors)
+
+    def test_plan_sections_must_follow_reading_order(self) -> None:
+        for replacement in ("| Another section | 800 |", "| Count the requests | 400 |"):
+            with self.subTest(replacement=replacement):
+                self.assertTrue(verify(ANALYTICAL.replace("| Count the requests | 800 |", replacement), "draft").errors)
+        row = next(line for line in PLAN.splitlines() if line.startswith("| Count the requests"))
+        self.assertTrue(verify(ANALYTICAL.replace(row, row + "\n" + row), "draft").errors)
+
+    def test_selected_evidence_references_and_treatment(self) -> None:
+        for replacement in ("e99: developed, e2: brief", "e1: exhaustive, e2: brief",
+                            "e1: developed", "—", "e1: developed, e1: brief, e2: brief"):
+            with self.subTest(replacement=replacement):
+                self.assertTrue(verify(ANALYTICAL.replace("e1: developed, e2: brief", replacement), "draft").errors)
+
+    def test_pending_or_stale_checkpoint_blocks_readiness(self) -> None:
+        for name in ("framework", "material-plan"):
+            state = "confirmed" if name == "framework" else "delegated"
+            for replacement in ("pending", "revisit", "approved"):
+                with self.subTest(name=name, replacement=replacement):
+                    text = ANALYTICAL.replace(f"| {name} | {state} |", f"| {name} | {replacement} |")
+                    self.assertTrue(verify(text, "draft").errors)
+        self.assert_passes(ANALYTICAL.replace("| framework | confirmed |", "| framework | delegated |"), "draft")
+
+    def test_checkpoints_require_distinct_rows_and_a_basis(self) -> None:
+        row = next(line for line in PLAN.splitlines() if line.startswith("| framework |"))
+        for text in (ANALYTICAL.replace(row, ""), ANALYTICAL.replace(row, row + "\n" + row),
+                     ANALYTICAL.replace(row, "| framework | confirmed | — |")):
+            self.assertTrue(verify(text, "draft").errors)
+
+    def test_central_gap_blocks_drafting_but_open_question_can_remain(self) -> None:
+        text = ANALYTICAL.replace("| reasoning | supports | 1 + 1 + 1 = 3. | derivation.md § Count | verified |",
+                                  "| gap | supports | Need a calculation. | — | gap |")
+        self.assert_passes(text, "examples")
+        self.assertTrue(verify(text, "draft").errors)
+        self.assert_passes(text.replace("intent: explain", "intent: explore").replace("| conclusion | required |", "| question | required |"), "draft")
+        self.assertTrue(verify(ANALYTICAL.replace("| verified |", "| unverified |"), "draft").errors)
+
+    def test_teaching_kinds_do_not_require_analytical_plan(self) -> None:
+        for kind in ("chapter", "explanatory-chapter", "graduated-chapter"):
+            with self.subTest(kind=kind):
+                text = BRIEF.replace("brief-kind: piece\nintent: explain", f"brief-kind: {kind}")
+                text += "\n## 教学目标\nCompute the count.\n## Code & math\nnone — inline arithmetic suffices.\n"
+                self.assert_passes(text, "examples")
+                self.assert_passes(text, "draft")
+                self.assertTrue(verify(text.replace("## 教学目标", "## Unrelated"), "draft").errors)
+
+    def test_legacy_read_compatibility_does_not_certify_draft_readiness(self) -> None:
+        text = "## 议题\nDoes this work?\n## 正方 / 反方\nBoth supplied positions.\n"
+        self.assert_passes(text, "examples")
+        self.assertTrue(verify(text, "draft").errors)
+
     def test_public_cli_is_read_only_and_returns_failure(self) -> None:
         checker = Path(__file__).with_name("verify_brief.py")
         with tempfile.TemporaryDirectory() as folder:
@@ -166,6 +277,17 @@ class BriefContractTests(unittest.TestCase):
             path.write_text(FRAME)
             result = subprocess.run([sys.executable, str(checker), str(path)], capture_output=True, text=True, check=False)
             self.assertEqual(result.returncode, 1)
+
+    def test_draft_cli_is_read_only_and_reports_stale_preparation(self) -> None:
+        checker = Path(__file__).with_name("verify_brief.py")
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "brief.md"
+            for text, code in ((ANALYTICAL, 0), (ANALYTICAL.replace("| framework | confirmed |", "| framework | revisit |"), 1)):
+                path.write_text(text)
+                before = path.read_bytes()
+                result = subprocess.run([sys.executable, str(checker), str(path), "--stage", "draft"], capture_output=True, text=True, check=False)
+                self.assertEqual(result.returncode, code, result.stdout)
+                self.assertEqual(path.read_bytes(), before)
 
 
 if __name__ == "__main__":
