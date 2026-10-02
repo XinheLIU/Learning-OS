@@ -1,6 +1,6 @@
 ---
 name: llm-wiki-book
-description: "Karpathy's LLM Wiki: generate a book PLAN (not the book) from an existing wiki. Runs an angle dialogue with the author to commit a thesis, then produces the narrative arc, chapter-by-chapter table of contents, a chapter↔wiki selection map, and a gap list of further research and writing needed. Use when the user wants to turn a wiki into a book, draft a book outline from a knowledge base, plan a book, or mentions 'book idea', 'book plan', 'book outline', or 'turn the wiki into a book'. Plan only — never drafts chapter prose."
+description: "Karpathy's LLM Wiki: generate a book PLAN (not the book) from an existing wiki. Frames a reader question and gain with the author, commits a provisional answer or teaching goal, and produces the narrative arc, chapter-by-chapter table of contents, a chapter↔wiki selection map, and a gap list of further research and writing needed. Use when the user wants to turn a wiki into a book, draft a book outline from a knowledge base, plan a book, or mentions 'book idea', 'book plan', 'book outline', or 'turn the wiki into a book'. Plan only — never drafts chapter prose."
 license: MIT
 metadata:
   hermes:
@@ -11,13 +11,13 @@ metadata:
 
 # Karpathy's LLM Wiki — Book Plan
 
-Last updated: 2026-09-01
+Last updated: 2026-10-01
 
 Turn an existing wiki into a **book plan**. Output is a plan only: thesis, narrative
 arc, table of contents, a chapter↔wiki selection map, and the research/writing still
 needed. **Never draft chapter prose** — that is a separate, later task.
 
-**See also:** `llm-wiki` (ingest/query) · `llm-wiki-init` (setup) · `llm-wiki-lint` (audit) · `frame-piece` (the same angle dialogue at article scale)
+**See also:** `llm-wiki` (ingest/query) · `llm-wiki-init` (setup) · `llm-wiki-lint` (audit) · `frame` (question and reader gain at article scale)
 
 ## When This Skill Activates
 
@@ -76,28 +76,23 @@ For each cluster, label its highest current rung:
 Record, per cluster: the pages in it, its current rung, and the mental model it *could*
 become if elevated.
 
-### 3. Find the explanatory framework (the spine) — a dialogue, not a derivation
+### 3. Commit the reader question and gain
 
-**This is `frame-piece` at book scale.** A thesis derived from the wiki is the *sources' consensus with an arc*, not the author's book. The wiki supplies what can be argued; only the author supplies what is worth arguing. So this step is a conversation, and it does not end until the author commits.
+Use the question dialogue in
+[`../../writing/frame/references/framing-questions.md`](../../writing/frame/references/framing-questions.md)
+at book scale. Read relevant writing snapshots when available. Identify the reader's recognizable
+situation, what this book adds, the author's current answer or uncertainty, and what it leaves out.
+Propose ranked candidates only where the choice is open. Reuse explicit author decisions.
 
-**Propose 3–5 candidate spines**, each one contestable paragraph plus four lines: the belief it argues against (and who holds it), the reader it serves, the clusters it rests on, and **what it forces the book to throw away**. Rank them, recommendation first — the sharpest disagreement the wiki can still support. Sharpness the wiki can't carry is a gap (step 7), not a spine.
+The book may argue, explain, explore or teach. A real dispute requires fair objections; explanation
+needs a useful mechanism; exploration needs criteria for comparing answers. A named opponent or
+current event is not mandatory. Record judgments and personal markers in the author's wording,
+with origins. Do not turn a proposed position into the author's belief.
 
-**One candidate is always the flat one, explicitly labelled** — the wiki's own consensus, the book the corpus would write by itself. It is included so the author can reject it on sight.
-
-**Then ask the four load-bearing questions** — full reasoning and follow-ups in
-[`../../writing/frame-piece/references/framing-questions.md`](../../writing/frame-piece/references/framing-questions.md):
-
-- 「为什么是现在？同样的问题三年前问，答案会不一样吗？」 — asked first; it is what makes a
-  wiki's settled consensus contestable again. A book with no occasion is an encyclopedia.
-- 「读这些材料时，哪一句让你想反驳？」 — push the answer outward: "the wiki is inconsistent" is a
-  review, "this claim fails under condition X" is a book.
-- 「这个领域里大部分人相信什么，而你不相信？」 — this is 正方; state it so its believers would
-  sign it.
-- 「你自己在这件事上判断错过什么？」
-
-**Loop** — propose → author reacts → sharpen or discard → re-propose. No round cap. Test each surviving spine: could the sources' authors have written this book? Is the opponent the wiki itself (⇒ a review, not a book)? Who is on the other side? What does it cost the reader to agree? A book-length flat thesis costs far more to discover late than a flat post does.
-
-Record the committed spine **in the author's words**, plus the 对立面 and the verbatim markers (the disagreement, the past mistake, the vocabulary) that came out of the dialogue. Chapters draw their openings and examples from these, the same way `write-content` does.
+Build the book-scale logic before mapping chapters: core question → claims or teachable units →
+justified relations → required evidence or gaps. Reuse `develop-argument`'s reasoning criteria;
+retain the book plan format rather than manufacturing article metadata. Each selected wiki page
+must serve a named logic node and chapter. No fixed pillar count or compulsory cut row.
 
 ### 4. Design the narrative arc
 
@@ -156,7 +151,7 @@ The most useful part of the plan. Separate into:
 ### 8. Write the plan to the wiki
 
 - Default path: `queries/book-plan-<topic>.md` (no new top-level dir; stays within SCHEMA
-  conventions). Confirm the path with the user first.
+  conventions). Reuse a supplied destination; ask only if the destination is ambiguous.
 - Frontmatter: `type: query`, tags from the taxonomy, `sources:` listing the wiki pages
   the plan rests on.
 - Use `[[wikilinks]]` for every page referenced so the plan stays navigable and the lint
@@ -170,15 +165,22 @@ The most useful part of the plan. Separate into:
 ```markdown
 # Book Plan: <Working Title>
 
-## Thesis (the explanatory framework)
-<one paragraph — the contestable spine, in the author's words after the final round>
+Last updated: YYYY-MM-DD
 
-## 对立面
-<the belief this book argues against, and who holds it>
+## Reader question and gain
+<recognizable reader situation, central question and what this book adds>
+
+## Current answer or teaching goal
+<author-confirmed position, useful explanatory framework or bounded uncertainty>
+
+## Logic
+<stable node IDs, claims/teachable units, justified relationships and required evidence>
+
+## Relevant objections or alternatives
+<real objections for an argument, possible answers for an exploration; omit when inapplicable>
 
 ## Author's markers
-> <verbatim: the disagreement that came out of the dialogue>
-> <verbatim: the author's own past mistake in this domain>
+> <verbatim confirmed judgment or experience, with origin; optional>
 - **Vocabulary:** <the author's own terms; chapters keep them as written>
 
 ## Cost paid
@@ -198,9 +200,9 @@ The most useful part of the plan. Separate into:
 ### Ch 2 — ...
 
 ## Selection Map
-| Chapter | Core pages | Support |
-|---------|-----------|---------|
-| 1 | [[page-a]] | [[page-b]] |
+| Chapter | Logic nodes | Core pages | Support |
+|---------|-------------|-----------|---------|
+| 1 | n1, n2 | [[page-a]] | [[page-b]] |
 
 **Cut pages:** [[page-z]] — <why; outside the spine, or a missing chapter?>
 **Thin-backing chapters:** Ch N — <what the wiki can't yet support>
@@ -215,9 +217,9 @@ The most useful part of the plan. Separate into:
 
 ## Pitfalls
 
-- **Never derive the spine from the wiki.** A thesis the wiki already supports is the
-  sources' consensus with an arc — the single most expensive failure this skill can make,
-  because it is only visible after chapters exist. Step 3 is a dialogue; hold it open.
+- **Reader gain governs selection.** A synthesis of settled knowledge can serve a new reader
+  well; an index reproduced as chapters usually cannot. Confirm only judgments the author has
+  not supplied, and preserve uncertainty rather than inventing an opposing camp.
 - **Plan only — never write chapter prose.** If the user wants drafting, that's a separate
   pass after the plan is approved.
 - **Don't trust `[[wikilinks]]` as the dependency graph.** The user has flagged that wiki

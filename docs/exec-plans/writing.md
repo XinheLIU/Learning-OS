@@ -1,39 +1,25 @@
 # Writing System Execution Plan
 
-Last updated: 2026-09-01
+Last updated: 2026-10-01
 
-The writing workflow is implemented. This file contains only its remaining verification and
-extension work. Durable design rationale lives in [`docs/adr.md`](../adr.md).
+The staged writing redesign is implemented: framing, logic, evidence, purpose-aware review and
+editorial snapshots. Contracts live in the [writing README](../../skills/writing/README.md) and
+rationale in ADR-014/015. This file tracks validation that requires real author participation and
+future extensions; it does not duplicate skill instructions.
 
-## 1. Finish the book-scale framing contract
+## Validate with the author
 
-Add a book-scale argument ladder to `llm-wiki-book`. It already inherits occasion-first framing,
-steelman tests, a selection map, and gaps from `frame-piece`, but it currently commits a spine and
-jumps directly to chapter mapping.
+Run [the writing trial](../../trials/writing/RUNBOOK.md) on Learning How to Learn material and a
+related second article. Judge reader gain and inference quality, not just file validity. The live
+conversation and the author's endorsement of changed judgments remain unrun; synthetic tests and
+implementation-agent walkthroughs are separate evidence layers.
 
-Acceptance: a wiki-to-book plan contains topic -> primary claims -> mechanisms -> concrete chapter
-developments, and every selected wiki page supports a named ladder node.
+Run the updated Transformer chapter trial, including cold `grill`, final portability and actual-use
+archive feedback. Retain historical briefs and source libraries unchanged while preparing new trial
+outputs. Verify earned markers and assistance with the learning loop before claiming Independent.
 
-## 2. Run the pending corpus fixtures
+## Medium adapters, on demand
 
-Use `tmp/learning-how-to-learn/` and the existing `brief.md`:
-
-1. Run brief-aware `write-content`; confirm `cut` material is absent and author markers are present.
-   Run brief-less mode once and confirm the flat-thesis warning fires.
-2. Run `review-draft` on the real draft and a deliberately flattened version. The flat version must
-   receive `reframe`; findings on the real draft must quote passages and rank fixes.
-3. Apply one finding with `edit-targeted`; verify only the named span changes. Complete two short
-   review/edit cycles.
-4. Run the revised `llm-wiki-book` against the corpus wiki and verify the book-scale ladder,
-   selection map, and gaps.
-
-## 3. Add medium-specific adapters only when demanded
-
-- Create one skill per medium, such as `publish-wechat` or `publish-xhs`; do not create a universal
-  adapter.
-- Each adapter owns its medium's length, hook, formatting, and audience constraints.
-- Derive from the medium-neutral canonical draft and never edit back.
-- Defer a durable `writing-profile.md` until several real briefs expose recurring preferences.
-
-Acceptance for each adapter: the derived artifact follows its medium contract, the canonical draft
-is byte-for-byte unchanged, and the adapter has a focused fixture.
+Create a specific adapter only when a destination requires it. Derive from the canonical draft and
+leave that draft unchanged. Defer a persistent writing profile until actual briefs reveal recurring
+preferences. No publishing adapter, database or workflow-controller skill is part of this redesign.

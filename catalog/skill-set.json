@@ -13,17 +13,52 @@
     {
       "id": "pipeline",
       "label": "Information Pipeline",
-      "skills": ["llm-wiki-init", "llm-wiki-ingest", "llm-wiki-lint", "llm-wiki-book", "clean-notes", "organize-docs"]
+      "skills": [
+        "curate-sources",
+        "map-materials",
+        "survey",
+        "curriculum",
+        "clean-notes",
+        "organize-docs",
+        "llm-wiki-init",
+        "llm-wiki-ingest",
+        "llm-wiki-lint",
+        "llm-wiki-book",
+        "archive-materials"
+      ]
     },
     {
       "id": "learning",
       "label": "Learning Loop",
-      "skills": ["survey", "curriculum", "learn", "recall", "practice", "evaluate", "reflect", "synthesis-research"]
+      "skills": [
+        "learn",
+        "recall",
+        "practice",
+        "evaluate",
+        "reflect",
+        "synthesis-research"
+      ]
     },
     {
       "id": "writing",
       "label": "Writing & Publishing",
-      "skills": ["frame-piece", "build-skeleton", "write-content", "review-draft", "edit-targeted", "book-translator", "insert-inline-images", "book-diagrams", "create-tech-slides"]
+      "skills": [
+        "pre-write-grill",
+        "frame",
+        "develop-argument",
+        "develop-examples",
+        "build-skeleton",
+        "write-content",
+        "review-draft",
+        "edit-targeted",
+        "snapshot-writing",
+        "grill",
+        "package-chapter",
+        "book-translator",
+        "insert-inline-images",
+        "book-diagrams",
+        "create-tech-slides"
+      ]
     }
   ]
 }

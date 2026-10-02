@@ -1,6 +1,6 @@
 ---
 name: create-tech-slides
-description: Build dense, deep-tech HTML slide decks in a dark engineering aesthetic (Palantir-style) — isometric wireframe architecture diagrams, small precise typography, bracket annotations, high information density. Use when the user wants technical or architecture slides built from a markdown doc/spec WITHOUT losing detail (tables, diagrams, exact numbers, caveats), or mentions "deep-tech slides", "dense slides", "detailed HTML deck", "架构幻灯片", "深度技术 PPT", "别丢信息的 PPT", "Palantir 风格". Not for marketing-style decks with big fonts and one idea per slide.
+description: Build dense, deep-tech HTML slide decks (Palantir-style) from markdown docs/specs without losing detail. Derives from a finished draft; never edits back. Tier 3: adapter, ~90 min. Use when the user wants technical or architecture slides built from a markdown doc/spec WITHOUT losing detail (tables, diagrams, exact numbers, caveats), or mentions "deep-tech slides", "dense slides", "detailed HTML deck", "架构幻灯片", "深度技术 PPT", "别丢信息的 PPT", "Palantir 风格". Not for marketing-style decks with big fonts and one idea per slide.
 ---
 
 # Deep-Tech Slides

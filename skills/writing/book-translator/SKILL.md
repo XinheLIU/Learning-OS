@@ -1,6 +1,6 @@
 ---
 name: book-translator
-description: Translate Markdown chapters between English and Simplified Chinese while preserving structure, technical terms, links, code, and authorial voice. Use for bilingual book translation, terminology normalization, or translation-quality review.
+description: Translate Markdown chapters between English and Simplified Chinese preserving structure, technical terms, links, code, and authorial voice. Derives from a finished canonical draft; never edits back. Tier 3: adapter, ~45 min. Use for bilingual book translation, terminology normalization, or translation-quality review.
 ---
 
 Last updated: 2026-07-28

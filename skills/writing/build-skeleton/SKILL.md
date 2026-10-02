@@ -1,13 +1,22 @@
 ---
 name: build-skeleton
-description: Design and maintain file and navigation structure for Markdown-based publications. Use for creating structure, adding chapters, updating TOC, or renaming/moving/reordering sections while keeping navigation consistent.
+description: Design and maintain file and navigation structure for Markdown-based publications in the destination repository. Never touches the draft source folder — that is package-chapter's scope. Tier 3: adapter, ~30 min. Use for creating structure, adding chapters, updating TOC, or renaming/moving/reordering sections while keeping navigation consistent.
 ---
 
-Last updated: 2026-08-23
+Last updated: 2026-09-22
 
 # Build Skeleton
 
 Build the smallest coherent structure a publication needs, then keep structural representations synchronized. Derive conventions from the project instead of imposing fixed patterns.
+
+## Scope Boundary
+
+This skill operates **in the destination publication repository** (the book repo, the site, the wiki). It never touches a draft source folder.
+
+- **Source folder portability** → `package-chapter`
+- **Destination navigation** → this skill
+
+The canonical handoff: `package-chapter` produces manifest stub data (id, locale, suggested path); the author moves the folder by hand; this skill writes the actual navigation entry.
 
 ## Establish the Contract
 

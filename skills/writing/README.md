@@ -1,100 +1,129 @@
 # The Writing System
 
-Last updated: 2026-09-01
+Last updated: 2026-10-01
 
-**Turn earned knowledge into published output — and let the writing show you what you haven't learned yet.**
+**Answer one worthwhile question, make the reasoning visible, and keep what changes your understanding.**
 
-Writing is the output stage of Learning OS, and its proof: a published article or chapter produced without assistance is the independent output the [learning loop](../learning/README.md) graduates against. The system optimizes for fast iteration — raw materials to reviewed draft in short cycles, not big batches.
+Writing serves a reader first. It can argue, explain, explore or teach. An independently produced
+chapter can also be learner evidence, but prose quality and mastery remain separate judgments.
 
-## The main line
+## The working loop
 
 ```text
-frame-piece  →  write-content  →  review-draft  →  edit-targeted  →  [publish-adapt]
-  angle +         draft from        depth gate       surgical         per medium
-  selection       the brief         then craft       edits            (planned)
-      ↑                                  │
-      └────────── "reframe or kill" ─────┘
+materials → pre-write-grill → frame → develop-argument ⇄ develop-examples → write-content
+              ↓ confirmation                    ↑                              ↓
+         map-materials                          └──── review-draft ⇄ edit-targeted
+
+understanding changes → snapshot-writing → the next frame
+agreed logic → book-diagrams (when a finished SVG is useful)
+delivered piece → archive-materials (actual material use and source verdicts)
 ```
 
-Every arrow is a gate the author walks through, not a handoff the agent performs. The design rationale is in [ADR-006](../../docs/adr.md#adr-006-frame-authored-writing-before-drafting).
+**Confirmation gates:** For original articles from scattered materials, `pre-write-grill` establishes
+shared understanding (topic, scope, length, material priorities, examples, structure) before
+downstream work. Faithful summaries of single sources may skip directly to `write-content`.
 
-**Why `frame-piece` comes first.** A thesis derived from the materials *is* the materials' thesis — that produces a faithful summary, never an authored piece. Angle and taste live in the author, not the corpus: what they disagree with, who they're arguing against, what they got wrong before. `frame-piece` is the conversation that extracts those and turns them into a `brief.md`.
+Enter at the stage the task needs. A single-skill request ends at that skill's result. An authorized
+writing/improvement workflow continues across stages, asking only for an unresolved judgment,
+scope choice or personal fact. Reuse confirmed decisions and valid outlines without repeat gates.
 
-It starts from an **occasion** — what changed outside the material — because a timeless corpus supplies no contestable question on its own; candidates are framed as 议题 / 正方 / 反方 so both sides have real adherents. The material is evidence, never the opponent: a piece whose target is the source's author is a book review. The brief carries a **论点层级** (主题 → 一层论点 → 二层机制 → 三层具体展开) that `write-content` uses as its outline, and a selection map dispositioning every source section as `core` / `support` / `cut` / `gap`, each `core`/`support` row keyed to the ladder node it discharges. Most content lands under `cut`; that is the point.
+**Familiar + fresh.** Familiar means a recognizable reader situation and an author stake. Fresh
+means a concrete gain in explanation, evidence, connection, judgment or boundary for that reader.
+Neither an opponent nor worldwide novelty is required. An exploration can make progress by
+showing which answers remain possible and what evidence would distinguish them.
 
-## Workflows
+## Skills and ownership
 
-Real writing isn't linear. Different situations call for different patterns.
+| Skill | Owns | Completion |
+| :--- | :--- | :--- |
+| `pre-write-grill` | confirmed topic, scope, length, material priorities, examples, structure | author explicitly confirms specification |
+| `frame` | question, reader, gain, current answer, scope | author intent is settled enough to develop |
+| `map-materials` | cataloged sources, themes, material roles | materials categorized by relevance to confirmed topic |
+| `develop-argument` | logic nodes, justified relations, reading order, derived map | inference/dependencies are inspectable; gaps named |
+| `develop-examples` | evidence, selection map, chapter code/math | required points have attributable evidence or explicit gaps |
+| `write-content` | canonical prose | reader promise developed within scope, uncertainty visible |
+| `review-draft` | findings only | quoted, ranked defects with repair conditions and routes |
+| `edit-targeted` | one requested prose repair | target changed; dependencies rechecked when affected |
+| `snapshot-writing` | writing memory and its derived index | substantive delta recorded, or no-change reported |
+| `book-diagrams` | new SVG diagrams | visual relationships trace to agreed logic and render legibly |
+| `insert-inline-images` | placement of existing art | local assets and references resolve |
+| `grill` | chapter self-test log | misses routed to draft or author gaps |
+| `package-chapter` | delivery verification/frontmatter | final content and copied assets are portable |
+| `book-translator` | translated derivation | meaning/structure preserved; canonical source unchanged |
+| `create-tech-slides` | slide derivation | deck follows the source without editing back |
+| `build-skeleton` | destination publication structure | files/navigation follow destination contract |
 
-### Pattern 1: Authored piece (Materials → Argument)
-The default. You have materials and need a piece with a point of view:
-```
-frame-piece → write-content → review-draft ⇄ edit-targeted → [enhance]
-```
-Gaps in the brief route to `synthesis-research` before drafting the sections that need them.
+Pipeline `archive-materials` records actual use after delivery. `synthesis-research` handles
+questions whose answers require combining or resolving sources; ordinary factual lookup belongs
+to evidence development. `llm-wiki-book` plans the book-scale question, arc and chapter selection.
 
-### Pattern 2: Faithful explainer (Notes → Prose)
-Course notes into clean prose, where restating the source well *is* the goal:
-```
-write-content → review-draft ⇄ edit-targeted
-```
-`write-content` runs brief-less and says so — it will offer `/frame-piece` when it notices the thesis is the corpus's own. This path is supported, not deprecated; it just can't produce an angle.
+## Shared contract
 
-### Pattern 3: Book or long-form (Wiki → Chapters)
-```
-llm-wiki-book → build-skeleton → write-content (per chapter) → review-draft ⇄ edit-targeted
-```
-`llm-wiki-book` runs the same angle dialogue at book scale; its plan is a book-scale brief.
+One `drafts/<piece>/brief.md` carries the working state. The authoritative writing instructions are
+[brief-format.md](frame/references/brief-format.md), with mechanical definitions in
+[brief-schema.json](brief-schema.json). Each stage writes only its owned sections.
 
-### Pattern 4: Iterative refinement (Draft → Polish)
-You have a rough draft that needs work:
-```
-review-draft → edit-targeted → review-draft → edit-targeted → ... → [enhance]
-```
+- **Framing:** Question, Reader, Gain, Answer, Scope; `brief-kind: piece | chapter`; article
+  `intent: argue | explain | explore`; chapters add `教学目标`.
+- **Logic:** stable node IDs, sentences, relations with reasons, reading order and a derived Mermaid
+  map when useful. There is no pillar count or graph quota.
+- **Evidence:** each item names a node, role, source, verification and limits. Distinguish facts,
+  author accounts, reasoning and labelled illustrations. Personal examples are preferred where
+  useful, not mandatory and not intrinsically stronger evidence.
+- **Selection:** preserve material-map IDs, canonical roles and full coverage of the declared
+  inventory. Only `key` material is core/support; a justified cut is useful, a forced cut is not.
+- **Revisions:** changed meaning gets a new node ID; update dependent examples, passages and figures.
+  A new premise can require more than re-reviewing its sentence.
 
-### Pattern 5: Copilot mode (Human + Agent collaboration)
-Non-linear back-and-forth across any phase. `review-draft` and `edit-targeted` are the copilot primitives: both run on **any unit** — a paragraph, a section, a chapter — and neither batches. The loop review → edit → review must cycle in minutes; that cadence, not any single skill, is what human-in-the-loop cashes out to.
+V1 briefs remain readable without migration. Infer a missing kind only from unambiguous teaching
+or opposition fields. Legacy chapter ladders need no opponent; keep legacy IDs until explicitly
+converting the brief. A book plan may provide equivalent inputs without an article-format rewrite.
 
-## Skills
+## Writing memory
 
-| Task | Skill |
-|------|-------|
-| Find the angle; commit an angle and a cut-list; emit `brief.md` | `frame-piece` |
-| Design file/navigation structure for publications | `build-skeleton` |
-| Draft prose from a brief, or from raw materials | `write-content` |
-| Review any unit and return ranked findings — never rewrites | `review-draft` |
-| Apply one instruction to one location; minimal diff | `edit-targeted` |
-| Translate chapters between English and Chinese | `book-translator` |
-| Place existing images into documents | `insert-inline-images` |
-| Hand-author SVG diagrams with coherent visual language | `book-diagrams` |
-| Convert technical docs into dense HTML slide decks | `create-tech-slides` |
+`writing-memory/<topic>/<number>.md` stores an immutable sequence of current judgments, changes,
+grounds, topic relations, open questions and piece pointers. `writing-memory/index.md` is derived
+from the latest valid snapshots. See [memory-format.md](snapshot-writing/references/memory-format.md).
 
-Skills the workflows lean on that live in other systems, referenced by name: `synthesis-research` (learning loop — judgment synthesis across conflicting sources, and the executor for brief `gap` entries), `organize-docs` and `clean-notes` (pipeline — the processed notes `frame-piece` consumes), `llm-wiki-book` (pipeline — book-scale framing).
+`snapshot-writing` is the only writer; `frame` reads it before proposing another related piece.
+Save on a meaningful change at any stage, including before publication. Rewording or retrying does
+not create a snapshot. A new judgment can contradict an earlier one while preserving its history.
+Topics and article series emerge from these questions and evidenced relationships.
 
-### The derive family
+Writing memory is editorial state. It references `learning/` without writing mastery, `sources/`
+without changing tiers, and material maps without changing usage. Learning's cross-topic index
+continues to own earned learner edges. Snapshots introduce no new database or retrieval service.
 
-`book-translator` and `create-tech-slides` derive a medium-specific artifact from a finished, medium-neutral draft and **never edit back** — one canonical source, many derivations. The planned per-medium adapters (`publish-wechat`, `publish-xhs`, …) join this family; each will own one medium's length norms, hook style, formatting, and audience profile. There is no universal adapter. `brief.md` already carries an optional `target-media:` line for them.
+**Current topics:** Framework-driven explanation (Technique 18 integration from Chinese expository samples).
 
+## Common paths
 
-## Principles
+- **Article:** frame → logic ⇄ evidence → draft → review/repair. Skip stages already satisfied.
+- **Faithful explanation or summary:** direct `write-content` with clear intent and material;
+  source agreement is not grounds for rejection.
+- **Existing draft:** review or inspect logic/examples directly, without reconstructing every stage.
+- **Concept chapter:** framing → teaching logic → examples/code/math → draft → illustrate as needed
+  → review/repair → requested grill → package → material archive feedback.
+- **Book:** `llm-wiki-book` → `build-skeleton` → chapter writing/review. The book plan supplies scope
+  and reading order; chapter evidence still needs checking.
+- **New understanding:** snapshot at the point of change; a related next piece starts from it.
 
-All writing skills follow these shared principles:
+Chapter capability, assistance and earned evidence remain `/evaluate`'s criteria for Independent.
+AI-assisted writing does not establish mastery. Publication and deployment stay with the destination
+workflow; `package-chapter` proves portability without publishing.
 
-The durable design decisions are recorded in [`docs/adr.md`](../../docs/adr.md); unfinished work is in [`docs/exec-plans/writing.md`](../../docs/exec-plans/writing.md).
+## Verification and maintenance
 
-### Heading Design
-- Headings form a continuous narrative that communicates the main argument
-- Each child heading develops its parent; adjacent headings form logical progression
-- Express claims or reader tasks, not labels
-- No headings merely for formatting (use bold run-in labels instead)
+`python3 skills/writing/scripts/verify_brief.py <brief> --stage frame|argument|examples|ship` checks
+stage completeness, node references, evidence states and agreement between the logic table and its
+map. It reports legacy read compatibility separately. It does not establish truth or reader value.
+`verify_references.py` checks delivered asset links; `--portability` adds delivery-format checks.
 
-### Summary Writing
-- Answers: What is this about? What problem? What's the core logic?
-- Stands alone for readers who skip the body
-- Explains relationships between ideas, not just lists them
-- Includes practical conclusion or takeaway
+Mechanical regression tests live beside those scripts. Behavioral scenarios and the real-corpus
+walkthrough are in [the writing trial](../../trials/writing/RUNBOOK.md). Durable rationale lives in
+[the ADRs](../../docs/adr.md); pending validation stays in
+[the writing execution plan](../../docs/exec-plans/writing.md).
 
-### MECE Organization
-- Every concept owned by exactly one section
-- Collectively exhaustive coverage of the scope
-- No redundant explanations or duplicate examples
+Every edited Markdown artifact updates a near-top Last updated date. For targeted edits this is the
+one explicit metadata exception to the unchanged-surroundings rule. Derivations preserve the
+canonical draft; diagrams cannot add relationships that the text and agreed logic do not support.

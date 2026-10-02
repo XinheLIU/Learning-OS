@@ -109,11 +109,18 @@ Case files that existed before this schema was adopted on 2026-07-23 are grandfa
 
 A case that carried a model into a new domain, or connected two mainlines ("the flame graph told me which Docker layer to cache"), earned structure. Update the **Structural Memory** section in `notes.md` Connections (per [../learn/references/notes-format.md](../learn/references/notes-format.md)): flip the matching `hypothesized` edge to `earned` with the case as pointer, or add a new `earned` edge the survey never predicted. Only cases at assistance `none`/`hint` earn edges. Edges only — node promotion is `/learn`'s, iteration is `/reflect`'s.
 
+**`connect` nodes may appear here only as an edge endpoint.** A case may say "this is where MoE
+would go" and earn the edge that places it; a case may not train on it, drill it, or produce a
+micro-skill for it — those are `deep`-node work, and a `connect` node that keeps turning up as the
+*subject* of a case is a mode error to report, not to work around. Raise it and let `/reflect`
+propose `mode → deep`; the mode itself is `/survey`'s to change.
+
 ### 6b. Open retrieval items
 
 A case at assistance `none`/`hint` that demonstrated a schema for the **first time** also opens its row in `retrieval.md`, per [../learn/references/retrieval.md](../learn/references/retrieval.md) — the same first-successful-demonstration trigger `/learn` uses. Practice usually earns few: most of what a case exercises already has a row from the lessons.
 
-Rows are for schemas and terms only. **The case itself is never an item** — a case is evidence of a specific event, and re-asking it tests episodic memory rather than a chunk. Neither is a drill, a micro-skill, or a problem. If a case only re-used schemas that already have rows, open nothing; the firing schedule belongs to `/recall`, not to this session.
+Rows are for `deep`-node schemas and terms only — a `connect` node opens none, ever, however well
+the case went. Rows are for schemas and terms only. **The case itself is never an item** — a case is evidence of a specific event, and re-asking it tests episodic memory rather than a chunk. Neither is a drill, a micro-skill, or a problem. If a case only re-used schemas that already have rows, open nothing; the firing schedule belongs to `/recall`, not to this session.
 
 Coached cases (`walkthrough`, `solution-shown`) open no rows, for the same reason they earn no edges.
 
@@ -123,7 +130,7 @@ Coached cases (`walkthrough`, `solution-shown`) open no rows, for the same reaso
 
 ## Contract test
 
-Micro-Skills section created in `notes.md` on first use (no separate `drills-*.md` file); every new case file has micro-goal + errors fields, a complete attempt sequence, a valid assistance enum value, and a specific next support to remove; feedback is followed by a recorded retry; drills and cases carry cell tags when a survey exists; difficulty adjustment announced mid-session; a `none`/`hint` case that crosses mainlines or domains earns its Structural Memory edge in `notes.md` with the case as pointer; a `none`/`hint` case demonstrating a schema for the first time opens its `retrieval.md` row, and no row is opened for the case, a drill, or a schema that already has one. Reject a new case that omits any attempt field, ends a correction without a retry, or uses free-text assistance; reject an edge or a ledger row earned from a `walkthrough`/`solution-shown` case. Grandfathered cases remain valid but provide assistance-unknown evidence.
+Micro-Skills section created in `notes.md` on first use (no separate `drills-*.md` file); every new case file has micro-goal + errors fields, a complete attempt sequence, a valid assistance enum value, and a specific next support to remove; feedback is followed by a recorded retry; drills and cases carry cell tags when a survey exists; difficulty adjustment announced mid-session; a `none`/`hint` case that crosses mainlines or domains earns its Structural Memory edge in `notes.md` with the case as pointer; a `none`/`hint` case demonstrating a schema for the first time opens its `retrieval.md` row, and no row is opened for the case, a drill, or a schema that already has one; a `connect` node appears only as an edge endpoint — a case, drill, or micro-skill whose *subject* is a `connect` node is rejected and reported as a mode error, and no `connect` node opens a ledger row. Reject a new case that omits any attempt field, ends a correction without a retry, or uses free-text assistance; reject an edge or a ledger row earned from a `walkthrough`/`solution-shown` case. Grandfathered cases remain valid but provide assistance-unknown evidence.
 
 ## Handoffs
 
@@ -141,5 +148,5 @@ Micro-Skills section created in `notes.md` on first use (no separate `drills-*.m
 - vs `/learn`: learn builds schemas/models; practice applies and stress-tests them. If practice keeps hitting a missing schema, hand back to `/learn`.
 - vs `/reflect`: practice records errors per case; reflect compresses them across cases into the next micro-goals. Practice never does the cross-case analysis itself.
 - vs `/evaluate`: practice produces the evidence (`case-*.md`); evaluate reads it to claim mastery levels. Practice never writes mastery levels.
-- vs `/survey`: practice trains toward the matrix's target cells; the targets themselves are `/survey`'s to change.
+- vs `/survey`: practice trains toward the matrix's target cells; the targets and the node modes are both `/survey`'s to change. Practice reports a mode that looks wrong; it never trains around it.
 - vs `/recall`: practice works a whole real case and produces a case file; recall fires single-prompt items cold and produces nothing but the ledger. Practice opens rows; it never fires or reschedules them.

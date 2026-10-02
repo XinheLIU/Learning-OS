@@ -2,27 +2,6 @@
 
 Last updated: 2026-09-06
 
-## 0. Intent, orientation, and operational memory
-
-The next implementation slice unifies `docs/learning-system-improvements.md` and
-`docs/learning-memory-practice-plan.md`:
-
-- `/survey` must interview for an observable outcome, evidence-backed baseline, relevance, gap,
-  constraints, non-goals, and uncertainty, then write a Mission Contract and Roadmap with 3–5
-  `Before → After` checkpoints.
-- `/curriculum` must preserve that contract in `syllabus.md`, add checkpoint identifiers and a bounded
-  Memory Budget for mission-critical operational items, and orient the first lesson before teaching.
-- `/learn` must name the active checkpoint and capability delta, connect opening tasks and retries to it,
-  rehearse operational items through the existing retrieval ledger, and offer an opt-in staged memory
-  palace. Palace cues never count as mastery evidence.
-- `notes.md`, `retrieval.md`, `/practice`, `/recall`, and the README must use the same operational-item
-  fields and handoffs.
-
-Acceptance is covered by expanded contract/evaluation fixtures for vague intent, unsupported levels,
-scope cuts, roadmap preservation, first-lesson orientation, cold operational recall, spacing/lapses,
-execution fluency, memory-palace opt-in/opt-out, and mission-change routing. No standalone validator or
-runtime dependency is planned.
-
 Only unfinished work is listed here. The current learning architecture lives in
 [`skills/learning/README.md`](../../skills/learning/README.md); durable rationale lives in
 [`docs/adr.md`](../adr.md).

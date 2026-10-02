@@ -1,6 +1,6 @@
 # Repository Execution Plan
 
-Last updated: 2026-09-02
+Last updated: 2026-10-01
 
 The three-system restructure and first skill implementations are complete. The work below remains.
 
@@ -17,10 +17,19 @@ and lets `/evaluate` accept or reject it against an explicit quality bar.
 
 ## 2. Add pipeline and writing contract coverage
 
-- The learning chain is covered end to end by the two runbooks in
-  [`trials/`](../../trials/README.md). The pipeline and writing skills have no equivalent.
-- Decide how to cover them: extend a runbook, add a third trial, or accept `## Contract test` blocks
-  alone as the standard for those skills.
+- The learning chain is covered end to end by two runbooks in
+  [`trials/`](../../trials/README.md). The writing chain now has a third —
+  [`trials/transformer/RUNBOOK.md`](../../trials/transformer/RUNBOOK.md), eight stages from
+  `frame` to `archive-materials` — **live author trial pending**. The staged article/snapshot trial
+  is now [writing](../../trials/writing/RUNBOOK.md), with stdlib brief regression checks.
+- It covers `frame`, `develop-argument`, `develop-examples`, `write-content`, `insert-inline-images`, `book-diagrams`,
+  `review-draft`, `edit-targeted`, `grill`, `package-chapter`, `archive-materials`, and
+  `synthesis-research` in its gap-fill role. Still uncovered by any trial: `build-skeleton`,
+  `book-translator`, `create-tech-slides`, `clean-notes`, `organize-docs`, and the four
+  `llm-wiki-*` skills — those rest on `## Contract test` blocks alone.
+- Decide, after the Transformer run: whether the uncovered set needs a second writing trial (a
+  wiki-to-book line would reach `llm-wiki-*` and `build-skeleton` in one pass), or whether contract
+  tests are the accepted standard for them.
 
 Acceptance: every documented verification path exists and is tracked, and no skill claims a
 verification that nothing exercises.
@@ -32,7 +41,7 @@ Before the owner decides whether to commit:
 1. Regenerate all four flat skill layers from the nested tree.
 2. Check that no symlink in those layers is broken.
 3. Build the local catalog in `../agent-skills` and confirm all 23 skills resolve at nested source
-   paths with category counts `pipeline: 6`, `learning: 8`, `writing: 9`.
+   paths with category counts matching `catalog/skill-set.json` (currently pipeline 11, learning 6, writing 14).
 4. Check README and manifest skill counts against the catalog.
 5. Run repository link checks and inspect `git diff --check`.
 

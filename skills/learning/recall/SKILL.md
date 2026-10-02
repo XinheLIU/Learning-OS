@@ -19,7 +19,7 @@ re-teach in the next lesson revision. Planning takes seconds; the page is sized 
 minutes, so retrieval can actually be daily.
 
 Ledger schema, interval ladders, and the scheduling rules: [`../learn/references/retrieval.md`](../learn/references/retrieval.md).
-Page format: [`../curriculum/references/lesson-format.md`](../curriculum/references/lesson-format.md) (the recall page section).
+Page format: [`../../pipeline/curriculum/references/lesson-format.md`](../../pipeline/curriculum/references/lesson-format.md) (the recall page section).
 
 ## Prime directive
 

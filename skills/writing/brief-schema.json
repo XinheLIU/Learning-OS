@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 2,
+  "description": "Mechanical contract for staged Markdown writing briefs; semantic review remains required.",
+  "metadata": {
+    "brief-kind": [
+      "piece",
+      "chapter"
+    ],
+    "intent": [
+      "argue",
+      "explain",
+      "explore"
+    ]
+  },
+  "sections": {
+    "frame": [
+      "Question",
+      "Reader",
+      "Gain",
+      "Answer",
+      "Scope"
+    ],
+    "argument": [
+      "Logic nodes",
+      "Logic relations",
+      "Reading order",
+      "Logic map"
+    ],
+    "examples": [
+      "Evidence",
+      "Selection map"
+    ]
+  },
+  "tables": {
+    "Logic nodes": [
+      "ID",
+      "Statement",
+      "Kind",
+      "Need"
+    ],
+    "Logic relations": [
+      "From",
+      "Relation",
+      "To",
+      "Reason"
+    ],
+    "Reading order": [
+      "Section",
+      "Nodes",
+      "Reader task"
+    ],
+    "Evidence": [
+      "ID",
+      "Nodes",
+      "Kind",
+      "Role",
+      "Account",
+      "Source",
+      "Verification",
+      "Limits"
+    ],
+    "Selection map": [
+      "Material",
+      "Disposition",
+      "Nodes",
+      "Note"
+    ],
+    "Code & math": [
+      "Item",
+      "Nodes",
+      "Kind",
+      "Source",
+      "Placement",
+      "Why"
+    ]
+  },
+  "values": {
+    "node-kind": [
+      "claim",
+      "premise",
+      "concept",
+      "question",
+      "conclusion"
+    ],
+    "need": [
+      "required",
+      "context"
+    ],
+    "relation": [
+      "supports",
+      "depends-on",
+      "limits",
+      "contrasts",
+      "alternative-to"
+    ],
+    "evidence-kind": [
+      "personal",
+      "external",
+      "illustration",
+      "reasoning",
+      "gap"
+    ],
+    "role": [
+      "supports",
+      "explains",
+      "challenges"
+    ],
+    "verification": [
+      "verified",
+      "author-confirmed",
+      "illustrative",
+      "unverified",
+      "gap"
+    ],
+    "disposition": [
+      "core",
+      "support",
+      "cut",
+      "gap",
+      "inspect-on-demand"
+    ]
+  },
+  "compatibility": {
+    "unversioned": "v1, read without rewriting",
+    "missing-kind": "infer chapter from teaching goal alone or piece from opposing/author positions alone; otherwise clarify"
+  },
+  "owners": {
+    "frame": "framing",
+    "develop-argument": "logic and derived map",
+    "develop-examples": "evidence, selection, code/math",
+    "snapshot-writing": "writing-memory only"
+  },
+  "downstreamChecks": {
+    "write-content": "reuse valid reading order; examples stage permits visible gaps",
+    "review-draft": "purpose-aware semantic review plus ship-stage checks; chapters have no opponent gate",
+    "grill": "chapter with 教学目标 after ship review; taught v2 nodes or legacy 二层",
+    "package-chapter": "verify delivered prose/assets, not the working brief"
+  }
+}

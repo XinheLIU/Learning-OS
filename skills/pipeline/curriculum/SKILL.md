@@ -1,11 +1,11 @@
 ---
 name: curriculum
-description: Design and build a mission-grounded HTML course for a topic. Use when the user wants a study plan, a learning path, a course design, lesson sequencing, or says "/curriculum <topic>" or "/curriculum <topic> --depth=<quick|standard|deep>". Grounds the course in whatever material is already at hand (wiki/, survey.md, notes, sources), captures the mission (why learn this), and produces the full course under learning/<slug>/ — syllabus.md (plan + orchestration) plus the HTML course (index.html shell, lessons/ with checkpoint blocks, recall.html, reference/) that carries the learning experience end to end. Depth parameter controls lesson length and practice intensity.
+description: Design and build a mission-grounded HTML course for a topic. Use when the user wants a study plan, a learning path, a course design, lesson sequencing, or says "/curriculum <topic>" or "/curriculum <topic> --depth=<quick|standard|deep>". Grounds the course in the survey's Scope section and the material map's key rows, captures the mission (why learn this), orders the deep nodes into one Critical Path, and produces the full course under learning/<slug>/ — syllabus.md (plan, Critical Path, and orchestration) plus the HTML course (index.html shell, lessons/ with checkpoint blocks, [C] connect lessons, recall.html, reference/) that carries the learning experience end to end. Depth parameter controls lesson length and practice intensity.
 ---
 
 # Curriculum — Course Orchestrator & Builder
 
-Last updated: 2026-09-06
+Last updated: 2026-09-28
 
 A standalone course **orchestrator and builder**. You plan the whole learning journey and encode that plan into the course itself: every lesson ends in a checkpoint block (completion manifest + what comes next), the recall page carries the return path, and `syllabus.md` carries the orchestration fields (`Next:`, `Gate:`) that tell `/learn` how to route the learner. Planning and authoring happen here so the learner's experience lives in the HTML — chat is reserved for bookkeeping and questions.
 
@@ -25,17 +25,39 @@ If the mission isn't already clear from `survey.md` or conversation, your first 
 
 ## Inputs
 
-**Look at what's already in the working directory first — don't start by demanding upstream skills.**
+Curriculum **sequences**; it does not go sourcing. Its material is whatever `/survey` already
+dispositioned and whatever `/map-materials` already ranked — reading either from scratch here would
+produce a second, unchecked answer to a question that has one.
 
-1. **A `wiki/` vault or obvious learning material** (a survey, ingested pages on the topic, curated notes, a sources folder): just begin — ground the course in it. Wiki pages become lesson reading material and primary-source candidates. Never write to `wiki/`.
-2. **Something that might be material but you're not sure** (loose files, an unrelated-looking repo): ask — "I found <X> here. Is this the material you want the course built on, or should I research sources myself?"
-3. **Nothing:** discuss with the user — mission first, then whether they have materials elsewhere or want you to find sources. Run the **3-question mini-diagnosis** ("What is this for, in your own words?" / "What have you built or read in it?" / "Which part feels most opaque?"), find 2–4 high-trust sources yourself (never trust parametric knowledge alone), and note in the syllabus header what it was built from. Mention `/survey` only as an option when the field is broad enough to need triage — never as a precondition.
+When `learning/<slug>/survey.md` exists, it is authoritative and complete:
 
-When `learning/<slug>/survey.md` does exist, use it fully:
-- **The matrix** → scope. The survey's mainline × stage matrix is the course's territory: cover cells up to each mainline's marked target stage. Items on the survey's stop-early/SKIP list get at most a vocabulary warm-up inside a lesson; cells beyond a mainline's target appear nowhere. Every lesson names the cell it serves.
-- **Gap diagnosis** → depth. Big-gap mainlines (current stage far below target) get more Stage 1–2 lessons; mainlines already at `can-apply` may start at Stage 3. Sequencing is what keeps each lesson inside the learner's **zone of proximal development** — every lesson, the user should feel challenged *just enough*.
-- **can-apply cells** → exercises. The samples those cells name are the S-lessons' natural worked examples and exercises — don't invent parallel ones without reason.
-- **Curated sources** → each lesson's primary source comes from the Read list.
+- **Scope 7a (sources × disposition)** → the only sources a lesson may cite. `DEEP` sources carry
+  lesson material; `SKIM` sources supply the one named part and nothing more; `SKIP` sources appear
+  nowhere, including in a "for further reading" list. A source outside Scope is a contract
+  violation, not a bonus.
+- **Scope 7b (nodes × mode)** → the lesson types. Every `deep` node gets K/S lessons and a place on
+  the Critical Path; every `connect` node gets exactly one `[C]` lesson. No node gets both, and no
+  node gets none.
+- **The matrix** → territory and target. Cover cells up to each mainline's marked target stage;
+  cells beyond it appear nowhere. Every lesson names the cell it serves.
+- **Gap diagnosis** → depth. Big-gap mainlines get more Stage 1–2 lessons; mainlines already at
+  `can-apply` may start at Stage 3. Sequencing is what keeps each lesson inside the learner's
+  **zone of proximal development** — every lesson, the user should feel challenged *just enough*.
+- **can-apply cells** → exercises. The samples those cells name are the S-lessons' natural worked
+  examples — don't invent parallel ones without reason.
+
+When `<archive>/materials.md` exists (via the `archive:` line in `survey.md`), lesson material comes
+from its **`key` rows only**. A `redundant-of` row teaches nothing the canonical row does not; a
+`peripheral` row is another topic. Cite material by its `m<nnn>` id so `frame` and `archive-materials`
+can trace what a lesson used.
+
+**No survey, no map — the standalone path.** The skill still works with neither, and that path is
+unchanged: ground the course in a `wiki/` vault or whatever obvious material is at hand; ask about
+anything ambiguous; with nothing at all, run the **3-question mini-diagnosis** ("What is this for,
+in your own words?" / "What have you built or read in it?" / "Which part feels most opaque?"), find
+2–4 high-trust sources yourself, and note in the syllabus header what it was built from. Never write
+to `wiki/`. In this path there is no Scope to obey and no mode partition, so every lesson is K/S and
+the Critical Path is the whole lesson order — say so in the header rather than faking a partition.
 
 Also read `learning/<slug>/notes.md` if present — records of what's already known shift where the course starts.
 
@@ -67,7 +89,7 @@ To learn at a deep level, the user needs three things:
 - **Skills**, acquired through highly-relevant interactive lessons, based on that knowledge
 - **Wisdom**, which comes from interacting with other learners and practitioners — testing skills in the real world
 
-Every lesson is typed by which of these it builds, and each mainline climbs the ladder — K before S, S before W.
+Every lesson is typed by which of these it builds, and each mainline climbs the ladder — K before S, S before W. A fourth type, **`[C]`**, sits outside the ladder: it places a `connect` node instead of building capability on it (below).
 
 K/S/W is the *lesson-design* ladder; the survey matrix's four stages are the *mastery* ladder. They align rather than compete: K-lessons serve `can-recall` cells, S-lessons serve `can-apply` (reproduce the cell's named samples) and `can-transfer` (transfer variants at reduced support), W-lessons serve `can-generate` (real-world synthesis). A lesson's cell says *what mastery it climbs toward*; its K/S/W type says *how it teaches*.
 
@@ -78,6 +100,25 @@ K/S/W is the *lesson-design* ladder; the survey matrix's four stages are the *ma
 Interleaving is enforced, not suggested: every `[S]` lesson carries an **`Interleaves:`** field naming at least one schema from a **non-adjacent** prior lesson. Retrieving the lesson immediately before is fluency — the material is still warm — so it does not count. If no non-adjacent prior schema exists yet, the lesson is too early in the course to be an S-lesson.
 
 **W — Wisdom.** Wisdom comes from true real-world interaction — testing skills *outside* the learning environment; it cannot be taught in a lesson, only arranged. So W entries are **loop-entry specs, not lessons**: each names its matrix cell, the shape of the real case to bring, the community or assignment, and the debrief plan — and is executed by `/practice`, closed by `/evaluate` when evidence reaches the cell. The primary vehicle is a **community**: a place, online or offline, where the user can test their skills in the real world — a forum, a subreddit, a real-world class (budget permitting), or a local interest group. Spec W-milestones around high-reputation communities; if the user has opted out of communities (check `notes.md` Preferences), respect it and design a solo real-world assignment instead.
+
+**C — Connect.** A `connect` node in Scope 7b is one the learner must be able to *place*, not use.
+Teaching it as a K-lesson buys capability nobody asked for and costs a lesson slot; leaving it out
+entirely leaves a hole the learner will trip over the first time a source mentions it. A `[C]`
+lesson is the cheap middle:
+
+| | `[C]` lesson |
+| :--- | :--- |
+| Length | ~10 min, at every depth — `--depth` does not scale it |
+| Material | **one** excerpt from one Scope source, named |
+| Task | one **edge statement**: "X relates to <an already-earned node> by <type>, because …", in the learner's own words |
+| Drills | none |
+| Checkpoint | a completion block, but **no quiz** — the edge statement is the manifest |
+| Earns | one Structural Memory edge, and the `connect` node it names. **No `retrieval.md` row** |
+
+The edge's other endpoint must be a node the learner already holds, so a `[C]` lesson can never be
+the course's first lesson. Its `Next:` field routes onward like any other lesson. A `[C]` lesson with
+drills, a quiz, or a second concept is a K-lesson that mislabelled itself — split it or re-mode the
+node in `/survey`.
 
 Some topics require more skills than knowledge: theoretical physics skews K; yoga skews S. The mix should follow the mission — and the course MUST end at W, because a course that never leaves the learning environment doesn't serve a real-world mission.
 
@@ -95,7 +136,8 @@ Per the full template and field rules in [references/syllabus-format.md](referen
 <!-- source: survey.md <date> | wiki/ + <material> | mini-diagnosis (no prior material) -->
 
 ## Mission            (why · success looks like · constraints · out of scope)
-## Sources            (annotated, high-trust; ### Gaps for what's missing)
+## Sources            (from survey Scope 7a; ### Gaps for what's missing)
+## Critical Path      (the deep nodes in dependency order, each with its key materials)
 ## Stage 1 — Prerequisite schemas   (warm-up, automate parts)
 ## Stage 2 — Small chunks            (one new concept per lesson)
 ## Stage 3 — Combine schemas         (integration only after parts are fluent)
@@ -103,7 +145,41 @@ Per the full template and field rules in [references/syllabus-format.md](referen
 ## Stage 5 — Transfer & wisdom       (new domain, no support, real world)
 ```
 
-Each lesson under its stage carries a checkbox, `[K|S|W]` type, and its fields:
+### `## Critical Path` — the 主线
+
+The one ordering the course has. Every `deep` node from Scope 7b appears exactly once, in
+dependency order: a node may only appear after every node it needs. Each row names the `key`
+materials that teach it, so a lesson never has to go looking.
+
+```markdown
+## Critical Path
+
+| # | Node | Mainline | Teaches from | Blocked by |
+| :-- | :-- | :-- | :-- | :-- |
+| 1 | token & sequence representation | sequence representation | `m001`, `m014 § 1` | — |
+| 2 | self-attention / QKV | attention | `m003 § 3.2`, `m020` | 1 |
+| 3 | scaled dot-product & √d_k | attention | `m003 § 3.2.1` | 2 |
+| 4 | multi-head | attention | `m003 § 3.2.2`, `m021` | 3 |
+```
+
+Four rules:
+
+- **`deep` nodes only.** A `connect` node on the Critical Path is a mode error — fix the mode in
+  `/survey`, don't work around it here.
+- **Every `deep` node appears, exactly once.** The Critical Path is the completeness check on the
+  mode partition; a `deep` node missing from it is a node no lesson will teach.
+- **Hardest-first within the dependencies.** Among nodes whose blockers are satisfied, order by
+  what the mission's output needs most, not by what is easiest to write.
+- **`Teaches from` cites `m<nnn>` ids** when a map exists, registry ids when it does not. A row
+  with neither has no material and is a `gap` — route it to `/curate-sources` before building.
+
+Lessons then hang off the path: every K/S lesson names the Critical Path row it serves, and the
+stage order must not contradict the path's dependency order. `[C]` lessons are **not** on the path
+— they are placed between stages wherever their edge's other endpoint has already been earned.
+
+### Lesson fields
+
+Each lesson under its stage carries a checkbox, `[K|S|C|W]` type, and its fields:
 - **Objective** — what the learner can do after this lesson
 - **Prerequisites** — what must be understood first
 - **Opening task** — a micro-task in the real environment executed *before* explanation (new in v2: supports learning-by-doing earlier)
@@ -114,7 +190,13 @@ Each lesson under its stage carries a checkbox, `[K|S|W]` type, and its fields:
 - **`Next:`** — what the checkpoint block's next-step card says: the following lesson, a recall gate, or a handoff (`/practice` at a mainline close)
 - **`Gate:`** (optional) — a condition on the recall queue that must hold before this lesson starts (e.g. "start only when due items < 5"); `/learn` checks it at `start`
 
-Plus a **Cell** field (`<mainline> × <stage>`) when a survey exists, and an **`Interleaves:`** field on every `[S]` lesson.
+Plus a **Cell** field (`<mainline> × <stage>`) when a survey exists, a **`Path:`** field naming the
+Critical Path row on every `[K]`/`[S]` lesson, and an **`Interleaves:`** field on every `[S]` lesson.
+
+A `[C]` lesson carries a reduced set — **Objective** (place the node), **`Node:`** (the `connect`
+node), **`Edge:`** (the proposed edge and its other endpoint), **Primary source** (the one named
+excerpt), **Load note** (~10 min), and **`Next:`**. It carries no `Path:`, no `Interleaves:`, no
+ICAP target above Constructive, and no drills.
 
 **Lesson spec adapts to depth:**
 - **quick:** K = compressed summary + 1 example; S = 1–2 simple drills; reading = key excerpts.
@@ -133,7 +215,12 @@ Author per [references/lesson-format.md](references/lesson-format.md):
 
 - **`index.html`** — the course shell: mission, stages, lesson list with links and progress (rendered from `syllabus.md`). Links the shared stylesheet in `assets/` that every lesson and reference doc also links. Includes JavaScript to parse syllabus.md and display checkboxes dynamically — no three-way sync required. Links `recall.html` prominently — the return path is part of the front door.
 - **`assets/`** — the shared component library: one stylesheet (`assets/course.css`), a math loader (`assets/math.js`, KaTeX via CDN), a syllabus parser (`assets/progress.js`), plus any reusable widget (quiz, warm-up card, footer/nav). The quiz widget (`assets/quiz.js`) also powers the checkpoint manifest (collect `localStorage` widget state → copyable JSON) and the recall page's self-grade buttons. Lessons **link** these; they never inline CSS, hand-roll math, or copy-paste a widget. See [references/lesson-format.md](references/lesson-format.md).
-- **`lessons/0001-*.html`** — one file per **K/S lesson and every mini-case** (Stages 1–3, plus any Stage 4 lesson that still teaches), from its spec, grounded in its primary source: links the shared stylesheet + math loader, **opening task first** (do-before-explain), warm-up second (except lesson 1), one chunk, math authored as `$...$`/`$$...$$` LaTeX, claims cited as clickable links to the source files, K/S-typed interactivity (K-lessons get 1–2 check-yourself items), **ends in a checkpoint block** (completion-manifest button + next-step card from the lesson's `Next:` field + a demoted tutor escape line), anchor-linked to shell, recall.html, and references. Lesson length and drill count follow the depth parameter: quick = ~10min + 1–2 drills; standard = ~20–30min + 2–3 drills; deep = ~60–90min + 4–6 drills + synthesis. **Stage 4–5 loop-entry specs get no lesson file** — they render in `index.html` as milestones carrying their spec, marked "closed by `/practice` + `/evaluate`".
+- **`lessons/0001-*.html`** — one file per **K/S lesson, every `[C]` lesson, and every mini-case** (Stages 1–3, plus any Stage 4 lesson that still teaches), from its spec, grounded in its primary source: links the shared stylesheet + math loader, **opening task first** (do-before-explain), warm-up second (except lesson 1), one chunk, math authored as `$...$`/`$$...$$` LaTeX, claims cited as clickable links to the source files, K/S-typed interactivity (K-lessons get 1–2 check-yourself items), **ends in a checkpoint block** (completion-manifest button + next-step card from the lesson's `Next:` field + a demoted tutor escape line), anchor-linked to shell, recall.html, and references. Lesson length and drill count follow the depth parameter: quick = ~10min + 1–2 drills; standard = ~20–30min + 2–3 drills; deep = ~60–90min + 4–6 drills + synthesis. **Stage 4–5 loop-entry specs get no lesson file** — they render in `index.html` as milestones carrying their spec, marked "closed by `/practice` + `/evaluate`".
+
+  A **`[C]` lesson file** is the same shape, stripped: the named excerpt, then one edge-statement
+  box, then a checkpoint block whose manifest is the learner's typed edge statement. No warm-up, no
+  drills, no quiz widget, no `reference/` doc. It links the shared stylesheet like every other
+  lesson, and it is ~10 minutes at every depth.
 - **`recall.html`** — the return-path page: due retrieval items as self-contained flashcards (prompt alone, answer behind a reveal, self-grade buttons, a sync block for copying results back to chat). Renders `retrieval.md` live over http and falls back to an embedded snapshot (`window.<SLUG>_RECALL`) that `/learn` and `/recall` regenerate at every bookkeeping pass. Format and cold-integrity rules: [references/lesson-format.md](references/lesson-format.md).
 - **`reference/*.html`** — the docs the K-lessons link: cheat sheets, glossary seed. Compressed, print-worthy; link the shared stylesheet and math loader. In **deep** mode, reference docs include edge cases, source citations, and cross-mainline connections.
 
@@ -149,6 +236,17 @@ These lessons are a plan, not a prophecy — `/learn` recalibrates each one agai
 - **Depth parameter parsed or defaulted.** Parse `--depth=<quick|standard|deep>` from the command or ask if ambiguous. Default to **standard** if not specified.
 - **Lesson length and drill count match depth.** quick = ~10min + 1–2 drills; standard = ~20–30min + 2–3 drills; deep = ~60–90min + 4–6 drills + synthesis. Reading assignments and reference docs scale accordingly.
 - **In-matrix cells only** (when a survey exists). Every lesson MUST name the matrix cell it serves (`<mainline> × <stage>`, at or below that mainline's target) and serve the mission. Stop-early/SKIP items appear nowhere.
+- **Scope sources only** (when a survey exists). Every lesson's primary source is a `DEEP` or
+  `SKIM` row of Scope 7a; a `SKIM` source supplies only its named part. Citing a `SKIP` source, or
+  one absent from the registry, is a contract violation.
+- **Key materials only** (when a map exists). Lesson material comes from `materials.md` `key` rows,
+  cited by `m<nnn>`. A `redundant-of` or `peripheral` row may not be a lesson's material.
+- **The Critical Path is complete and deep-only.** Every `deep` node from Scope 7b appears exactly
+  once, in dependency order, with its materials; no `connect` node appears; no K/S lesson lacks a
+  `Path:` field naming its row.
+- **One `[C]` lesson per `connect` node, and nothing more.** ~10 min at every depth, one named
+  excerpt, one edge statement, zero drills, no quiz. A `connect` node with a K/S lesson, or with no
+  lesson at all, is a contract violation.
 - **K before S before W** per subtopic. No skill lesson before its knowledge lesson; no wisdom milestone before the skill exists.
 - **Prerequisites before integration.** No Stage 3+ lesson may depend on a schema not covered earlier. Order by dependency, not topic aesthetics.
 - **One new concept per Stage 2 lesson.** Two new concepts in one objective → split it.
@@ -159,7 +257,7 @@ These lessons are a plan, not a prophecy — `/learn` recalibrates each one agai
 - **Mini-cases in Stage 2–3** — every 2–3 lessons, insert a `[mini-case]` entry with a simplified real scenario, authored as its own lesson file. Optional in quick depth; mandatory with multiple solution paths in deep depth.
 - **ICAP targets rise with the diagnosis:** novice subtopics start P/A → C; practitioner subtopics may start at C; C → I appears only in Stages 3–5.
 - **At least one W milestone**, tied to the mission, in Stage 4–5 — specced as a loop-entry, not authored as a lesson.
-- **Author Tier 1 only.** HTML lesson files exist only for K/S lessons and mini-cases. A W entry with a lesson file is a contract violation — wisdom is arranged, not authored.
+- **Author Tier 1 only.** HTML lesson files exist only for K/S lessons, `[C]` lessons, and mini-cases. A W entry with a lesson file is a contract violation — wisdom is arranged, not authored.
 - **Resumable:** lessons are checkboxes in `syllabus.md`. `/learn` picks up at the first unchecked lesson and checks it off when its checkpoint bookkeeping completes; loop-entry checkboxes are checked by `/evaluate` when evidence reaches their cell; `index.html` reflects the same progress by reading syllabus.md.
 - **Orchestration is authored, not improvised.** Every lesson carries a `Next:` field its checkpoint card quotes verbatim, and recall-sensitive lessons carry a `Gate:` field `/learn` enforces. A course whose lessons end without saying what comes next is unfinished.
 - **The return path is built.** `recall.html` exists, links from the shell, and renders due items from `retrieval.md` with an embedded snapshot fallback. A course without its recall page is unfinished.
@@ -172,21 +270,26 @@ Open `index.html`; recommend `/learn <slug>` to open Stage 1's first lesson.
 
 ## Contract test
 
-Given a fixture `survey.md`: the syllabus opens with a populated Mission (including project context if present); depth parameter is parsed or defaulted to standard; covers only cells at or below each mainline's target stage; every lesson carries a matrix cell, a K/S/W type, an opening task, an ICAP target, a load note, and a `Next:` field; lesson length and drill count match the depth parameter (quick = ~10min + 1–2 drills; standard = ~20–30min + 2–3 drills; deep = ~60–90min + 4–6 drills); every `[S]` lesson carries an `Interleaves:` field naming ≥1 schema from a non-adjacent prior lesson — an `[S]` lesson whose field is absent, empty, or names only the adjacent lesson is rejected; K precedes S precedes W per subtopic; ≥1 mini-case exists in Stage 2–3 with its own lesson file (optional in quick, mandatory with multiple solution paths in deep); ≥1 W milestone exists as a loop-entry spec naming its real-case shape and community/assignment; stage order respects prerequisites-before-integration; after approval, `index.html` + one HTML file per K/S lesson and mini-case exist — and none for Stage 4–5 loop-entry specs — all linking the shared stylesheet in `assets/` with no inline `<style>`, every K-lesson links a `reference/` doc and carries 1–2 check-yourself items, every lesson HTML opens with the opening task before explanation and ends in a checkpoint block (manifest button + next-step card), and `recall.html` exists, links from the shell, and renders due items with an embedded snapshot fallback. Reference docs in deep mode include edge cases and source citations. **No `syllabus.html` file exists.** Given a `wiki/` vault and no survey: the course begins without demanding `/survey`, and lessons cite wiki pages as material.
+Given a fixture `survey.md` with a Scope section and a `materials.md`: the syllabus opens with a populated Mission (including project context if present); depth parameter is parsed or defaulted to standard; covers only cells at or below each mainline's target stage; every lesson carries a matrix cell, a K/S/C/W type, an ICAP target, a load note, and a `Next:` field, and every `[K]`/`[S]` lesson additionally carries an opening task and a `Path:` field;
+
+a `## Critical Path` section exists listing **every** `deep` node from Scope 7b exactly once in dependency order, each row naming its `key` materials by `m<nnn>` and its blockers, and **containing no `connect` node**; every `connect` node has exactly one `[C]` lesson of ~10 min with one named excerpt, one edge-statement task, zero drills and no quiz — and no `[C]` lesson is the course's first lesson; every lesson's primary source is a `DEEP` or `SKIM` Scope row and every cited material is a `key` map row — citing a `SKIP` source, an unregistered source, or a `redundant-of`/`peripheral` row is rejected; lesson length and drill count match the depth parameter (quick = ~10min + 1–2 drills; standard = ~20–30min + 2–3 drills; deep = ~60–90min + 4–6 drills); every `[S]` lesson carries an `Interleaves:` field naming ≥1 schema from a non-adjacent prior lesson — an `[S]` lesson whose field is absent, empty, or names only the adjacent lesson is rejected; K precedes S precedes W per subtopic; ≥1 mini-case exists in Stage 2–3 with its own lesson file (optional in quick, mandatory with multiple solution paths in deep); ≥1 W milestone exists as a loop-entry spec naming its real-case shape and community/assignment; stage order respects prerequisites-before-integration; after approval, `index.html` + one HTML file per K/S lesson, `[C]` lesson, and mini-case exist — and none for Stage 4–5 loop-entry specs — all linking the shared stylesheet in `assets/` with no inline `<style>`, every K-lesson links a `reference/` doc and carries 1–2 check-yourself items, every lesson HTML opens with the opening task before explanation and ends in a checkpoint block (manifest button + next-step card), and `recall.html` exists, links from the shell, and renders due items with an embedded snapshot fallback. Reference docs in deep mode include edge cases and source citations. **No `syllabus.html` file exists.** Given a `wiki/` vault and no survey: the course begins without demanding `/survey`, and lessons cite wiki pages as material.
 
 ## Handoffs
 
-**In:** mission (interviewed or from `survey.md`) + whatever material exists — `survey.md`, notes.md (including Structural Memory section), `wiki/`, or fresh sources. Never demands `/survey` first.
+**In:** mission (interviewed or from `survey.md`) + `survey.md`'s Scope section and matrix, `materials.md` `key` rows via the `archive:` line, `notes.md` (including Structural Memory section). Works standalone from a `wiki/` vault or fresh sources when no survey exists — but never goes sourcing when one does.
 
 **Out:**
-- Syllabus approved + course built → `syllabus.md` (with `Next:`/`Gate:` orchestration fields), `index.html`, K/S `lessons/` with checkpoint blocks, `recall.html`, seeded `reference/` → `/learn <slug>` opens Stage 1.
+- Syllabus approved + course built → `syllabus.md` (with `## Critical Path` and `Next:`/`Gate:` orchestration fields), `index.html`, K/S/`[C]` `lessons/` with checkpoint blocks, `recall.html`, seeded `reference/` → `/learn <slug>` opens Stage 1.
+- `[C]` lessons authored → one edge each for `/learn done` to record in Structural Memory Connections, and no ledger rows.
+- A `deep` node with no `key` material, or a needed source outside Scope → `gap` → back to `/curate-sources` or `/map-materials` before building.
 - Stage 4–5 loop-entry specs written → real-case shapes + communities → executed later by `/practice`, closed by `/evaluate`.
 - The recall page and lesson warm-up blocks → due items from `retrieval.md`, planned and synced by `/recall`.
 - Mainlines or target stages look wrong during planning → back to `/survey` — never re-triage here.
 
 ## Boundaries
 
-- vs `/survey`: survey decides **what** deserves time (strategic triage); curriculum decides **how** to sequence it (tactical) and **when** each piece of the loop runs (orchestration). Curriculum never re-triages the matrix — if the mainlines or target stages look wrong, send the user back to `/survey`.
+- vs `/survey`: survey decides **what** deserves time and **how deep** (mainlines, target stages, source dispositions, node modes); curriculum decides **in what order** (the Critical Path) and **when** each piece of the loop runs (orchestration). Curriculum never re-triages the matrix and never re-modes a node — if the mainlines, targets, or modes look wrong, send the user back to `/survey`.
+- vs `/curate-sources` and `/map-materials`: curriculum consumes the registry and the map through `survey.md`'s Scope section. It never appends a source, never re-ranks a file, and never scans the archive.
 - vs `/learn`: curriculum designs, orchestrates, and builds the course; learn runs sessions over it (open lessons, do checkpoint bookkeeping, answer questions) and revises lessons as the learner diverges. Curriculum never runs a session; learn never restructures the course (that's a re-run of `/curriculum`).
 - vs `/recall`: curriculum builds the recall page and the warm-up blocks it feeds; recall plans what's due and syncs results. Curriculum never reschedules items.
 - vs `/practice`: curriculum *specs* the real-world work (Stage 4–5 loop-entries); practice *runs* it. Curriculum authors no transfer content — a transfer task with a worked answer is an oxymoron.

@@ -1,4 +1,4 @@
 interface:
-  display_name: "Write Blog Post"
-  short_description: "Turn raw notes and wikis into a polished blog post"
-  default_prompt: "Write a blog post from the materials I provide"
+  display_name: "Write Content"
+  short_description: "Draft articles and chapters from agreed reasoning"
+  default_prompt: "Use $write-content to draft from my brief, preserving its reasoning and evidence."

@@ -1,101 +1,90 @@
 ---
 name: review-draft
-description: Review a draft and return ranked findings — never rewrites. Runs a depth gate against the piece's brief first, then the craft checklist. Works on any unit: a paragraph, a section, a chapter, a whole post. Use for "review this draft", "what's wrong with this section", "is this deep enough", 评审, 修改意见.
+description: Review a paragraph, section, article or chapter for reader gain, reasoning, evidence and expression. Return ranked findings with quoted passages and a repair route; never rewrite. Use for 审稿, review this draft, checking logic or readiness to ship.
 ---
-
-Last updated: 2026-09-01
 
 # Review Draft
 
-## Overview
+Last updated: 2026-10-01
 
-Draft in, ranked findings out. This skill is the reviewer half of the writing loop; `edit-targeted` is the other half. The two must cycle in minutes — that cadence, not any single skill, is what human-in-the-loop cashes out to.
+Judge whether the text delivers its reader promise. Read the brief when available using the
+[shared format and compatibility rules](../frame/references/brief-format.md). Without one, review
+visible logic, evidence and expression; state that intended gain/scope cannot be fully checked.
+An absent brief does not disable reasoning review or justify inventing author intent.
 
-Runs on **any unit**: one paragraph, one section, a chapter, a finished post. Reviewing a paragraph mid-draft is the normal case, not a degraded one.
+## Review order
 
-## Hard Rules
+| Dimension | Check | Route |
+| :--- | :--- | :--- |
+| 定题 | one question, recognizable reader situation and a specific gain delivered by the text | `frame` |
+| 逻辑 | conclusions follow from stated reasons; prerequisites, comparisons and limits are clear | `develop-argument` |
+| 例证 | facts are traceable; examples do their stated job; evidence supports the actual scope | `develop-examples` |
+| 表达 | readers can follow sentences, terms, transitions and relevant diagrams | `edit-targeted` |
 
-1. **Never rewrite.** No corrected version, no "here's how I'd phrase it" paragraph. A suggested replacement of more than a clause is a rewrite wearing a suggestion's clothes — hand the finding to `edit-targeted` instead.
-2. **Every finding quotes the offending passage** and names what it violates: a brief line or a numbered technique.
-3. **Rank fix-first.** Findings are ordered by what would change the piece most, not by where they appear in the text.
-4. **Depth before craft.** Axis 1 runs first and can stop the review — polishing a flat piece is wasted motion.
-5. **No invented facts.** Never suggest an example, number, or citation that isn't in the materials or the brief.
-6. **Say when it's fine.** A section with no real findings gets "no findings" — manufactured nitpicks train the author to ignore the reviewer.
+Inspect the unit actually requested. Whole-piece gain/opening/conclusion tests do not apply to an
+isolated paragraph. For a missing step quote the two passages surrounding the gap. Each finding
+names the relevant brief node/field or craft criterion and the condition that would resolve it.
 
-## Workflow
+### Purpose-specific reasoning
 
-### Step 0: Locate the brief
+- **argue:** strongest relevant objection, premises, warranted conclusion, conditions and real costs
+  of the proposed action. An opponent need not be a named person; the opposing belief needs evidence.
+- **explain:** an accurate mechanism, helpful examples and the promised change in understanding.
+  Settled knowledge can be valuable. Do not demand opposition or a novel research result.
+- **explore:** plausible alternatives, fair comparison, what evidence distinguishes them, what
+  remains unknown. Penalize false certainty, not a deliberately bounded unanswered question.
+- **chapter:** the stated capability, prerequisite order, worked explanations and selected code/math.
+  Skip opponent checks. A skillful draft is not proof of author mastery; that remains `grill`/`evaluate`.
 
-Look for `brief.md` beside the draft (`drafts/<slug>/`) or wherever the user points.
+### Evidence and diagram checks
 
-- **Brief present:** run both axes.
-- **No brief:** run axis 2 only, and say so in one line — "no brief found; craft review only, depth unchecked." Do not invent an angle to review against.
+Compare prose claims to the actual cited passage and the evidence's Limits. An anecdote may explain
+without proving prevalence or causation. Author-confirmed experience establishes what the author
+reported, not a universal law. No personal example is required; an illustrative scenario stays
+explicitly hypothetical and never becomes factual support.
 
-### Axis 1 — Against the brief (the depth gate)
+For a whole-piece v2 review, run
+`python3 <learning-os>/skills/writing/scripts/verify_brief.py <brief> --stage ship`.
+A partial review checks only the relevant nodes; unrelated brief gaps do not fail a paragraph.
+A structural pass does not establish truth: read key sources and assess inference strength. Check
+`[VERIFY]` markers in the draft as well as brief gaps. Compare publication figures to the logic
+relations; the figure cannot silently introduce a cause, omit a limiting condition or reverse a
+prerequisite. Report affected node IDs and passages for a stale brief/figure.
 
-Read the brief, then the draft, and answer each question with evidence from the text:
+Read [techniques.md](../write-content/references/techniques.md) for expression checks, applying only
+those relevant to the unit and purpose. No forced objection, example cadence or diagram quota.
 
-| Check | Failure looks like |
-| :--- | :--- |
-| Does the draft argue the **angle**, or slide back into summarizing the source? | Section headers that mirror the source's headers |
-| Is the **议题** still a live question the reader could answer either way? | The question resolved in the first section, or never restated |
-| Is **正方** engaged at full strength, or forgotten after the opening? | The opponent named in paragraph 1 and never answered; or weakened into a strawman nobody holds |
-| Is the opponent someone **outside the material**? | The piece's target is the source author — inconsistent, overclaiming, decorative. That is a book review, not a piece |
-| Is every **一层论点** actually argued, and in the brief's order? | A pillar reduced to one passing sentence, or silently dropped |
-| Does every **二层** line reach its **三层** evidence? | A mechanism asserted where the ladder promised a source section or the author's incident |
-| Is each **author marker** present at the node it was anchored to? | The incident moved to the intro as colour, leaving its own claim unevidenced |
-| Did `cut` material leak in? | A section carrying content the selection map excluded |
-| Does the *Cost paid* line still hold? | Scope quietly widened back to covering everything |
-| Are the **author's markers** used, or replaced by borrowed examples? | The author's incident missing at the point the reader most doubts the claim |
-| Does anything here disagree with anyone? | Every claim uncontested |
-
-Then the decisive test, applied paragraph by paragraph:
-
-> **Could the source's author have written this paragraph?**
-
-And the companion test, for the review failure mode:
-
-> **Would this paragraph mean anything to a reader who never saw the source?**
-
-If the first is yes for every paragraph, the piece is flat. If the second is no for most of them, the piece is a book review — the material became the subject instead of the evidence. Either way, **verdict: reframe or kill.** Say it plainly, name the two or three paragraphs that come closest to being the author's own, and send the piece back to `/frame-piece` Step 4 with the draft as new evidence. Do not continue to axis 2 — craft findings on a piece that is about to be reframed are noise.
-
-If the piece passes, list axis-1 findings as normal findings and continue.
-
-### Axis 2 — Against the craft checklist
-
-Run the revision checklist in [`../write-content/references/techniques.md`](../write-content/references/techniques.md) as a *reviewer*, not a self-check: each failed line becomes a finding with the offending passage quoted and the technique named.
-
-Scope to the unit under review. Whole-piece checks (opening tension, compressed close, one thesis) don't apply when reviewing a single paragraph — skip them rather than reporting them as failures.
-
-### Step 3: Rank and report
-
-Order by impact: depth failures → structural failures (ladder broken, section changes nothing) → local craft (missing example, undefined term, absent anchor) → line-level. Within a tie, earlier in the document first.
-
-## Output Format
+## Verdict and report
 
 ```markdown
-## Review: <unit reviewed>
+## Review: <unit>
 
 **Verdict:** ship / edit / reframe or kill
-<one sentence saying why>
+<reason and scope of the verdict; a paragraph verdict is not whole-article approval>
 
 ### Findings
 
-**1. <what's wrong>** — `<brief line or technique N>`
-> <quoted passage>
+**1. <defect>** — <brief node/field or criterion>; route: <skill>
+> <offending passage, or passages surrounding a missing step>
 
-<what it fails, and what would satisfy it — one or two sentences. No replacement prose.>
-
-**2. …**
+<why it fails and what would resolve it; no replacement prose>
 
 ### No findings on
-<sections that are fine — one line, so the author knows they were read>
+<units reviewed without defects>
 ```
 
-Deliver findings and stop. The author decides which to act on; `edit-targeted` applies them one at a time.
+Rank question/gain failures, then inference, evidence and expression. `reframe or kill` means the
+reader promise or central question is unsupported/misdirected; return the closest viable material
+as evidence for framing, not a new authored position. `edit` covers repairable structural and
+factual defects as well as prose. `ship` requires no unresolved central factual claims and delivery
+of the agreed gain. When the question must change, stop polishing text likely to be discarded.
 
-## Handoff
+Finish the review without editing. Under a review-only request, stop; in an authorized improvement
+workflow, pass each finding to its owner. Local repairs re-review the changed span; a changed
+premise requires re-review of affected conclusions, examples and diagrams too.
 
-- **`edit-targeted`** consumes findings individually. Feed it one finding, not the whole report.
-- **`frame-piece`** receives the piece when the verdict is "reframe or kill".
-- Re-review after edits: review the changed unit, not the whole piece, so the loop stays fast.
+## Contract test
+
+The same checklist must accept a supported explanation and an honest exploration, reject an
+anecdote used to prove a universal claim, and find an inference gap even without a brief. Every
+finding quotes text, gives a repair condition and a route. No replacement paragraph is produced.

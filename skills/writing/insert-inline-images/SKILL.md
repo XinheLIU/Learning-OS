@@ -1,9 +1,9 @@
 ---
 name: insert-inline-images
-description: Insert existing images into Markdown and HTML documents at contextually appropriate points, styled to match host document. Use when asked to illustrate with images that already exist on disk.
+description: Place existing images from disk into Markdown and HTML documents at contextually appropriate points, styled to match host document. Never authors new images — use book-diagrams for that. Tier 1: primitive, ~15 min. Use when asked to illustrate with images that already exist on disk.
 ---
 
-Last updated: 2026-09-01
+Last updated: 2026-09-22
 
 # Inline Illustrator
 
@@ -95,12 +95,15 @@ page must sit in a padded panel or hairline frame — never raw.
 ### 6. Verify
 
 ```bash
-scripts/check_image_refs.py <docs...>
+python3 ../scripts/verify_references.py <docs...>
 ```
 
-Must report zero BROKEN references. Then re-read each modified region for flow, and for
-HTML render a screenshot (headless browser if available) to confirm images sit within
-their layout — especially fixed-height slides, where an unconstrained image overflows.
-Long pages don't fit one screenshot: capture at a large fixed `--window-size` height and
-crop a band around each insertion point, rather than trusting a single squashed full-page
-shot.
+Must report zero BROKEN. Then re-read each modified region for flow, and for HTML render a screenshot (headless browser if available) to confirm images sit within their layout — especially fixed-height slides, where an unconstrained image overflows. Long pages don't fit one screenshot: capture at a large fixed `--window-size` height and crop a band around each insertion point, rather than trusting a single squashed full-page shot.
+
+## Input Contract
+
+**Required:** a curated images folder + a target document.
+
+**Precondition:** images must already exist on disk. This skill NEVER creates new images — use `book-diagrams` for that.
+
+**Boundary:** if the images don't exist yet, stop and say so. Do not generate placeholder content.

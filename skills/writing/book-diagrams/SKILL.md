@@ -1,13 +1,13 @@
 ---
 name: book-diagrams
-description: "Design and hand-author SVG diagrams that illustrate concepts in book chapters, deriving a coherent visual style from the book's existing diagrams and any reference images rather than applying fixed templates. Use when the user asks to insert diagrams or plots into a chapter, illustrate an article, convert a table or ASCII block into a diagram, or make SVG plots. Trigger on 'insert diagrams', 'make svg plots', 'illustrate this chapter', 'create plots', 'convert this table to a diagram'."
+description: "Hand-author SVG diagrams for articles and chapters from agreed logic or concept relationships, deriving visual style from the target document. Creates new SVGs only — never places pre-existing images (use insert-inline-images for that). Tier 1: primitive, ~30 min per diagram. Use when asked to create diagrams, make svg plots, illustrate this chapter, convert a table or ASCII block into a diagram."
 ---
 
-Last updated: 2026-07-28
+Last updated: 2026-10-01
 
 # Book Diagrams
 
-Hand-authored SVG illustrations for the chapters under `book/`. The deliverable is not any
+Hand-authored SVG illustrations for the target article or chapter. The deliverable is not any
 single diagram — it is a *visual language*: a set of diagrams that read as siblings across
 the whole book. Every file is plain SVG that a future session can reopen and edit as text.
 
@@ -70,7 +70,7 @@ pixel-for-pixel from a reference image:
    15–17 bold near-black, body 13–15 in the category color, captions 12.5–13 italic gray).
    Titles dark, content colored, annotations gray — that contrast does the layering.
 
-### The book's current family (facts, not rules — extend coherently)
+### Example family (fallback only when the target has no established style)
 
 - Canvas: white, width 1310, height to fit; `font-family="-apple-system, 'PingFang SC',
   'Helvetica Neue', Arial, sans-serif"`; code in `ui-monospace, 'SF Mono', Menlo, monospace`.
@@ -97,23 +97,25 @@ SVG has no layout engine — you are the layout engine:
 - Escape `&` as `&amp;` and `<` as `&lt;` in text content.
 - Validate every file: `python3 -c "import xml.etree.ElementTree as ET; ET.parse('f.svg')"`.
 
-## Repo Conventions
+## Destination conventions
 
-- **Files:** `book/en/assets/<Topic>-<Concept>.svg`, PascalCase-with-hyphens.
-- **References:** `./assets/X.svg` from a tree root, `../assets/X.svg` from level folders
-  (`01-prompt/` … `05-architect/`); alt text states the diagram's question.
-- **English first, review before mirroring.** Draft and insert in `book/en/` only. After
-  approval, create translated same-filename copies in `book/zh-cn/assets/` and mirror the
-  insertions into the zh chapter (chapter prose itself goes through `zh-translator`).
+- **Files:** local `assets/<Topic>-<Concept>.svg` beside the target document, following existing naming.
+- **References:** content-local relative paths such as `./assets/X.svg`; alt text states the diagram's question. Keep packaged assets inside the piece folder.
+- **Language:** match the target document. Translation or mirroring occurs only when requested; use `book-translator` for chapter prose.
 - **Update the chapter's `Last updated:` date** on any edit.
-- **Preview:** browser, `npm run serve` (Honkit at `http://localhost:4000`), or
-  `qlmanage -t -s 1310 -o <outdir> <file.svg>`.
+- **Preview:** use the destination's existing preview mechanism or an image/browser viewer; inspect labels, arrows and clipping at readable scale.
 
 ## Workflow
 
-1. **Propose.** Scan the chapter for shapes trapped in tables or ASCII art. Present the
-   list — concept, intended form, insertion point — plus one finished sample to lock the
-   style, and get approval before batch-producing.
+1. **Ground.** Read the brief's Logic nodes/relations and relevant prose (legacy: ladder and source passages). Use the already agreed question and style; propose choices only when unresolved. Keep a mapping from each SVG element/arrow to its node/relation. If logic is missing, resolve it through `develop-argument` before illustrating.
 2. **Draw** against the derived style; **validate**; **insert**; **preview**. Final check
    per diagram: does it answer its one question, does every element trace to the prose, is
    nothing clipped, and would it sit next to the existing family without looking adopted?
+
+## Input Contract
+
+**Required:** diagram question plus article/chapter context or an agreed logic structure. Existing SVGs are optional style evidence. Preserve relation direction and limiting conditions; visual grouping cannot invent causality. Check the semantic mapping after any logic change.
+
+**Precondition:** the diagram concept. This skill NEVER uses pre-existing images as content — it draws new SVGs. For placing existing images, use `insert-inline-images`.
+
+**Boundary:** one diagram answers one question. If you need two questions answered, this skill runs twice.

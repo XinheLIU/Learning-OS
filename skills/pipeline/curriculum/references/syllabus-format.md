@@ -10,6 +10,7 @@ _Last updated: 2026-09-06_
 # Course: {Topic}
 
 <!-- source: survey.md {date} | mini-diagnosis (no survey) -->
+<!-- depth: quick | standard | deep -->
 
 ## Mission
 

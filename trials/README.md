@@ -1,6 +1,6 @@
 # Trials — End-to-End Testing Guide
 
-Last updated: 2026-09-06
+Last updated: 2026-10-01
 
 A trial walks **one topic** through the entire skill chain and answers two questions at once: did
 the learner actually learn it, and did the chain hold up while they did.
@@ -14,17 +14,37 @@ v3 note: the HTML course carries the learning experience. `/learn` opens lessons
 checkpoint bookkeeping; `/recall` plans and reschedules — the retrieval itself happens in
 `recall.html`. Chat sees bookkeeping and questions, not re-teaching.
 
+The writing chain is a second line with its own trial — same runbook format, different chain:
+
+```text
+/frame → /develop-argument ⇄ /develop-examples → /write-content → optional illustration
+   → /review-draft ⇄ /edit-targeted → optional chapter grill/package → /archive-materials
+understanding changes → /snapshot-writing → the next /frame
+```
+
 ## The trials
 
-| Trial | Topic | Depth | Budget | Independence test |
-| :--- | :--- | :--- | :--- | :--- |
-| [`herdr/`](herdr/RUNBOOK.md) | herdr — safe agent delegation | `standard` | 60 min × 3 days | 8-item sealed battery, opened Day 3 |
-| [`swe-basics/`](swe-basics/RUNBOOK.md) | Writing good code and design patterns | `quick` | 2 × 30 min × 3 days | 6-item rubric-graded battery, opened Day 3 |
+| Trial | Chain | Topic | Independence test |
+| :--- | :--- | :--- | :--- |
+| [`herdr/`](herdr/RUNBOOK.md) | learning | herdr — safe agent delegation (`standard`, 60 min × 3 days) | 8-item sealed battery, opened Day 3 |
+| [`swe-basics/`](swe-basics/RUNBOOK.md) | learning | Writing good code and design patterns (`quick`, 2 × 30 min × 3 days) | 6-item rubric-graded battery, opened Day 3 |
+| [`writing/`](writing/RUNBOOK.md) | writing | question → logic → evidence → draft and evolving snapshots | semantic scenarios; no claim of independent mastery |
+| [`transformer/`](transformer/RUNBOOK.md) | writing | Transformer — 290 files of accumulated material into one book chapter | `/grill`: answer from memory, draft closed |
+| [`transformer-memory/`](transformer-memory/RUNBOOK.md) | **whole chain** | Transformer — 266 files through map → curate → scope → build → loop → write → write-back | `/grill` closed-draft, plus `Independent` gated on markers tracing to earned nodes |
 
 Everything you need is in the runbook: the prompt to paste at each step, what to watch for while it
 runs, a shell check, and numbered assertions to tick.
 
-**The two are deliberately different topics, not two runs of the same test.** herdr is bounded and
+**`transformer-memory` is the odd one out** and deliberately so. The other trials test one chain
+each with the criteria written into the runbook. That one tests the whole chain end to end and
+ships its evaluation sections **empty** — the mechanical assertions are given, the quality criteria
+are the author's and are written before each step runs. It is Part B of
+[`docs/exec-plans/memory.md`](../docs/exec-plans/memory.md); Part A built the skills and proved the
+mechanics on a synthetic fixture without ever touching the real materials, so that this run is the
+first real one and every output is evaluable.
+
+
+**The two learning trials are deliberately different topics, not two runs of the same test.** herdr is bounded and
 has a ground truth — the installed CLI settles every question, so the trial can assert exact
 answers. `swe-basics` has neither: the field is unbounded, its literature openly contradicts
 itself, and an agent can lecture on it fluently from memory without citing anything. Each trial
@@ -60,9 +80,10 @@ Every step has the same four parts:
 | **Layer 2** — behavioral | Did the teaching work *on you*? Cold recall, battery score. | **Yes**, on this trial. |
 | **Layer 3** — experiential | "What did this make me do that grinding wouldn't?" | Never. Steers the next run. |
 
-Layer 2 gates on both trials because the ignorance is genuine. On herdr the earlier course was
+Layer 2 gates on all three trials because the ignorance is genuine. On herdr the earlier course was
 archived to `learning/herdr-v1/` and is not read during the run; on `swe-basics` the battery is
-graded against rubrics you did not write and cannot see beforehand.
+graded against rubrics you did not write and cannot see beforehand; on `transformer` you answer
+`/grill` from memory with the chapter closed.
 
 **A rubric-graded battery is easier to pass generously than an answer-keyed one.** `swe-basics`
 carries three literal grading questions for exactly that reason — score the item 0 if any of them
@@ -81,6 +102,10 @@ sync as `walkthrough` — never as a clean pass. The same rule binds the chat si
 and sync report must never quote an item's answer. A warm retrieval recorded as cold corrupts every
 row it touches and every mastery claim built on those rows. If it happens once, the trial FAILS
 regardless of every other box.
+
+The `transformer` trial inherits the second rule verbatim: `/grill` records each question's draft
+anchor but must never show it before the answer, and a question answered with the anchor visible is
+`peeked`, never a pass.
 
 ## What the trials are really testing
 
@@ -113,10 +138,12 @@ Reached only by `swe-basics`:
 
 ## Notes
 
-- **Each trial has a safety boundary, and neither is advisory.** herdr manages your live terminal:
+- **Each trial has a safety boundary, and none of them is advisory.** herdr manages your live terminal:
   never touch a pre-existing pane, always `--no-focus`, always use IDs captured from returned JSON.
   `swe-basics` edits code you own: all work happens in a throwaway `git worktree`, no commits
-  anywhere, the live checkout never written to. Read the boundary before Day 0.
+  anywhere, the live checkout never written to. `transformer` runs against a real materials library:
+  read-only through stage 7, additive-only in stage 8, and the move into `writing/MachineLearning/`
+  is done by hand. Read the boundary before Day 0.
 - **Fresh session per tutoring day.** The file contract is the interface between steps, which is
   itself part of what's under test. Nothing needs to be carried in an agent's head.
 - **`learning/herdr-v1/` is the archived earlier course** — v1 file layout, 3 lessons, 6 ledger

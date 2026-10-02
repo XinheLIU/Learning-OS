@@ -1,6 +1,6 @@
 # Learning OS
 
-Last updated: 2026-09-06
+Last updated: 2026-10-02
 
 <div align="center">
 
@@ -26,7 +26,7 @@ gather → process → distill    →    learn · practice · evaluate    →   
 
 - **[Information Pipeline](skills/pipeline/README.md)** — turn raw material (transcripts, course notes, articles) into clean, source-faithful, teaching-ready knowledge. Nothing enters the system without provenance.
 - **[Learning Loop](skills/learning/README.md)** — build durable capability with evidence: map the field, build a course, learn it, practice on real cases, evaluate, reflect. The HTML course carries the learning experience end to end (reading, drills, quizzes, mini-cases, spaced recall); chat is reserved for bookkeeping (`done L<n>`) and questions. AI guides thought; the learner constructs the answers.
-- **[Writing System](skills/writing/README.md)** — turn earned knowledge into articles, chapters, translations, diagrams, and slides in fast iterations. Writing is the graduation artifact: what you can publish unaided, you have learned — and what you can't write yet, you haven't.
+- **[Writing System](skills/writing/README.md)** — turn earned knowledge into articles, chapters, translations, diagrams, and slides in fast iterations. Writing answers reader questions and preserves evolving understanding. An unaided chapter can also supply graduation evidence when the learning loop verifies it.
 
 Each skill is a plain-Markdown `SKILL.md` in the open [Agent Skills](https://agentskills.io) format, so the suite is not tied to one tool: install it as a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin, symlink the skill directories into any skills-aware agent (Codex, Cursor, custom Claude Agent SDK agents, …), or paste a `SKILL.md` into any capable LLM chat as instructions.
 
@@ -44,21 +44,21 @@ flowchart LR
 
     subgraph pipeline["Information Pipeline"]
         direction TB
-        stages["gather → process → distill"]
+        stages["gather → process → scope → build"]
         wiki[("wiki/<br/>external knowledge")]
         stages --> wiki
     end
 
     subgraph learning["Learning Loop"]
         direction TB
-        loop["/survey → /curriculum → /learn<br/>/practice ⇄ /reflect · gate: /evaluate"]
+        loop["/learn · /recall<br/>/practice ⇄ /reflect · gate: /evaluate"]
         memory[("learning/&lt;slug&gt;/<br/>learner memory")]
         loop <--> memory
     end
 
     subgraph writing["Writing System"]
         direction TB
-        write["frame → draft → review ⇄ edit<br/>translate · illustrate · slides"]
+        write["frame → logic ⇄ evidence → draft<br/>review ⇄ edit · snapshot"]
         drafts[("drafts → publication")]
         write <--> drafts
     end
@@ -119,34 +119,37 @@ done L1                            # paste the lesson's manifest: bookkeeping, w
 Close the loop after a few lessons (`/practice`, `/evaluate`, `/reflect`), and on the days between run `/recall` — it reports what's due across every course and points you at each course's `recall.html`, where the retrieval itself happens in ten to fifteen minutes. Then prove it in writing:
 
 ```text
-/frame-piece find the angle for a piece from my raft learning notes
+/frame find the angle for a piece from my raft learning notes
 /write-content draft it from the brief
 /review-draft check section 2
 ```
 
-`/frame-piece` is the conversation that decides what the piece argues and what gets cut; skip it and you get a faithful explainer of your sources, which is sometimes exactly what you want.
+`/frame` chooses one reader question and a concrete gain. `/develop-argument` makes the reasoning inspectable; `/develop-examples` supplies attributable support. Enter directly at the stage you need; `/snapshot-writing` keeps meaningful changes for the next piece.
 
 ## The Skills
 
-Twenty-three skills across the three systems. Each table links to the system contract; detailed behavior lives in each skill's `SKILL.md`.
+Thirty-one skills across the three systems. Each table links to the system contract; detailed behavior lives in each skill's `SKILL.md`.
 
 ### [Information Pipeline](skills/pipeline/README.md) — `skills/pipeline/`
 
 | Skill | Responsibility |
 | :--- | :--- |
+| `/curate-sources` | Discover and tier the cross-topic source registry for one domain |
+| `/map-materials` | Rank one archive's files once: key / redundant / peripheral, with what each teaches |
+| `/survey` | Investment gate: field map, scope (sources × disposition, nodes × mode), baseline |
+| `/curriculum` | Order the deep nodes into one critical path; build the course |
 | `clean-notes` | Clean one material's raw capture: cluster by topic, dedupe, fix formatting |
 | `organize-docs` | Restructure document collections into a MECE system |
 | `llm-wiki-init` | Scaffold a new external knowledge base |
 | `llm-wiki-ingest` | Preserve and distill curated sources into the wiki |
 | `llm-wiki-lint` | Audit links, orphans, drift, and tag sprawl |
 | `llm-wiki-book` | Turn a mature wiki into a thesis and narrative book plan |
+| `archive-materials` | After a piece ships, fill `used-in` and write source verdicts |
 
 ### [Learning Loop](skills/learning/README.md) — `skills/learning/`
 
 | Skill | Responsibility |
 | :--- | :--- |
-| `/survey` | Investment gate: map, critical path, sources, baseline |
-| `/curriculum` | Orchestrate + build the course, planned backward from a real output |
 | `/learn` | Session manager & tutor: open lessons, checkpoint bookkeeping, questions |
 | `/recall` | The return path: plan what's due, sync results from recall.html, reschedule |
 | `/practice` | Deliberate practice on real cases, attempts recorded |
@@ -158,11 +161,16 @@ Twenty-three skills across the three systems. Each table links to the system con
 
 | Skill | Responsibility |
 | :--- | :--- |
-| `frame-piece` | Find the angle: propose candidates, dialogue to a committed angle and cut-list, emit `brief.md` |
+| `frame` | Choose one familiar reader question with a specific gain; record judgment and scope |
+| `develop-argument` | Develop justified logic, teaching dependencies, reading order and a derived map |
+| `develop-examples` | Build attributable evidence and examples with explicit limits |
+| `snapshot-writing` | Preserve substantive understanding changes and topic connections |
 | `build-skeleton` | Create and maintain publication structure and navigation |
 | `write-content` | Turn a brief, or source materials, into publishable nonfiction |
-| `review-draft` | Ranked findings on any unit — depth gate first, then craft. Never rewrites |
+| `review-draft` | Ranked findings on question, reasoning, evidence and expression; purpose-aware, never rewrites |
 | `edit-targeted` | Apply one instruction to one location; minimal diff |
+| `grill` | Interview the author from their own draft; split misses into author gaps and draft gaps |
+| `package-chapter` | Prove a draft folder is portable and contract-conformant; stamp frontmatter |
 | `book-translator` | Translate chapters between English and Chinese |
 | `book-diagrams` | Coherent SVG diagrams for long-form content |
 | `insert-inline-images` | Place existing images where the document needs them |
@@ -188,7 +196,7 @@ Each `SKILL.md` is the full contract for its skill: triggers, rules, storage pat
 
 ## Project Status
 
-All 23 skills have first versions. The remaining work is explicit: [learning](docs/exec-plans/learning.md), [writing](docs/exec-plans/writing.md), and [repository integration](docs/exec-plans/repository.md).
+All 31 skills have first versions. The writing redesign has a staged brief contract and regression checks; live author trials remain explicit in its execution plan. The remaining work is explicit: [learning](docs/exec-plans/learning.md), [writing](docs/exec-plans/writing.md), [the concept-to-chapter loop](docs/exec-plans/article-loop.md), and [repository integration](docs/exec-plans/repository.md).
 
 Learning OS publishes its shared-catalog metadata through [`catalog/skill-set.json`](catalog/skill-set.json); the [agent-skills](https://github.com/XinheLIU/agent-skills) hub owns the common discovery frontend. The project was extracted from that hub into its own repository.
 

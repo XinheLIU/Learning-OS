@@ -5,7 +5,7 @@ description: Course session manager and AI tutor over a built HTML course. Use w
 
 # Learn — Course Session Manager & AI Tutor
 
-Last updated: 2026-09-06
+Last updated: 2026-09-28
 
 The HTML course is where learning happens — reading, opening tasks, drills, quizzes, embedded recall. This skill has exactly three modes, and none of them re-teaches a lesson in chat:
 
@@ -21,7 +21,7 @@ retry, and close to that delta. The first lesson must orient the learner with th
 baseline evidence, target output, whole roadmap, scope cuts, rehearsal method, and next checkpoint before
 new teaching.
 
-Theory background: `references/learning-theory.md` (read when a rule below needs its rationale). Format specs: `../curriculum/references/lesson-format.md` (lessons, shell, checkpoint blocks, recall.html, reference docs — including your revision rights), `references/notes-format.md` (records, terms, preferences, consolidated sections including Structural Memory, Micro-Skills, Playbook), `references/retrieval.md` (the retrieval ledger).
+Theory background: `references/learning-theory.md` (read when a rule below needs its rationale). Format specs: `../../pipeline/curriculum/references/lesson-format.md` (lessons, shell, checkpoint blocks, recall.html, reference docs — including your revision rights), `references/notes-format.md` (records, terms, preferences, consolidated sections including Structural Memory, Micro-Skills, Playbook), `references/retrieval.md` (the retrieval ledger).
 
 ## Prime directive
 
@@ -37,7 +37,7 @@ Everything lives in `learning/<slug>/` — flat, no other subfolders:
 - `index.html` — the course shell, renders `syllabus.md` dynamically. `/curriculum` owns it; you never edit it directly.
 - `notes.md` — your single consolidated working file: Records, Attempt Log, Terms, Structural Memory, Micro-Skills, Playbook, Preferences, Mastery Snapshot. You own it.
 - `retrieval.md` — the retrieval ledger. You create rows on first successful demonstration; `/recall` fires and reschedules them.
-- `lessons/` — the HTML lessons `/curriculum` built, `0001-<dash-case-name>.html`. You revise them (below).
+- `lessons/` — the HTML lessons `/curriculum` built, `0001-<dash-case-name>.html`, including the `[C]` connect lessons. You revise them (below).
 - `recall.html` — the recall page. `/curriculum` builds it; you and `/recall` regenerate its embedded queue snapshot at every bookkeeping pass.
 - `reference/` — compressed HTML reference docs: cheat sheets, glossary, syntax cards. Seeded by `/curriculum`; you extend and correct them as knowledge is earned. Lessons are rarely revisited; references are.
 
@@ -80,6 +80,31 @@ The user finished the lesson in the browser and pasted its completion manifest (
    - **Syllabus checkbox** — check the lesson off in `syllabus.md`.
 4. **Close with what's next, from the syllabus `Next:` field.** One short paragraph: the next lesson (offer `start` again), a recall gate if one now applies, or the handoff the field names. **Stop.**
 
+### `done` on a `[C]` lesson
+
+A `[C]` lesson's manifest is not a quiz result — it is the learner's typed **edge statement**. Its
+bookkeeping is a different, shorter list, and running the ordinary one on it is a contract
+violation:
+
+1. **Read the edge statement.** It must name both endpoints, a type from the closed vocabulary
+   (`bridges`, `prerequisite-of`, `contrasts-with`, `special-case-of`), and a because-clause in the
+   learner's own words. If the type is missing or the because-clause restates the definition rather
+   than the relation, ask **once** for it in chat and record the answer as assistance `hint`.
+2. **Write one Connections row** in Structural Memory: the two endpoints, the type, status
+   `earned`, earned-by the lesson id with its assistance.
+3. **Flip the `connect` node to `earned`**, glossed with the learner's own because-clause. You MUST
+   NOT write the gloss for them.
+4. **Open no `retrieval.md` row.** Not for the node, not for the edge, not for a term the excerpt
+   used. A `connect` node was never a claim to be able to use the thing, so there is nothing to
+   keep cold-retrievable — and a ledger seeded from a `[C]` lesson fails on its first firing and
+   reads as a broken scheduler. This is the rule most easily broken by habit; the contract test
+   checks it by counting rows before and after.
+5. **Regenerate the Map**, check the lesson off in `syllabus.md`, and close from `Next:`.
+
+No Attempt Log line, no Records entry, no Terms promotion, no `reference/` doc, no spot-probe. A
+`[C]` lesson that produced an Attempt Log line taught more than it was supposed to — say so, and
+send the node back to `/survey` to be re-moded rather than quietly keeping the extra evidence.
+
 ### Mainline close
 
 When you check off the **last S-lesson of a mainline**, the mainline leaves your tier: confirm its framework nodes are promoted, then the next-step message recommends `/practice <slug>` with the mainline's earned models named ("L3's models are earned — next: `/practice`, bring a real repo problem"). Do not tutor past it into transfer.
@@ -119,6 +144,8 @@ Applies to tutor mode and to how you revise lessons. Set support level per subto
 
 One consolidated file with Records / Attempt Log / Terms / Structural Memory / Micro-Skills / Playbook / Preferences / Mastery Snapshot. Append; don't restructure. Full format and qualification rules: [references/notes-format.md](references/notes-format.md).
 
+**File initialization:** If `notes.md` doesn't exist, create it with the full section structure from [references/notes-format.md](references/notes-format.md) before the first record. If the file exists but is missing sections (e.g. only has Structural Memory), append the missing sections in the canonical order before writing to them. A file with only the Structural Memory section is a `/curriculum`-seeded stub; add the remaining sections (`## Records`, `## Attempt Log`, `## Terms`, `## Micro-Skills`, `## Playbook`, `## Preferences`, `## Mastery Snapshot`) at the end.
+
 Write a record only when it changes future teaching: demonstrated understanding of something non-trivial, disclosed prior knowledge, a **corrected misconception** (highest value), or a mission shift (confirm, then send back to `/curriculum`). Coverage is not learning — wait for evidence. A record claiming demonstrated understanding includes its evidence and `Assistance:` value. Supersede, don't delete: mark outgrown records `(superseded by 000N)`.
 
 Terms enter only once the learner can use them correctly; once in, use them consistently in every lesson and reference doc — including inside other definitions.
@@ -127,13 +154,22 @@ Everything recorded is in the **learner's own words** — if it didn't survive a
 
 ## Promoting Structural Memory
 
-After a construction closes at assistance `none` or `hint` (a quiz item locked correct first-try, a drill draft that matches the reference, a tutor-mode construction), promote the matching node in the **Structural Memory** section of `notes.md` (per [references/notes-format.md](references/notes-format.md)): flip `target` → `earned`, add the evidence pointer, and have the learner supply the one-line gloss — you MUST NOT write it for them. Constructions the survey never predicted are added as new `earned` nodes. Coached constructions (`walkthrough`, `solution-shown`) promote nothing. Regenerate the Map when the tables changed. You promote Layer nodes only; edges are `/practice`'s, iteration is `/reflect`'s.
+This is the `deep`-node path. A `connect` node is promoted by its `[C]` lesson's edge instead (see
+`done` on a `[C]` lesson) and never by a construction — if a `connect` node turns up in a drill, the
+mode was wrong, and that is `/survey`'s to fix.
+
+After a construction closes at assistance `none` or `hint` (a quiz item locked correct first-try, a drill draft that matches the reference, a tutor-mode construction), promote the matching `deep` node in the **Structural Memory** section of `notes.md` (per [references/notes-format.md](references/notes-format.md)): flip `target` → `earned`, add the evidence pointer, and have the learner supply the one-line gloss — you MUST NOT write it for them. Constructions the survey never predicted are added as new `earned` nodes. Coached constructions (`walkthrough`, `solution-shown`) promote nothing. Regenerate the Map when the tables changed. You promote Layer nodes only; edges are `/practice`'s, iteration is `/reflect`'s.
 
 ## Opening retrieval items
 
 The same moment — a **first successful demonstration** at assistance `none` or `hint` — opens a row in `retrieval.md` per [references/retrieval.md](references/retrieval.md). One row per item: a schema the learner can now state, or a term they can now define. Create rows for schemas and terms only; a lesson, a record, or a problem is not an item.
 
+Rows are opened for `deep` nodes only. A `connect` node never opens one — see `done` on a `[C]`
+lesson for why.
+
 Create rows **only on demonstration, never on exposure.** A ledger seeded when a concept was introduced fails everything on the first firing and reads as a broken scheduler rather than as forgetting. Coached demonstrations open nothing, for the same reason they promote nothing.
+
+**File initialization:** If `retrieval.md` doesn't exist, create it with the header block from [references/retrieval.md](references/retrieval.md) before writing the first row. The header carries the ledger schema and scheduling rules as a comment — see the format spec.
 
 ## Operational memory and optional memory palace
 
@@ -155,7 +191,7 @@ expands only after cold reconstruction, and never raises a mastery claim by itse
 
 ## Contract test
 
-Given a built course and a `notes.md` recording a misconception the next lesson assumes away: `start` revises the lesson before opening it and reports due recall without tutoring; a lesson with an unmet `Gate:` routes to `recall.html` instead; `done` parses the manifest and infers assistance from its pattern (locked-correct → `none`, wrong-then-correct → `hint`, revealed-without-draft → `walkthrough`), runs at most one spot-probe, and never re-quizzes; every cycle adds an Attempt Log line with valid assistance; demonstrated-understanding records carry assistance; a construction closed at `none`/`hint` promotes its Structural Memory node with a learner-worded gloss **and opens its `retrieval.md` row**, while a coached one promotes and opens nothing; no row is opened for a concept merely covered; a `state: re-tutor` row is revised into the next warm-up and reset to the first rung with `lapses` preserved; the recall.html snapshot is regenerated whenever the ledger changes; the lesson is checked off in `syllabus.md`; tutor-mode answers start from the learner's attempt, end with a recorded retry, and land in `notes.md`; closing a mainline's last S-lesson produces a `/practice` handoff, not more tutoring. Reject a `done` with no manifest for a checkpoint-era lesson, a session that re-teaches the lesson in chat, or a tutor answer that hands over a schema the learner should construct.
+Given a built course and a `notes.md` recording a misconception the next lesson assumes away: `start` revises the lesson before opening it and reports due recall without tutoring; a lesson with an unmet `Gate:` routes to `recall.html` instead; `done` parses the manifest and infers assistance from its pattern (locked-correct → `none`, wrong-then-correct → `hint`, revealed-without-draft → `walkthrough`), runs at most one spot-probe, and never re-quizzes; every cycle adds an Attempt Log line with valid assistance; demonstrated-understanding records carry assistance; a construction closed at `none`/`hint` promotes its `deep` Structural Memory node with a learner-worded gloss **and opens its `retrieval.md` row**, while a coached one promotes and opens nothing; no row is opened for a concept merely covered; `done` on a `[C]` lesson writes exactly one `earned` Connections row with a typed edge and a learner-worded because-clause, flips its `connect` node to `earned`, and leaves `retrieval.md`'s row count **unchanged** — a `[C]` lesson that opened a ledger row, wrote an Attempt Log line, or ran a spot-probe is rejected; a `state: re-tutor` row is revised into the next warm-up and reset to the first rung with `lapses` preserved; the recall.html snapshot is regenerated whenever the ledger changes; the lesson is checked off in `syllabus.md`; tutor-mode answers start from the learner's attempt, end with a recorded retry, and land in `notes.md`; closing a mainline's last S-lesson produces a `/practice` handoff, not more tutoring. Reject a `done` with no manifest for a checkpoint-era lesson, a session that re-teaches the lesson in chat, or a tutor answer that hands over a schema the learner should construct.
 
 ## Handoffs
 
@@ -163,6 +199,8 @@ Given a built course and a `notes.md` recording a misconception the next lesson 
 
 **Out:**
 - Lesson closed → checkbox in `syllabus.md`, records in `notes.md`, promoted nodes in Structural Memory section of `notes.md`, opened rows in `retrieval.md`, regenerated `recall.html` snapshot → next `start`.
+- `[C]` lesson closed → one `earned` Connections row + its `connect` node earned, zero ledger rows → next `start`.
+- A `connect` node that turned out load-bearing, or a `deep` node the learner only needed to place → mode change → back to `/survey`.
 - Schemas and terms demonstrated at `none`/`hint` → rows in `retrieval.md` → `/recall`.
 - Last S-lesson of a mainline checked → mainline's earned models → `/practice <slug>`.
 - Only Stage 4–5 loop-entry specs left unchecked → course tier done → `/practice`.
@@ -177,4 +215,4 @@ Given a built course and a `notes.md` recording a misconception the next lesson 
 
 ---
 
-**Format references** live in `references/` of this skill directory: `learning-theory.md` (theory background), `notes-format.md` (consolidated notes.md sections including Structural Memory, Micro-Skills, Playbook), `retrieval.md` (ledger protocol). Lesson, checkpoint, recall-page, and course-shell format is in `../curriculum/references/lesson-format.md`.
+**Format references** live in `references/` of this skill directory: `learning-theory.md` (theory background), `notes-format.md` (consolidated notes.md sections including Structural Memory, Micro-Skills, Playbook), `retrieval.md` (ledger protocol). Lesson, checkpoint, recall-page, and course-shell format is in `../../pipeline/curriculum/references/lesson-format.md`.
